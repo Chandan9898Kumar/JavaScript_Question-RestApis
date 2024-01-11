@@ -110,7 +110,7 @@ A response can contain more data than you need or require further requests to ac
 
 
 ### REST API : It is an architecture style to develop web applications. It uses HTTP protocol as a communication interface and transport data through HTTP method.
-
+REST APIs should accept JSON for request payload and also send responses to JSON. JSON is the standard for transferring data.
 
 ### API Status Codes
 Status codes are returned with every request that is made to a web server. Status codes indicate information about what happened with a request. Here are some codes that are relevant to GET requests:
