@@ -122,3 +122,20 @@ Status codes are returned with every request that is made to a web server. Statu
 403: The resource you’re trying to access is forbidden: you don’t have the right permission to see it.
 404: The resource you tried to access wasn’t found on the server.
 503: The server is not ready to handle the request.
+
+
+
+
+### What is RESTful API?
+REST API stands for Representational State Transfer Application Programming Interface. It is a collection of architectural guidelines and best practices for creating web services that enable various systems to interact and communicate with one another over the Internet. Due to their simplicity, scalability, and usability, RESTful APIs are a popular choice for developing web applications and services.
+
+### Why should we use REST API in our web apps and services?
+
+1. Resources: In REST API, everything is treated as resources. Such as data objects or services. These resources are uniquely identified by URLs (Uniform Resources Locators).
+
+2. Statelessness: Each request made by a client to a server must provide all the details required to comprehend and handle the request. The API is simple to scale and administer because the server does not save any data regarding the client’s state between queries.
+HTTP Methods: RESTful APIs use standard HTTP methods to perform CRUD(Create, Read, Update, Delete) operations on resources. The common methods are GET(read), POST(create), PUT(update), and DELETE(delete).
+
+3. Representations: Resources can have multiple representations, such as JSON, XML, HTML, or others. Clients can specify the desired representation using the HTTP “Accept” header.
+
+4. Stateless Communication: Each request made by the client to the server must include all required data. The client’s state in-between queries is not recorded by the server. This approach makes it easier to implement the server and improves scalability.
