@@ -38,3 +38,15 @@ function App() {
     );
 }
 export default App;
+
+
+/**
+ * 
+ *  Open two terminals and then “cd backend” & “cd frontend“.
+
+1. In frontend
+    npm start
+2. In backend
+    nodemon index.js
+ * 
+ */
