@@ -22,8 +22,8 @@ OR
 `We can install it with npm. Make sure that you have Node.js and npm installed.`
 
 `Step 1: Creating a directory for our project and make that our working directory.`
-$ mkdir gfg
-$ cd gfg 
+$ mkdir backend
+$ cd backend 
 
 `Step 2: To create a nodejs application, because our express server will work inside the node application. Using npm init command to create a package.json file for our project`
 $ npm init
@@ -31,7 +31,7 @@ This command describes all the dependencies of our project. The file will be upd
 
 1. Note: Use `npm init -y` for default initialization
 
-Step 3: Now in your gfg folder type the following command line
+Step 3: Now in your backend folder type the following command line
 $ npm install express --save
 
 Step 3: `Now install Express in the myapp directory and save it in the dependencies list. This Install necessary dependencies for our application. For example:`
@@ -39,3 +39,7 @@ $ npm install express.
 
 Step 3: To install Express temporarily and not add it to the dependencies list:
 $ npm install express --no-save
+
+Step 4.  `Install node : npm i express nodemon`
+
+Step 5 . `Install cors : npm install express cors --save` 
