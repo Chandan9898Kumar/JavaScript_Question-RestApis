@@ -89,16 +89,58 @@ app.get('/hello', (req, res)=>{
 // const {name}, which is the syntax in ES6 to extract the given property/es from the object. Here we are extracting the name property which was sent by the user with this request object.
 // After that, we are simply sending a response to indicate that we have successfully received data. If this `${} ` is looking weird to you then let me tell you that it is the syntax in ES6 to generate strings with javascript expression in ES6. We can inject any javascript expression inside ${}.
 
-app.post('/', (req, res)=>{ 
+app.post('/posting', (req, res)=>{ 
     const {name} = req.body; 
-    res.send(`Welcome ${name}`); 
+    res.send(`Welcome ${name},now you are can access data.`); 
 }) 
 
 
 
 
 
+//                                                               Example 4:   Sending Files from Server
+//  Now we will see how to send files from the server.
+// Several times we need to transfer the resources from the server as per user request, there are majorly two methods to send files one is sending static files using middleware 
+// and the other one is sending a single file on a route.
 
+
+//                                                               Method  1: Serving entire directory using middleware.
+
+// Express provides us a middleware express.static(), it accepts two arguments first one is the absolute root path of the directory whose files we are going to serve. 
+// We can simply use it to serve static files, by providing to app.use().
+
+// Syntax:
+//          app.use(path, express.static(root, [options]));
+
+// First of all, we are importing an inbuilt module `path`, because later we are going to use one of the functions provided by this module.
+// We are simply mounting a middleware at the ‘/static’ route.
+// The static() middleware requires an absolute path so we use the path module’s join method.
+// The join() method takes two parameters and joins them as a path, in NodeJS we have a global attribute __dirname which contains the path of the directory in which the current file exists.
+// We are providing that joined path to middleware so that it can start serving the files inside that directory on the given path.
+
+
+const path = require('path') 
+app.use('/static', express.static(path.join(__dirname, 'Static file'))) 
+
+
+
+
+
+//                                                                 Method 2: Sending a single file on a route with the sendFile() function.
+
+// This function accepts an absolute URL of the file and whenever the route path is being accessed the server provides the file as an HTTP response. 
+// This process can be thought of as a single endpoint of the express.static(). It can be useful when we have to do some kind of processing before sending the file.
+
+// Syntax:
+//         res.sendFile(fileUrl)
+
+// We are creating a 'get request route' on the ‘/file’ path
+// After then we are creating the absolute path by joining the path of current __dirname and the name of the file we want to send and then passing it to sendFile().
+// Then route sends the image.jpg file to the user as an HTTP response.
+
+app.get('/file', (req, res)=>{ 
+    res.sendFile(path.join(__dirname,'RefreeTwo.jpg')); 
+}); 
 
 
 
@@ -121,3 +163,12 @@ app.listen(PORT, (error) => {
 
 //  Step to run the application: Now as we have created a server we can successfully start running it to see it’s working, 
 //  write this command in your terminal to start the express server.  -:  node index.js OR nodemon index.js
+
+
+
+//                                                  Notes
+
+//  The express.json() function is a built-in middleware function in Express. It parses incoming requests with JSON payloads and is based on body-parser. 
+// Syntax:
+// express.json( [options] )
+// Parameters: The options parameter has various properties like inflate, limit, type, etc. 
