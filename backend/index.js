@@ -15,6 +15,10 @@ app.use(express.json()); // The express.json() middleware is used to parses the 
 //  To enable CORS. do app.use(cors()); Now all requests received by the server will have cors enabled in them. 
 app.use(cors());         // Calling use(cors()) will enable the express server to respond to preflight requests.A preflight request is basically an OPTION request sent to the server before the actual request is sent, in order to ask which origin and which request options the server accepts.
 
+
+//  Cors can be enabled for multiple methods and not just the GET method. You can also enable it for methods like PATCH, POST, DELETE.etc. using the below code.
+//  app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']})); 
+
 app.use(cookieParser());
 
 app.use(express.urlencoded({ extended: true})); // Parse x-www-form-urlencoded request into req.body
@@ -68,8 +72,9 @@ Syntax: The basic syntax of these types of routes looks like this, the given fun
  */
 
 //                                                            Example 1.
+//  Note: instead of app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']})) above we have done line 20, here  We have passed cors as a parameter to the route as a middleware function .which in turn will make the checks to enable cors or not for a specific method.
 //  We don't need put cors(corsOptions) here explicitly because,we have already used : app.use(cors()); which will enabled cors in all apis automatically and any website can access these apis.
-// But if you want this  api to be accessed by some specific website then you can put cors inside api like this. 
+//  But if you want this  api to be accessed by some specific website then you can put cors inside api like this. 
 app.get("/api/products",cors(corsOPtions) ,(req, res) => {
   res.status(200);
   res.send(data);
