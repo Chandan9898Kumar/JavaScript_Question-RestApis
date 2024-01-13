@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
-import api from './Apis/Api'
+import api from "./Apis/Api";
 function App() {
   const [data, setData] = useState();
   const [image, setImage] = useState("");
-  const [result,setResult] = useState('')
-  const [deleteMessage,setDeleteSuccess] = useState('')
+  const [result, setResult] = useState("");
+  const [deleteMessage, setDeleteSuccess] = useState("");
 
   useEffect(() => {
-
     //   Calling get api
-      api.getallData().then((response) => {
+    api
+      .getallData()
+      .then((response) => {
         setData(response.data);
       })
       .catch((error) => {
@@ -19,44 +20,68 @@ function App() {
       });
 
     //     making post api call. here in body we are sending name:'GeekyAnt' so in backend we can access it through req.body.name
-      api.postingBody().then((response) => {
+    api
+      .postingBody()
+      .then((response) => {
         setResult(response.data); // o/p -  Welcome GeekyAnt,now you are can access data.
       })
       .catch((error) => {
         console.error(error);
       });
 
-
     //    To get image from api
     const getImage = () => {
-        api.getImage().then((res) => {
-          const base64 = btoa(
-            new Uint8Array(res.data).reduce(
-              (data, byte) => data + String.fromCharCode(byte),
-              ""
-            )
-          );
-          setImage(base64);
-        });
+      api.getImage().then((res) => {
+        const base64 = btoa(
+          new Uint8Array(res.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ""
+          )
+        );
+        setImage(base64);
+      });
     };
 
     getImage();
   }, []);
 
+  const deleteItem = async (params) => {
+    try {
+      const deleteResult = await api.deleteItem(params);
+      setDeleteSuccess(deleteResult.data.status);
+    } catch (error) {
+    } finally {
+      setDeleteSuccess("");
+    }
+  };
+
+  const addItems = async () => {
+    const token = String(Math.round(Date.now() / 1000)).slice(-2);
+    const payload = {
+      id: token,
+      name: `Product ${token}`,
+      description: `Description of Product ${token}`,
+      price: Date.now(),
+      image:"https://media.geeksforgeeks.org/wp-content/uploads/20230728155224/images.jfif",
+    };
+    const createdItemsSuccess = await api.createItem(payload);
+    console.log(createdItemsSuccess);
+  };
 
 
-const deleteItem= async(params)=>{
-  const deleteResult = await api.deleteItem(params)
-  setDeleteSuccess(deleteResult)
 
 
+const updateItem= async(params)=>{
+  const updatedItems = await api.updateItem(params)
+  console.log(updatedItems)
 }
-
-
 
   return (
     <div className="App">
-    <h1> {result && result}</h1>
+      <h1> {result && result}</h1>
+      <h2>
+        <button onClick={addItems}>Create Item</button>
+      </h2>
       {
         <div className="products">
           {data?.map((data) => {
@@ -66,7 +91,8 @@ const deleteItem= async(params)=>{
                 <h1>{data.name}</h1>
                 <p>{data.description}</p>
                 <div>
-                <button onClick={()=>deleteItem(data)}>Delete Item</button>
+                  <button onClick={() => deleteItem(data)}>Delete Item</button>
+                  <button onClick={()=>updateItem(data)}>Update Item</button>
                 </div>
               </div>
             );
@@ -76,6 +102,7 @@ const deleteItem= async(params)=>{
       <div>
         <img src={`data:;base64,${image}`} alt="Ref_Image" />
       </div>
+      <div>{deleteMessage && deleteMessage}</div>
     </div>
   );
 }

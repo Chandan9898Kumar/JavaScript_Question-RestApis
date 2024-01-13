@@ -26,11 +26,26 @@ const getImage=()=>{
 }
 
 
+const createItem=(payload)=>{
+    //  We can directly send payload also instead of sending it object. but then entire data which is in payload we can access it in backend by using request.body (no need of object destructuring)
+    return axios.post("http://localhost:5000/create",{payload},{headers: {'Content-Type': 'application/json'}})
+}
+
+
+
+const updateItem=(payload)=>{
+    return axios.patch("http://localhost:5000/update",{payload},{headers: {'Content-Type': 'application/json'}})
+}
+
+
+
 const api = {
   getallData,
   getImage,
   postingBody,
-  deleteItem
+  deleteItem,
+  createItem,
+  updateItem
 };
 
 export default api;

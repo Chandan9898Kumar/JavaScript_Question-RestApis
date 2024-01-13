@@ -4,11 +4,10 @@
 //   🔽Import express with require keyword and create an app by calling the express() function provided by the express framework.
 const express = require("express");
 const app = express();
-
+const cors = require("cors");
 app.use(express.json()); // The express.json() middleware is used to parses the incoming request object as a JSON object. The app.use() is the syntax to use any middleware.
 app.use(cors());
 
-const cors = require("cors");
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
 
@@ -48,6 +47,11 @@ app.get("/api/products", (req, res) => {
  * also there are lots of types of response in express like res.json() which is used to send JSON object, res.sendFile() which is used to send a file, etc.
  */
 
+
+
+
+
+
 //                                                         Example 2: Setting up one more get request route on the ‘/hello’ path.
 
 // Most of the things are the same as the previous example.
@@ -59,6 +63,11 @@ app.get("/hello", (req, res) => {
   res.set("Content-Type", "text/html");
   res.status(200).send("<h1>Hello  Learner!</h1>");
 });
+
+
+
+
+
 
 //                                                          Example 3: Now we will see how to send data to server.
 
@@ -85,6 +94,10 @@ app.post("/posting", (req, res) => {
 // Several times we need to transfer the resources from the server as per user request, there are majorly two methods to send files one is sending static files using middleware
 // and the other one is sending a single file on a route.
 
+
+
+
+
 //                                                               Method  1: Serving entire directory using middleware.
 
 // Express provides us a middleware express.static(), it accepts two arguments first one is the absolute root path of the directory whose files we are going to serve.
@@ -102,6 +115,10 @@ app.post("/posting", (req, res) => {
 const path = require("path");
 app.use("/static", express.static(path.join(__dirname, "Static file")));
 
+
+
+
+
 //                                                                 Method 2: Sending a single file on a route with the sendFile() function.
 
 // This function accepts an absolute URL of the file and whenever the route path is being accessed the server provides the file as an HTTP response.
@@ -116,6 +133,21 @@ app.use("/static", express.static(path.join(__dirname, "Static file")));
 
 app.get("/file", (req, res) => {
   res.sendFile(path.join(__dirname, "RefreeTwo.jpg"));
+});
+
+
+
+
+
+
+
+
+//                                                              Post api to create a new item
+
+app.post("/create", (req, res) => {
+  const { payload } = req.body;
+  data.push(payload);
+  res.status(200).send({ status: "Successfully created item." });
 });
 
 
@@ -140,6 +172,36 @@ app.delete("/delete", (request, response) => {
     response.status(400).send({ status: "Something went wrong..." });
   }
 });
+
+
+
+
+
+
+//                                                               Patch api to update item
+
+app.patch("/update", (request, response) => {
+  //  Here we are matching id of the product whose details we want to update.
+
+  const {payload: { id }} = request.body;
+  let findById = data.some((item) => item.id === id);
+  const random = Math.floor(Math.random() * 20 + 1);
+
+  if (findById) {
+    data.forEach((item, index) => {
+      if (item.id === id) {
+        item.name = `Product ${random}`;
+        item.description = `Description of Product ${random}`;
+        item.price = random * 10;
+      }
+    });
+    response.status(200).send({ status: "Successfully created item" });
+  } else {
+    response.status(404).send({ status: "Something went wrong" });
+  }
+});
+
+
 
 
 
