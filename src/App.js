@@ -123,6 +123,8 @@ export default App;
 1. In frontend
     npm start
 2. In backend
-    nodemon index.js
+    nodemon index.js 
  * 
  */
+
+//  Nodemon is a popular tool for the development of node.js-based applications. It simply restarts the node application whenever it notices changes in the file in your project’s working directory.

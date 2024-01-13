@@ -1,10 +1,13 @@
 ### Express :
 `is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications. Express provides a thin layer of fundamental web application features, without obscuring Node.js features.`
 
+`Express : It is basically a back-end web application framework for Node.js designed for building various web applications and APIs.`
+
 OR
 
 `Express.js is a small framework that works on top of Node.js web server functionality to simplify its APIs and add helpful new features. It makes it easier to organize your application’s functionality with middleware and routing. It adds helpful utilities to Node.js HTTP objects and facilitates the rendering of dynamic HTTP objects.`
 
+`Helps in Creating a robust API quick and easy with a plethora of HTTP utility methods and middleware at your disposal. Express adds a thin layer of fundamental web application features without interfering with the Node.js`
 
 ### Why Express(Web Framework) ?
 
