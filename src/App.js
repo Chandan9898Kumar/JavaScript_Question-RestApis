@@ -76,6 +76,13 @@ const updateItem= async(params)=>{
   console.log(updatedItems)
 }
 
+const GetItem=async(params)=>{
+  const getSpecificItem= await api.getSpecificItem(params)
+  //                    OR
+  const getSpecificItemData= await api.getSpecificItemByParams(params)
+
+}
+
   return (
     <div className="App">
       <h1> {result && result}</h1>
@@ -93,6 +100,7 @@ const updateItem= async(params)=>{
                 <div>
                   <button onClick={() => deleteItem(data)}>Delete Item</button>
                   <button onClick={()=>updateItem(data)}>Update Item</button>
+                  <button onClick={()=>GetItem(data)}>Get Item</button>
                 </div>
               </div>
             );

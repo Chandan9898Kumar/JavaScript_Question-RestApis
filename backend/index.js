@@ -113,6 +113,7 @@ app.post("/posting", (req, res) => {
 // We are providing that joined path to middleware so that it can start serving the files inside that directory on the given path.
 
 const path = require("path");
+const { request } = require("http");
 app.use("/static", express.static(path.join(__dirname, "Static file")));
 
 
@@ -197,10 +198,44 @@ app.patch("/update", (request, response) => {
     });
     response.status(200).send({ status: "Successfully created item" });
   } else {
-    response.status(404).send({ status: "Something went wrong" });
+    response.status(400).send({ status: "Something went wrong." });
   }
 });
 
+
+
+
+
+//                                              Note : we can access get api for specific item by 2 method.
+
+//  Method 1: by simply defining route and access the data through query.                                     
+
+//                          Call get api to access specific item by passing params in api in frontend side.and in backend side we can access it through query.
+
+app.get('/api/products/item',(request,response) => {
+  const {Id} = request.query
+  const fetchedProduct = data.filter((item)=>item.id == Id)
+  if(fetchedProduct){
+    response.status(200).json(fetchedProduct)
+  }else{
+    response.status(400).send({statusbar: 'Something went wrong.',})
+  }
+
+})
+
+
+//  Method 2: by  defining data in route for specific item. Note: when we define anything in route then we can access it through params ( request.params ) not query( request.query ).  
+
+app.get('/api/products/item/:Id',(request,response) => {
+  const {Id} = request.params
+  const fetchedProduct = data.filter((item)=>item.id == Id)
+  if(fetchedProduct){
+    response.status(200).json(fetchedProduct)
+  }else{
+    response.status(400).send({statusbar: 'Something went wrong.',})
+  }
+
+})
 
 
 

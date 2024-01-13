@@ -39,13 +39,35 @@ const updateItem=(payload)=>{
 
 
 
+//   Note :  Here we can get specific item details by two method.
+
+                                                        //   Method 1.  
+
+// By sending data in params. if we use other name than params then it will not work. it is inbuilt for get apis.
+//  Now to access this id in backend we have to use =  request.query
+
+//  Note: Here we have passed data in params and in backend we are accessing it through query  not params. 
+const getSpecificItem=(payload)=>{
+    return axios.get("http://localhost:5000/api/products/item",{params:{Id:payload.id}},{headers: {'Content-Type': 'application/json'}})
+}
+
+//                                                      Method 2.  By passing payload data in URL .
+
+const getSpecificItemByParams=(payload)=>{
+    return axios.get(`http://localhost:5000/api/products/item/${payload.id}`,{headers: {'Content-Type': 'application/json'}})
+}
+
+
+
 const api = {
   getallData,
   getImage,
   postingBody,
   deleteItem,
   createItem,
-  updateItem
+  updateItem,
+  getSpecificItem,
+  getSpecificItemByParams
 };
 
 export default api;
