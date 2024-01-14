@@ -9,19 +9,35 @@ const bodyParser = require("body-parser");
 // Creating express app 
 const app = express();
 
+
+
+//  Note : The app.use() function adds a new middleware to the app. Essentially, whenever a request hits your backend, Express will execute the functions you passed to app.use() in order.
+
 //  These are working as a MIDDLEWARES : 
-app.use(express.json()); // The express.json() middleware is used to parses the incoming request object as a JSON object. The app.use() is the syntax to use any middleware.
+app.use(express.json()); // The express.json() middleware is used to parses the incoming request object as a JSON object. It parses incoming JSON requests and puts the parsed data in req.body.The app.use() is the syntax to use any middleware.
 
 //  To enable CORS. do app.use(cors()); Now all requests received by the server will have cors enabled in them. 
 app.use(cors());         // Calling use(cors()) will enable the express server to respond to preflight requests.A preflight request is basically an OPTION request sent to the server before the actual request is sent, in order to ask which origin and which request options the server accepts.
 
-
 //  Cors can be enabled for multiple methods and not just the GET method. You can also enable it for methods like PATCH, POST, DELETE.etc. using the below code.
 //  app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']})); 
 
+
+// Express.js express.raw() Function : The express.raw() function is a built-in middleware function in Express. It parses incoming request payloads into a Buffer and is based on body-parser. 
+app.use(express.raw()); // Make a POST request with header set to ‘content-type’ – ‘application/octet-stream’ 
+
+
+
 app.use(cookieParser());
 
-app.use(express.urlencoded({ extended: true})); // Parse x-www-form-urlencoded request into req.body
+
+//  The express.urlencoded() function is a built-in middleware function in Express. It parses incoming requests with URL-encoded payloads and is based on a body parser.
+app.use(express.urlencoded({ extended: true})); // Parse x-www-form-urlencoded request into req.body. make a POST request with header set to ‘content-type: application/x-www-form-urlencoded’ and body {“name”:”Geeky”}.and do  console.log(req.body)
+
+
+app.use(express.text()); // It parses the incoming request payloads into a string and is based on body-parser.make a POST request with header set to ‘content-type: text/plain’ and body {“title”:”Geeky”}.
+
+
 
 //  Note :  bodyParser (in newer version of express it is not needed) instead use  app.use(express.json());.
 
@@ -34,10 +50,18 @@ app.use(express.urlencoded({ extended: true})); // Parse x-www-form-urlencoded r
 
 // express.bodyParser() needs to be told what type of content it is that it's parsing. 
 // Therefore, you need to make sure that when you're executing a POST request, that you're including the "Content-Type" header.
-//  Otherwise, bodyParser may not know what to do with the body of your POST request.
+// Otherwise, bodyParser may not know what to do with the body of your POST request.
+
+
+
+
+
 
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
+
+
+
 
 
 //  Enabling CORS for specific origins only.
@@ -136,6 +160,10 @@ app.post("/posting", (req, res) => {
   const { name } = req.body;
   res.send(`Welcome ${name},now you are can access data.`);
 });
+
+
+
+
 
 //                                                               Example 4:   Sending Files from Server
 //  Now we will see how to send files from the server.
@@ -254,7 +282,7 @@ app.patch("/update", (request, response) => {
 
 
 
-//                                              Note : we can access get api for specific item by 2 method.
+//                                              Note : we can access data of a particular item with get api by passing unique values  to get api.we have 2 method.
 
 //  Method 1: by simply defining route and access the data through query.                                     
 
@@ -289,6 +317,17 @@ app.get('/api/products/item/:Id',cors(),(request,response) => {
 
 
 
+// when you want to create a new router object in our program to handle requests. We can do it by using : express.Router() Function. It create a new router object.
+
+// Single routing
+const router = express.Router();
+router.get('/', function (req, res, next) {
+  console.log("Router Working");
+  res.end();
+})
+
+app.use(router);
+
 
 
 
@@ -308,12 +347,6 @@ app.listen(PORT, (error) => {
 //  Step to run the application: Now as we have created a server we can successfully start running it to see it’s working,
 //  write this command in your terminal to start the express server.  -:  node index.js OR nodemon index.js
 
-//                                                  Notes
-
-//  The express.json() function is a built-in middleware function in Express. It parses incoming requests with JSON payloads and is based on body-parser.
-// Syntax:
-// express.json( [options] )
-// Parameters: The options parameter has various properties like inflate, limit, type, etc.
 
 
 //                                              The word CORS stands for “Cross-Origin Resource Sharing”. 
@@ -335,3 +368,47 @@ app.listen(PORT, (error) => {
 // If you make a request to your app, you will notice a new header being returned:
 // Access-Control-Allow-Origin: *
 // The Access-Control-Allow-Origin header determines which origins are allowed to access server resources over CORS (the * wildcard allows access from any origin).
+
+
+
+
+
+
+//                                               Point to remember about express.json() and express.urlencoded()
+
+/**
+ *What is Middleware? It is those methods/functions/operations that are called BETWEEN processing the Request and sending the Response in your application method.
+
+When talking about express.json() and express.urlencoded() think specifically about POST requests (i.e. the .post request object) and PUT Requests (i.e. the .put request object)
+
+You DO NOT NEED express.json() and express.urlencoded() for GET Requests or DELETE Requests.
+
+You NEED express.json() and express.urlencoded() for POST and PUT requests, because in both these requests you are sending data (in the form of some data object) to the server and you are asking the server to accept or store that data (object), which is enclosed in the body (i.e. req.body) of that (POST or PUT) Request
+
+Express provides you with middleware to deal with the (incoming) data (object) in the body of the request.
+
+a. express.json() is a method inbuilt in express to recognize the incoming Request Object as a JSON Object. This method is called as a middleware in your application using the code: app.use(express.json());
+
+b. express.urlencoded() is a method inbuilt in express to recognize the incoming Request Object as strings or arrays. This method is called as a middleware in your application using the code: app.use(express.urlencoded()); 
+ 
+* 
+                                                  Examples of these builtin ExpressJS middlewares are
+1. express.json() :  is a built express middleware that convert request body to JSON.
+2. express.urlencoded : just like express.json() converts request body to JSON, it also carries out some other functionalities like: converting form-data to JSON etc.
+ * 
+ *
+ */
+
+
+
+
+
+//                                                Cookies
+
+// A cookie is a piece of data that is sent to the client-side with a request and is stored on the client-side itself by the Web Browser the user is currently using. With the help of cookies –
+// It is easy for websites to remember the user’s information
+// It is easy to capture the user’s browsing history
+// It is also useful in storing the user’s sessions
+
+
+

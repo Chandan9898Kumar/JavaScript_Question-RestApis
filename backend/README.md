@@ -43,6 +43,8 @@ $ npm install express.
 Step 3: To install Express temporarily and not add it to the dependencies list:
 $ npm install express --no-save
 
-Step 4.  `Install node : npm i express nodemon`
+Step 4.  `Install node : npm i express nodemon` 
 
 Step 5 . `Install cors : npm install express cors --save` 
+
+Step 6.   `npm install cookie-parser`
