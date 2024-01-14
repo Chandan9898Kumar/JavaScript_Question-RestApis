@@ -12,6 +12,8 @@ const app = express();
 
 
 //  Note : The app.use() function adds a new middleware to the app. Essentially, whenever a request hits your backend, Express will execute the functions you passed to app.use() in order.
+//  It is mostly used to set up middleware for your application. 
+
 
 //  These are working as a MIDDLEWARES : 
 app.use(express.json()); // The express.json() middleware is used to parses the incoming request object as a JSON object. It parses incoming JSON requests and puts the parsed data in req.body.The app.use() is the syntax to use any middleware.
@@ -101,8 +103,15 @@ Syntax: The basic syntax of these types of routes looks like this, the given fun
 //  But if you want this  api to be accessed by some specific website then you can put cors inside api like this. 
 app.get("/api/products",cors(corsOPtions) ,(req, res) => {
   res.status(200);
-  res.send(data);
-  // res.json(data)
+  res.send(data);   // Send a response of various types.
+  // res.json(data) // Send a JSON response.
+  res.end()         // End the response process
+
+//  Note :
+// 1.  Here req is request, when the client/user call api/make request to the server and pass data in  apis url then this req will be called and have those data in req.body.
+// 2.  Here res is response when the client/user call api/make request to the server after that server(backend) send data to client/user as a response. 
+
+
 });
 
 /**
@@ -162,6 +171,14 @@ app.post("/posting", (req, res) => {
 });
 
 
+// The app.set() function is used to assign the setting name to value. You may store any value that you want, but certain names can be used to configure the behavior of the server. 
+app.set('title', 'Please confirm your presence');
+//  we can set any values this application and can send this client/user like below we did.
+
+app.post("/posting", (req, res) => {
+  const { name } = req.body;
+  res.send(`Welcome ${name},now you are can access data.${app.get('title')}`);
+});
 
 
 
@@ -218,6 +235,8 @@ app.get("/file", (req, res) => {
 
 
 
+// The app.METHOD() function is used to route an HTTP request, where METHOD is the HTTP method of the request, such as GET, PUT, POST, and so on, in lowercase.
+// Thus, the actual methods are app.get(), app.post(), app.patch(),app.delete() and so on. 
 
 //                                                              Post api to create a new item
 
@@ -344,8 +363,21 @@ app.listen(PORT, (error) => {
   }
 });
 
+// The app.listen() function is used to bind and listen to the connections on the specified host and port. This method is identical to Node’s http.Server.listen() method.
+
+
+
+
+
+
+
 //  Step to run the application: Now as we have created a server we can successfully start running it to see it’s working,
 //  write this command in your terminal to start the express server.  -:  node index.js OR nodemon index.js
+
+
+
+
+
 
 
 
