@@ -48,3 +48,36 @@ Step 4.  `Install node : npm i express nodemon`
 Step 5 . `Install cors : npm install express cors --save` 
 
 Step 6.   `npm install cookie-parser`
+
+
+
+
+
+
+
+
+
+
+
+
+### Note :                                                  Cache Control
+
+`Cache-control is an HTTP header used to specify browser caching policies in both client requests and server responses. Policies include how a resource is cached, where it’s cached and its maximum age before expiring (i.e., time to live).`
+
+1. `Cache-Control: Max-Age`
+The max-age request directive defines, in seconds, the amount of time it takes for a cached copy of a resource to expire. After expiring, a browser must refresh its version of the resource by sending another request to a server.
+
+For example, cache-control: max-age=120 means that the returned resource is valid for 120 seconds, after which the browser has to request a newer version.
+
+2. `Cache-Control: No-Cache`
+The no-cache directive means that a browser may cache a response, but must first submit a validation request to an origin server.
+
+3. `Cache-Control: No-Store`
+The no-store directive means browsers aren’t allowed to cache a response and must pull it from the server each time it’s requested. This setting is usually used for sensitive data, such as personal banking details.
+
+4. `Cache-Control: Public`
+The public response directive indicates that a resource can be cached by any cache.
+
+5. `Cache-Control: Private`
+The private response directive indicates that a resource is user specific—it can still be cached, but only on a client device. For example, a web page response marked as private can be cached by a desktop browser, but not a content delivery network (CDN).
+
