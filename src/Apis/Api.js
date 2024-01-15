@@ -39,6 +39,18 @@ const updateItem=(payload)=>{
 
 
 
+// Note : Below update api method is good because it when see your network tab then in url it will which item is being updated with its ID or name whatever you want show you can pass.
+
+
+const updateItemTwo=(payload)=>{
+    return axios.patch(`http://localhost:5000/update?id=${payload.id}`,{payload},{headers: {'Content-Type': 'application/json'}})
+}
+
+
+
+
+
+
 //   Note :  Here we can get specific item details by two method.
 
                                                         //   Method 1.  
@@ -46,10 +58,18 @@ const updateItem=(payload)=>{
 // By sending data in params. if we use other name than params then it will not work. it is inbuilt for get apis.
 //  Now to access this id in backend we have to use =  request.query
 
-//  Note: Here we have passed data in params and in backend we are accessing it through query  not params. 
+//  Note: Here we have passed data in params and in backend we are accessing it through request.query  not request.params. 
 const getSpecificItem=(payload)=>{
     return axios.get("http://localhost:5000/api/products/item",{params:{Id:payload.id}},{headers: {'Content-Type': 'application/json'}})
 }
+
+//  Below method is better then above because it structured with with query parameters. it help to understand which item is being called.this is best-way to access the data by request.query
+const getSpecificItemByQuery=(payload)=>{
+    //  Note : This type of structure is called query routing where we used ?. In backend we just have make api till there app.get('/api/product') and rest will handled query itself.
+    return axios.get(`http://localhost:5000/api/product?name=${payload.name}&Id=${payload.id}`,{headers:{'Content-Type': 'application/json',"Authorization":"***"}})
+}
+
+
 
 //                                                      Method 2.  By passing payload data in URL .
 
@@ -57,10 +77,7 @@ const getSpecificItemByParams=(payload)=>{
     return axios.get(`http://localhost:5000/api/products/item/${payload.id}`,{headers: {'Content-Type': 'application/json'}})
 }
 
-const getSpecificItemByQuery=(payload)=>{
-    //  Note : This type of structure is called query routing where we used ?. In backend we just have make api till there app.get('/api/product') and rest will handled query itself.
-    return axios.get(`http://localhost:5000/api/product?name=${payload.name}&Id=${payload.id}`,{headers:{'Content-Type': 'application/json',"Authorization":"***"}})
-}
+
 
 const api = {
   getallData,
@@ -69,6 +86,7 @@ const api = {
   deleteItem,
   createItem,
   updateItem,
+  updateItemTwo,
   getSpecificItem,
   getSpecificItemByParams,
   getSpecificItemByQuery

@@ -279,6 +279,8 @@ app.delete("/delete", (request, response) => {
 app.patch("/update", (request, response) => {
   //  Here we are matching id of the product whose details we want to update.
 
+  // const {id} = request.query      OR Below
+
   const {payload: { id }} = request.body;
   let findById = data.some((item) => item.id === id);
   const random = Math.floor(Math.random() * 20 + 1);
@@ -337,7 +339,7 @@ app.get('/api/products/item',(request,response) => {
 app.get('/api/product',(request,response) => {
   const {Id,name} = request.query
   
-  console.log(request.url) // /product/name=mobile&ID=1    . when open your network in browser the api with this type of url will be shown. 
+  console.log(request.url,request.originalUrl) // /product/name=mobile&Id=1    . when open your network in browser the api with this type of url will be shown. 
 
   const fetchedProduct = data.filter((item)=>item.id == Id)
   if(fetchedProduct){
