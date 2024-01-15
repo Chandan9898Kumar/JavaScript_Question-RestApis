@@ -341,6 +341,10 @@ app.get('/api/product',(request,response) => {
   
   console.log(request.url,request.originalUrl) // /product/name=mobile&Id=1    . when open your network in browser the api with this type of url will be shown. 
 
+  console.log(req.route);                    //  The req.route property contains the currently-matched route which is a string. 
+  
+  console.log(req.secure);                    //  The req.secure property is a Boolean property that is true if a TLS connection is established else returns false. 
+  
   const fetchedProduct = data.filter((item)=>item.id == Id)
   if(fetchedProduct){
     response.status(200).send(fetchedProduct)
@@ -476,3 +480,24 @@ b. express.urlencoded() is a method inbuilt in express to recognize the incoming
 
 
 
+//                                              Express.js req.route Property
+
+// The req.route property contains the currently-matched route which is a string. 
+
+// Syntax:
+// req.route
+
+// Parameter: No parameters. 
+
+
+
+
+
+//                                              Express.js req.secure Property
+
+// The req.secure property is a Boolean property that is true if a TLS connection is established else returns false. 
+
+// Syntax:
+// req.secure
+
+// Return Value: It returns a Boolean value either True or False. 
