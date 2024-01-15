@@ -57,7 +57,10 @@ const getSpecificItemByParams=(payload)=>{
     return axios.get(`http://localhost:5000/api/products/item/${payload.id}`,{headers: {'Content-Type': 'application/json'}})
 }
 
-
+const getSpecificItemByQuery=(payload)=>{
+    //  Note : This type of structure is called query routing where we used ?. In backend we just have make api till there app.get('/api/product') and rest will handled query itself.
+    return axios.get(`http://localhost:5000/api/product?name=${payload.name}&Id=${payload.id}`,{headers:{'Content-Type': 'application/json',"Authorization":"***"}})
+}
 
 const api = {
   getallData,
@@ -67,7 +70,8 @@ const api = {
   createItem,
   updateItem,
   getSpecificItem,
-  getSpecificItemByParams
+  getSpecificItemByParams,
+  getSpecificItemByQuery
 };
 
 export default api;

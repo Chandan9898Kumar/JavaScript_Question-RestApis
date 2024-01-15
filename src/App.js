@@ -80,6 +80,8 @@ const GetItem=async(params)=>{
   const getSpecificItem= await api.getSpecificItem(params)
   //                    OR
   const getSpecificItemData= await api.getSpecificItemByParams(params)
+//                      OR
+  const  getSpecificItemWithQuery = await api.getSpecificItemByQuery(params)
 
 }
 

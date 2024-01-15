@@ -298,7 +298,7 @@ app.patch("/update", (request, response) => {
 });
 
 
-
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 //                                              Note : we can access data of a particular item with get api by passing unique values  to get api.we have 2 method.
@@ -309,6 +309,36 @@ app.patch("/update", (request, response) => {
 
 app.get('/api/products/item',(request,response) => {
   const {Id} = request.query
+  const fetchedProduct = data.filter((item)=>item.id == Id)
+  if(fetchedProduct){
+    response.status(200).send(fetchedProduct)
+  }else{
+    response.status(400).json({statusbar: 'Something went wrong.',})
+  }
+
+})
+
+//                                            Below method is good for accessing data from request.query
+
+
+//                                        Express.js req.query Property
+
+// The req.query property is an object containing the property for each query string parameter in the route. 
+
+// Syntax:
+// req.query
+
+//  Note: In frontend we are calling like this- 
+// axios.get(`http://localhost:5000/api/product?name=${payload.name}&Id=${payload.id}`,{headers:{'Content-Type': 'application/json',"Authorization":"***"}})
+
+
+
+//  Here in backend we just have to write till here -  /api/product.  in frontend we have used ? so after this query it will take automatically the rest of url parts.
+app.get('/api/product',(request,response) => {
+  const {Id,name} = request.query
+  
+  console.log(request.url) // /product/name=mobile&ID=1    . when open your network in browser the api with this type of url will be shown. 
+
   const fetchedProduct = data.filter((item)=>item.id == Id)
   if(fetchedProduct){
     response.status(200).send(fetchedProduct)
@@ -333,7 +363,7 @@ app.get('/api/products/item/:Id',cors(),(request,response) => {
 
 })
 
-
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 // when you want to create a new router object in our program to handle requests. We can do it by using : express.Router() Function. It create a new router object.
