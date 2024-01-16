@@ -133,7 +133,7 @@ export default App;
 1. In frontend
     npm start
 2. In backend
-    nodemon index.js 
+    nodemon index.js   oR node index.js
  * 
  */
 
