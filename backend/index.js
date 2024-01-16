@@ -5,7 +5,7 @@
 const express = require("express");
 const cors = require("cors"); // CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
 const bodyParser = require("body-parser");
-
+const cookieParser = require('cookie-parser');
 // Creating express app 
 const app = express();
 
@@ -165,9 +165,11 @@ app.get("/hello", (req, res) => {
 // const {name}, which is the syntax in ES6 to extract the given property/es from the object. Here we are extracting the name property which was sent by the user with this request object.
 // After that, we are simply sending a response to indicate that we have successfully received data. If this `${} ` is looking weird to you then let me tell you that it is the syntax in ES6 to generate strings with javascript expression in ES6. We can inject any javascript expression inside ${}.
 
+
+
 app.post("/posting", (req, res) => {
   const { name } = req.body;
-  res.send(`Welcome ${name},now you are can access data.`);
+  res.send(`Welcome ${name},now you can access data.`);
 });
 
 
@@ -175,9 +177,9 @@ app.post("/posting", (req, res) => {
 app.set('title', 'Please confirm your presence');
 //  we can set any values this application and can send this client/user like below we did.
 
-app.post("/posting", (req, res) => {
+app.post("/postingTwo", (req, res) => {
   const { name } = req.body;
-  res.send(`Welcome ${name},now you are can access data.${app.get('title')}`);
+  res.send(`${name},${app.get('title')}`);
 });
 
 
@@ -253,13 +255,13 @@ app.post("/create", (req, res) => {
 
 //                                                              Delete Api
 
-app.delete("/delete", (request, response) => {
+app.delete("/delete/:id", (request, response) => {
   const { id } = request.body;
 
-  const condition = data.some((item) => item.id === id);
+  const condition = data.some((item) => item.id == id);
   if (condition) {
     data.forEach((item, index) => {
-      if (item.id === id) {
+      if (item.id == id) {
         data.splice(index, 1);
       }
     });
@@ -282,12 +284,12 @@ app.patch("/update", (request, response) => {
   // const {id} = request.query      OR Below
 
   const {payload: { id }} = request.body;
-  let findById = data.some((item) => item.id === id);
+  let findById = data.some((item) => item.id == id);
   const random = Math.floor(Math.random() * 20 + 1);
 
   if (findById) {
     data.forEach((item, index) => {
-      if (item.id === id) {
+      if (item.id == id) {
         item.name = `Product ${random}`;
         item.description = `Description of Product ${random}`;
         item.price = random * 10;
@@ -339,11 +341,11 @@ app.get('/api/products/item',(request,response) => {
 app.get('/api/product',(request,response) => {
   const {Id,name} = request.query
   
-  console.log(request.url,request.originalUrl) // /product/name=mobile&Id=1    . when open your network in browser the api with this type of url will be shown. 
+  // console.log(request.url,request.originalUrl) // /product/name=mobile&Id=1    . when open your network in browser the api with this type of url will be shown. 
 
-  console.log(req.route);                    //  The req.route property contains the currently-matched route which is a string. 
+  // console.log(request.route);                    //  The req.route property contains the currently-matched route which is a string. 
   
-  console.log(req.secure);                    //  The req.secure property is a Boolean property that is true if a TLS connection is established else returns false. 
+  // console.log(request.secure);                    //  The req.secure property is a Boolean property that is true if a TLS connection is established else returns false. 
   
   const fetchedProduct = data.filter((item)=>item.id == Id)
   if(fetchedProduct){
@@ -358,7 +360,7 @@ app.get('/api/product',(request,response) => {
 //  Method 2: by  defining data in route for specific item. Note: when we define anything in route then we can access it through params ( request.params ) not query( request.query ).  
 
 //  Enable CORS(cross-origin resource sharing) for a Single Route.  CORS is basically a set of headers sent by the server to the browser.
-app.get('/api/products/item/:Id',cors(),(request,response) => {
+app.get('/api/products/item/:Id',cors(corsOPtions),(request,response) => {
   const {Id} = request.params
   const fetchedProduct = data.filter((item)=>item.id == Id)
   if(fetchedProduct){

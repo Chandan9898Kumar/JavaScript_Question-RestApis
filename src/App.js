@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import "./App.css";
 import api from "./Apis/Api";
 function App() {
@@ -10,24 +9,10 @@ function App() {
 
   useEffect(() => {
     //   Calling get api
-    api
-      .getallData()
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    //     making post api call. here in body we are sending name:'GeekyAnt' so in backend we can access it through req.body.name
-    api
-      .postingBody()
-      .then((response) => {
-        setResult(response.data); // o/p -  Welcome GeekyAnt,now you are can access data.
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    getProductDetails()
+    
+    //     making post api call. 
+    PostingContent()
 
     //    To get image from api
     const getImage = () => {
@@ -45,10 +30,31 @@ function App() {
     getImage();
   }, []);
 
+
+  const getProductDetails=()=>{
+    api
+      .getallData()
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  const PostingContent=async()=>{
+    //  making post api call. here in body we are sending name:'GeekyAnt' so in backend we can access it through req.body.name
+    let response = await api.postingBody({name:'GeekyAnt'})
+    let responseTwo = await api.postingBodyTwo({name:'Sir'})
+
+    setResult(response.data +  responseTwo.data);
+  }
+
   const deleteItem = async (params) => {
     try {
       const deleteResult = await api.deleteItem(params);
       setDeleteSuccess(deleteResult.data.status);
+      getProductDetails()
     } catch (error) {
     } finally {
       setDeleteSuccess("");
@@ -65,6 +71,7 @@ function App() {
       image:"https://media.geeksforgeeks.org/wp-content/uploads/20230728155224/images.jfif",
     };
     const createdItemsSuccess = await api.createItem(payload);
+    getProductDetails()
     console.log(createdItemsSuccess);
   };
 
@@ -72,8 +79,8 @@ function App() {
 
 
 const updateItem= async(params)=>{
-  const updatedItems = await api.updateItem(params)
-  console.log(updatedItems)
+  const updatedItems = await api.updateItemTwo(params)
+  getProductDetails()
 }
 
 const GetItem=async(params)=>{
@@ -99,10 +106,11 @@ const GetItem=async(params)=>{
                 <img className="img" src={data.image} alt="img" />
                 <h1>{data.name}</h1>
                 <p>{data.description}</p>
+                <p>Rs. {"  "}{data.price}</p>
                 <div>
-                  <button onClick={() => deleteItem(data)}>Delete Item</button>
-                  <button onClick={()=>updateItem(data)}>Update Item</button>
-                  <button onClick={()=>GetItem(data)}>Get Item</button>
+                  <button onClick={() => deleteItem(data)} style={{marginLeft:'5px',marginRight:'5px'}}>Delete Item</button>
+                  <button onClick={()=>updateItem(data)} style={{marginLeft:'5px',marginRight:'5px'}}>Update Item</button>
+                  <button onClick={()=>GetItem(data)} style={{marginLeft:'5px',marginRight:'5px'}}>Get Item</button>
                 </div>
               </div>
             );
@@ -110,7 +118,7 @@ const GetItem=async(params)=>{
         </div>
       }
       <div>
-        <img src={`data:;base64,${image}`} alt="Ref_Image" />
+        <img src={`data:;base64,${image}`} alt="Ref_Image" height='300px'  loading="eager"/>
       </div>
       <div>{deleteMessage && deleteMessage}</div>
     </div>
