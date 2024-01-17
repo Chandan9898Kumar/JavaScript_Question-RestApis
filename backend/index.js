@@ -103,7 +103,7 @@ Syntax: The basic syntax of these types of routes looks like this, the given fun
 //  But if you want this  api to be accessed by some specific website then you can put cors inside api like this. 
 app.get("/api/products",cors(corsOPtions) ,(req, res) => {
   res.status(200);
-  res.send(data);   // Send a response of various types.
+  res.send(data);   // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
   // res.json(data) // Send a JSON response.
   res.end()         // End the response process
 

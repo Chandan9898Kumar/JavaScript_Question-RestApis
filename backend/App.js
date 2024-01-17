@@ -629,3 +629,345 @@ Parameter: No parameters.
 Returns: String. 
  * 
  */
+
+
+
+
+
+
+/**                                         Express.js res.app Property
+ * 
+ * 
+ The res.app property holds a reference to the instance of the Express application that is using the middleware. 
+
+Syntax:
+res.app
+
+Parameter: No parameters. 
+Return Value: Object 
+
+
+example :
+
+app.get('/getApp', function (req, res) {
+
+    // Holds the reference to the instance of the Express application
+    console.log(res.app);
+    res.end();
+});
+
+ * 
+ */
+
+
+
+/**                                 Express.js res.headersSent Property
+ * 
+ * 
+The res.headersSent property is a boolean property that indicates if the app sent HTTP headers for the response. 
+
+Syntax:
+res.headersSent
+
+Parameter: No parameters. 
+Return Value: This property returns a Boolean value either True or False. 
+ * 
+
+Example:
+
+app.get('/', function (req, res) {
+    res.send('OK');
+    // After res.send()
+    console.log(res.headersSent);
+});
+
+ */
+
+
+
+
+
+/**                                     Express.js res.locals Property
+ * 
+ * 
+ * The res.locals property is an object that contains response local variables scoped to the request and because of this, it is only available to the view(s) rendered during that request/response cycle (if any). 
+
+Syntax:
+res.locals
+
+Parameter: No parameters. 
+Return Value: Object 
+ * 
+
+Example:
+
+app.get('/', function (req, res) {
+ 
+    // Sending multiples locals
+    res.locals.name = 'Gourav';
+    res.locals.age = 13;
+    res.locals.gender = 'Male'
+ 
+    console.log(res.locals);
+    res.end();
+});
+
+ */
+
+
+
+
+/**                                     Express.js res.append() Function
+ * 
+ * 
+The res.append() function appends the specified value to the HTTP response header field and if the header is not already set then it creates the header with the specified value. 
+
+Syntax: 
+res.append(field [, value])
+
+Parameter: The field parameter describes the name of the field that need to be appended and the value parameter can be a string or an array.
+Returns: It returns an Object.
+ * 
+
+Example:
+
+// With middleware
+app.use('/', function (req, res, next) {
+    res.append('Warning', '201 Its a Warning');
+    next();
+})
+ 
+app.get('/', function (req, res) {
+    console.log(res.get('Warning'));
+    res.send();
+});
+
+
+ */
+
+
+
+
+/**                                     Express.js res.attachment() Function
+ * 
+ * 
+ The res.attachment "Sets the HTTP response Content-Disposition header field to “attachment”."
+ This essentially says, 'Hey, this file should be viewed as an attachment, not a webpage.'
+ * 
+ * 
+ * 
+ 
+The res.attachment() function is used to set the HTTP response Content-Disposition header field to ‘attachment’.
+If the name of the file is given as a filename, then it sets the Content-Type based on the extension name through the res.type() function and finally sets the Content-Disposition ‘filename = ‘ parameter.
+
+Syntax: 
+res.attachment( [filename] )
+
+Parameter: The filename parameter describes the name of the file.
+Return Value: It returns an Object.
+
+
+
+Example:
+
+//   Place any file in the root directory of the project which can be attached, like here we have used Hello.txt.
+
+app.get('/', function (req, res) {
+    res.attachment('Hello.txt');
+    res.send('hola')
+    console.log(res.get('Content-Disposition'));
+});
+
+ */
+
+
+
+
+/**                                            Express res.cookie() Function
+ * 
+
+The res.cookie() function is used to set the cookie name to value. The value parameter may be a string or object converted to JSON.
+
+Syntax:
+res.cookie(name, value [, options])
+Parameters: The name parameter holds the name of the cookie and the value parameter is the value assigned to the cookie name. The options parameter contains various properties like encode, expires, domain, etc. 
+
+Return Value: It returns an Object. 
+ 
+
+
+Example:
+
+app.use('/', function (req, res, next) {
+    res.cookie('title', 'GeeksforGeeks');
+    res.send("Cookie Set");
+    next();
+})
+
+
+we see this cookie in network tab in response headers. it will be in Set-Cookie
+
+
+ */
+
+
+
+
+/**                        Express.js res.clearCookie() Function
+ * 
+The res.clearCookie() function is used to clear the cookie specified by name. This function is called for clearing the cookies which as already been set. For example, if a user cookie is set, then it can be cleared using this function. 
+
+Syntax:
+res.clearCookie(name, [ options ])
+Parameters:
+
+Name: It is the name of the cookie which is to be cleared. Like in the following example, we have cleared the title cookie.
+Options: It is an object that can have various properties like domain, encode, path, secure, etc.
+
+
+Example:
+
+app.get('/', function (req, res) {
+ 
+    // Setting cookie (key-value)
+    res.cookie('title', 'geeksforgeeks');
+ 
+    // Clearing the cookie
+    res.clearCookie('title');
+ 
+    console.log("Cookie cleared");
+});
+
+
+
+ */
+
+
+
+
+
+
+/**                                 Express.js res.download() Function
+ * 
+ * 
+ * The res.download() function transfers the file at the path as an ‘attachment’. Typically, browsers will prompt the user to download.
+
+Syntax:
+
+res.download(path [, filename] [, options] [, fn])
+Parameters: The filename is the name of the file which is to be downloaded as an attachment and fn is a callback function. 
+
+Return Value: It does not return anything. 
+ * 
+ 
+Example:
+
+Place any file in the root directory of the project which can be downloaded, like here we have used Hello.txt. 
+
+app.get('/', function (req, res) {
+    res.download('hello.txt', function (error) {
+        console.log("Error : ", error)
+    });
+});
+
+
+
+
+ */
+
+
+
+
+
+/**                            Express res.send() Function
+ 
+The res.send() function sends the HTTP response. The body parameter can be a String or a Buffer object or an object or an Array.
+
+Syntax: 
+
+res.send( [body] )
+Parameter: This function accepts a single parameter body that describes the body to be sent in the response.
+
+Returns: It returns an Object.
+
+
+
+
+Note:   
+1. res.send() will check the structure of your output and set header information accordingly.
+
+app.get('/',(req,res)=>{
+       res.send('<b>hello</b>');
+});
+
+
+In Response headers:
+content type: text/html
+
+
+
+
+2.
+  app.get('/',(req,res)=>{
+         res.send({msg:'hello'});
+});
+
+
+In Response headers:
+content type: application/json
+
+
+
+3. res.send() will set "ETag" attribute in the response header while res.end() will NOT set this header attribute
+
+Why is this tag important?
+The ETag HTTP response header is an identifier for a specific version of a resource. It allows caches to be more efficient, and saves bandwidth, 
+as a web server does not need to send a full response if the content has not changed.
+
+
+
+The body parameter can be a Buffer object, a String, an object, or an Array. For example:
+
+res.send(new Buffer('whoop'));
+res.send({ some: 'json' });
+res.send('<p>some html</p>');
+res.status(404).send('Sorry, we cannot find that!');
+res.status(500).send({ error: 'something blew up' });
+
+
+ */
+
+
+
+
+
+/**                                 Express.js res.end() Function
+
+The res.end() function is used to end the response process. This method actually comes from the Node core, specifically the response.end() method of HTTP.ServerResponse. Use to quickly end the response without any data.
+
+Syntax: 
+
+res.end([data] [, encoding])
+Parameters: The default encoding is ‘utf8’ and the data parameter is basically the data with which the user wants to end the response.
+
+Return Value: It returns an Object.
+
+
+                                        Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
+
+Example :
+
+app.get('/', function (req, res) {
+    res.end();
+});
+
+
+
+
+with res.end() ,you can only respond with text and it will not set "Content-Type"
+
+ app.get('/',(req,res)=>{
+           res.end('<b>hello</b>');
+      }); 
+
+ */
