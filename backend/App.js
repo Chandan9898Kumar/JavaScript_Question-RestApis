@@ -426,227 +426,6 @@ Return Value: Since it’s an event so it doesn’t have any return value.
 
 
 
-//                                          Express.js req.app Property
-
-
-// The req.app property holds the reference to the instance of the Express application that is using the middleware. 
-
-// Syntax:
-// req.app
-
-// Parameter: No parameters. 
-
-
-
-
-//                                          Express.js req.baseUrl Property
-
-//   The req.baseUrl property is the URL path on which a router instance was mounted. The req.baseUrl property is similar to the mount path property of the app object, except app.mountpath returns the matched path pattern(s). 
-
-// Syntax:
-// req.baseUrl
-
-// Parameter: No parameters. 
-
-
-
-
-
-
-
-/**                                         Express req.body Property
- * 
-The req.body property contains key-value pairs of data submitted in the request body. By default, it is undefined and is populated when you use a middleware called body-parsing such as express.urlencoded() or express.json(). 
-Syntax:
-
-req.body
-Parameter: No parameters. 
- * 
- * 
- */
-
-
-
-/**                                         Express.js req.cookies Property
- * 
- * The req.cookies property is used when the user is using cookie-parser middleware. This property is an object that contains cookies sent by the request. 
-
-Syntax:
-req.cookies
-
-Parameter: No parameters. 
- * 
- */
-
-
-
-
-
-
-/**                                         Express.js req.fresh Property
- * 
- * The req.fresh property returns true if the response is still ‘fresh’ in the client’s cache else it will return false. 
-
-Syntax:
-req.fresh
-
-Parameter: No parameter 
-
-Return Value: True or False 
- * 
- */
-
-
-
-
-/**                                        Express.js req.fresh Property
- * 
- * The req.fresh property returns true if the response is still ‘fresh’ in the client’s cache else it will return false. 
-
-Syntax:
-req.fresh
-
-Parameter: No parameter 
-
-Return Value: True or False 
- * 
- */
-
-
-
-
-/**                                     Express.js req.accepts() Function
- * 
- * The req.accepts() function checks if the specified content types are acceptable on the basis of the requests Accept HTTP header field. 
- * The method returns the best match, else it returns false if none of the specified content types is acceptable. 
-
-Syntax:
-req.accepts( types )
-Parameter: The type value is a single MIME type string. 
-
-Return Value: String 
-
- */
-
-
-
-
-/**                                   Express req.params Property
- * 
-The req.params property is an object containing properties mapped to the named route “parameters”.
-For example, if you have the route /student/:id, then the “id” property is available as req.params.id. This object defaults to {}. 
-
-Syntax:
-req.params
-
-Parameter: No parameters. 
-
-Return Value: Object 
- * 
-
-Example :
-
-const express = require('express');
-const e = require('express');
-const app = express();
-const PORT = 3000;
- 
-const student = express.Router();
-app.use('/student', student);
- 
-student.get('/profile/:start/:end', function (req, res) {
-    console.log("Starting Page: ", req.params['start']);
-    console.log("Ending Page: ", req.params['end']);
-    res.send();
-})
- 
-app.listen(PORT, function (err) {
-    if (err) console.log(err);
-    console.log("Server listening on PORT", PORT);
-});
-
- */
-
-
-
-
-
-
-
-
-/**                                         Express.js req.ip Property
- * 
- * The req.ip property contains the remote IP address of the request. It is useful when the user wants the IP address of the incoming request made to the application. 
-
-Syntax:
-req.ip
-
-Parameter: No parameter. 
-
-Return Value: String 
- * 
- * 
- * Note : make a GET request with the header set to x-forwarded-for: 203.0.113.195, and in console.log(request.ip) you will see this.
- * 
- */
-
-
-
-/**                                         Express.js req.ips Property
-
-The req.ips property contains an array of IP addresses specified in the X-Forwarded-For request header. It returns an array of IP addresses. 
-
-Syntax:
-req.ips
-
-Parameter: No parameter. 
-
-Return Value: Array
- * 
- * 
- * 
- * Note :  make a GET request  with header set to x-forwarded-for: 203.0.113.195, 70.41.3.18, 150.172.238.178, 
-
-
- */
-
-
-
-
-
-
-/**                                       Express.js req.path Property
-
-The req.path property contains the path of the request URL. This property is widely used to get the path part of the incoming request URL. 
-
-Syntax:
-req.path
-
-Parameter: No parameters. 
-
-Return Value: String 
- *
- * 
- */
-
-
-
-
-
-/**                                         Express.js req.protocol Property
-
-The req.protocol property contains the request protocol string which is either HTTP or (for TLS requests) https. When the trust proxy setting does not evaluate to false, 
-this property will use the X-Forwarded-Proto header field value if it is present. 
-
-Syntax:
-req.protocol
-
-Parameter: No parameters. 
-
-Returns: String. 
- * 
- */
-
 
 
 
@@ -1172,6 +951,9 @@ app.get('/', function (req, res) {
 
 
 
+
+
+
 /**                                         Express.js res.location() Function 
 
 
@@ -1310,7 +1092,165 @@ app.get('/', function (req, res) {
 
 
 
+ */
 
+
+
+
+
+
+/**                         Express.js res.sendStatus() Function
+The res.sendStatus() function is used to set the response HTTP status code to statusCode and send its string representation as the response body.
+
+Syntax: 
+res.sendStatus( statusCode )
+
+Parameter: The statusCode parameter describes the HTTP status code.
+Returns: It returns an Object.
+
+
+Example:
+
+app.get('/', function (req, res) {
+ 
+    // Equivalent to res.status(200).send('OK')
+        res.sendStatus(200);
+});
+
+
+ 
+ */
+
+
+
+
+
+
+
+
+/**                                     Express res.status() Function 
+
+The res.status() function sets the HTTP status for the response. It is a chainable alias of Node’s response.statusCode. 
+
+Syntax:
+res.status( code )
+
+Parameter: This function accepts a single parameter code that holds the HTTP status code. 
+
+Return Value: It returns an Object. 
+
+
+Example:
+
+app.get('/user', function (req, res) {
+    res.status(200).send("User Page");
+})
+
+
+ */
+
+
+
+
+
+
+
+
+
+
+
+/**                                         Express.js res.set() Function
+
+The res.set() function is used to set the response HTTP header field to value. To set multiple fields at once, pass an object as the parameter.
+
+Syntax: 
+res.set(field [, value])
+
+Parameters: The field parameter is the name of the field and the value parameter is the value assigned to the field parameter.
+Return Value: It returns an Object.
+
+
+Example:
+
+app.get('/', function (req, res) {
+ 
+    // Setting the response . check in network tab
+    res.set({
+        'Content-Type': 'application/json',
+        date:'12/12/12,
+        Location:'USA
+    });
+ 
+    // "application/json"
+    console.log(res.get('Content-Type'));
+    res.end();
+});
+
+
+
+ */
+
+
+
+
+
+/**                                          Express.js res.type() Function 
+
+The res.type() function is used to set the Content-Type HTTP header to the MIME type determined by the mime.lookup() function for the specified type. 
+
+Syntax: 
+res.type( type )
+
+Parameters: The type parameter describes the MIME type.
+
+Return Value: It returns an Object.
+
+
+
+Example:
+
+app.get('/', function (req, res) {
+    res.type('.png').send();
+ 
+    // image/png
+    console.log(res.get('Content-type'));
+});
+
+
+
+ */
+
+
+
+
+
+/**                                 Express.js res.vary() Function
+
+
+The res.vary() function is used to add the field to the Vary response header, if it is not there already. The Vary header indicates which headers it’s basically used for content negotiation.
+
+Syntax: 
+res.vary( field )
+
+Parameter: The field parameter describes the name of the field.
+
+Return Value: It returns an Object.
+
+
+Example:
+
+app.get('/', function (req, res) {
+    res.consty('User-Agent').send(
+        "Field added to the consty response header");
+
+
+                                OR  we can set Vary with set() method as well
+
+    res,set({'Vary:'Origin'})                            
+
+
+});
+ 
 
 
  */
