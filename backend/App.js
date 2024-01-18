@@ -187,6 +187,8 @@ app.get('/user', function (req, res) {
     console.log(req.protocol); // o/p -  http  == The req.protocol property contains the request protocol string which is either HTTP or (for TLS requests) https.
 
     res.send('Welcome to GeeksforGeeks');
+
+    res.end()  // Terminate the connection without sending something to the client. if we don't want to send anything to the client,just use this instead of res.send()
 });
 
 
@@ -391,18 +393,33 @@ Return Value: Since it’s an event so it doesn’t have any return value.
 
 // The app.set() function is used to assign the setting name to value. You may store any value that you want, but certain names can be used to configure the behavior of the server. 
 
-// Syntax:
 
+// Syntax:
 // app.set(name, value)
 
-
-//  Example:
+//  Example 1:  it will set this to app level.
 
 // app.set('title', 'GeeksforGeeks');
  
 // app.get('/', (req, res) => {
 //     res.send(app.get('title'));
 // })
+ 
+
+// Example 2:
+
+// app.get('/', function (req, res) {
+ 
+//   Setting the response in header. open network tab and check in response header it will reflect there.
+
+//     res.set({
+//         'Content-Type': 'text/plain',
+//         'Content-Length': '123',
+//         ETag: '12345'
+//     });
+ 
+//     console.log(res.get('Content-Type'));  o/p   -      "text/plain"
+// });
  
 
 
@@ -969,5 +986,331 @@ with res.end() ,you can only respond with text and it will not set "Content-Type
  app.get('/',(req,res)=>{
            res.end('<b>hello</b>');
       }); 
+
+ */
+
+
+
+
+
+
+
+/**                                        Express.js | res.format() Function
+ 
+
+The res.format() function performs content negotiation on the Accept HTTP header on the request object if it is present. This function checks the Accept HTTP request header and then invokes the corresponding handler depending on the Accept value. 
+
+Syntax:
+
+res.format(object)
+
+
+Example:
+
+
+app.get('/', function (req, res) {
+    res.format({
+        html: function () {
+            res.send('<p>Greetings from GeeksforGeeks</p>');
+        },
+        text: function () {
+            res.send('Greetings from GeeksforGeeks');
+        },
+        json: function () {
+            res.send({ message: 'Greetings from GeeksforGeeks' });
+        }
+    });
+});
+
+
+
+In the above example, the output will be { “message”: “Greetings from GeeksforGeeks” } when the user send request with Accept header field  set to ‘application/json’ and 
+if the Accept header field is set to ‘text/plain’, we will get “Greetings from GeeksforGeeks” message in response.
+
+
+
+ */
+
+
+
+
+
+
+
+
+/**                                         Express.js res.get() Function 
+
+
+The res.get() function returns the HTTP response header specified by the field. The match is case-insensitive.
+
+Syntax: 
+
+res.get( field )
+Parameter: The field parameter describes the name of the field.
+
+Return Value: It returns an Object.
+
+
+Example:
+
+app.get('/', function (req, res) {
+ 
+    // Setting the response
+    res.set({
+        'Content-Type': 'text/plain',
+        'Content-Length': '123',
+        ETag: '12345'
+    });
+ 
+   
+    console.log(res.get('Content-Type')); o/p   "text/plain"
+
+Note : we can access whatever is in the response header here. by using res.get() method.
+
+        console.log(res.get('Vary'));
+});
+
+
+ */
+
+
+
+
+
+/**                           Express res.json() Function
+
+The res.json() function sends a JSON response. This method sends a response (with the correct content-type) 
+that is the parameter converted to a JSON string using the JSON.stringify() method.
+
+Syntax:  
+
+res.json( [body] )
+Parameters: The body parameter is the body that is to be sent in the response.
+
+Return Value: It returns an Object.
+
+
+Example:
+
+Note : It's important that you set the Content-Type header to application/json.
+
+app.get('/', function (req, res) {
+
+    res.setHeader('Content-Type', 'application/json'); // This is to set the response header for the client. you can check in network tab under response header. 
+
+    res.json({ user: 'geek' });
+});
+
+
+ */
+
+
+
+
+
+/**                                         Express.js res.jsonp() Function 
+
+The res.jsonp() function is used to send a JSON response with JSONP support and this function is similar to the res.json() function
+except that it opts-in to the support of JSONP callback.
+
+Syntax: 
+
+res.jsonp( [body] )
+Parameter: The body parameter describes the body type which can be sent in response.
+
+Return Value: It returns an Object.
+
+
+Example:
+
+
+app.get('/', function (req, res) {
+    res.jsonp({ title: 'GeeksforGeeks' });
+});
+ 
+ */
+
+
+
+
+
+
+
+
+/**                                             Express.js res.links() Function
+
+
+The res.links() function is used to join the links provided as properties of the parameter to populate the response’s Link HTTP header field.
+
+Syntax: 
+res.links( links )
+
+Parameter: The link parameter describes the name of the link to be joined.
+
+Return Value: It returns an Object.
+
+
+Example:
+
+
+app.get('/', function (req, res) {
+    res.links({
+        next: 'http://demo.com?page=2',
+        middle: 'http://demo.com?page=4',
+        last: 'http://demo.com?page=6'
+    });
+ 
+    console.log(res.get('link'));
+});
+
+
+
+
+*/
+ 
+
+
+
+
+/**                                         Express.js res.location() Function 
+
+
+The res.location() function is used to set the response Location HTTP header to the path parameter which is being specified. 
+Basically,it is used to set the response header(in network tab) . It doesn’t end the response, after using it you can write a response body if you want to write.
+
+Syntax:
+
+res.location( path )
+Parameter:
+
+path: It refers to the URL which is specified in the Referrer header of the request.
+
+
+
+Example:
+
+.it is used to set the response header.
+
+app.get('/', function (req, res) {
+    res.location('India');
+    console.log(res.get('location'));
+});
+
+
+
+Note :  we can also Try res.setHeader() instead of res.location.
+
+it is used to set the response header.
+
+app.get('/', function (req, res) {
+  res.setHeader('Location', foo); // it allows you to set only single header.
+});
+
+
+                                                    OR we can use res.set() method as well.
+
+app.get('/', function (req, res) {
+  res.set({'Location': 'Nepal',date:'12/12/12'}); // it allows you to set multiple headers
+});
+
+                                                    
+Note :
+
+The only difference is res.setHeader() allows you only to set a singular header and res.set() will allow you to set multiple headers.
+
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+/**                                 Express JS res.redirect() Function 
+
+
+The res.redirect() function redirects to the URL derived from the specified path, with specified status, an integer (positive) which corresponds to an HTTP status code.
+The default status is “302 Found”. 
+
+Syntax:
+
+res.redirect([status] path)
+Parameter: This function accepts two parameters as mentioned above and described below:
+
+status: This parameter holds the HTTP status code
+path: This parameter describes the path.
+
+
+
+Type of paths we can enter:
+1. We can enter the whole global URL e.g: https://www.geeksforgeeks.org/ 
+2.cThe path can be relative to the root of the hostname e.g : /user with relative to http://hostname/user/cart will redirect to http://hostname/user
+3. The path can be relative to the current URL e.g: /addtocart with relative to http://hostname/user/ will redirect to http://hostname/user/addtocart
+
+
+
+
+
+Example:
+
+app.use('/verify', function (req, res, next) {
+    console.log("Authenticate and Redirect")
+    res.redirect('/user');
+    next();
+});
+ 
+app.get('/user', function (req, res) {
+    res.send("User Page");
+});
+
+
+
+
+ */
+
+
+
+
+
+/**                                     Express res.render() Function
+ 
+
+The res.render() function in Express is used to render a view and sends the rendered HTML string to the client. 
+
+Syntax: 
+
+res.render(view [, locals] [, callback])
+Parameters: This function accepts two parameters as mentioned above and described below:  
+
+Locals: It is an object whose properties define local variables for the view.
+Callback It is a callback function.
+
+
+
+
+Example:
+
+app.set('view engine', 'ejs');
+ 
+// With middleware
+app.use('/', function (req, res, next) {
+    res.render('User')
+    next();
+});
+ 
+app.get('/', function (req, res) {
+    console.log("Render Working")
+    res.send();
+});
+
+
+
+
+
 
  */
