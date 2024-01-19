@@ -1194,6 +1194,11 @@ app.get('/', function (req, res) {
 
 
 
+
+
+
+
+
 /**                                          Express.js res.type() Function 
 
 The res.type() function is used to set the Content-Type HTTP header to the MIME type determined by the mime.lookup() function for the specified type. 
@@ -1219,6 +1224,10 @@ app.get('/', function (req, res) {
 
 
  */
+
+
+
+
 
 
 
@@ -1251,6 +1260,387 @@ app.get('/', function (req, res) {
 
 });
  
+
+
+ */
+
+
+
+
+
+
+
+
+
+/**                                         Express.js router.METHOD() Function
+
+
+The router.METHOD() method provides the routing functionality in Express, where METHOD is one of the HTTP methods, such as GET, PUT, POST, and so on, in lowercase. 
+
+Syntax:
+router.METHOD(path, [callback, ...] callback)
+
+Parameter: The path parameter specifies the path on the URL and callback is the function that is executed when this path is called.
+
+Return Value: Since, it provides the routing functionality, so it can return responses. 
+
+
+
+Example 1:
+
+const router = express.Router();
+app.use(router);
+
+// Single route
+router.get('/user', function (req, res, next) {
+    console.log("GET request called");
+    res.end();
+});
+ 
+Note: Now make a GET request to http://localhost:3000/user, 
+
+
+
+
+Example 2:
+
+const router = express.Router();
+app.use(router);
+
+
+// Multiple routes
+router.get('/user', function (req, res, next) {
+    console.log("GET request called");
+    res.end();
+});
+ 
+router.post('/user', function (req, res, next) {
+    console.log("POST request called");
+    res.end();
+});
+ 
+router.delete('/user', function (req, res, next) {
+    console.log("DELETE request called");
+    res.end();
+})
+
+
+Note : Now make GET, POST, and DELETE request to http://localhost:3000/user, 
+
+
+ */
+
+
+
+
+
+
+
+
+
+
+/**                                         Express.js router.all() Function
+
+
+router.all: What this means is, it doesn't matter the method of the request.. (post, get, put), if the url matches, execute the function.
+ex- router.all("/abc",fn) will be work for all request to /abc
+
+
+The router.all() function is just like the router.METHOD() methods, except that it matches all HTTP methods (verbs). It is very helpful for mapping global logic for arbitrary matches or specific path prefixes. 
+
+Syntax:
+router.all(path, [callback, ...] callback)
+
+Parameter: The path parameter is the path of the specified URL and the callback is the function passed as a parameter. 
+
+Return Value: It returns responses. 
+
+
+
+Example 1:
+
+
+const router = express.Router();
+app.use(router); 
+
+
+// Setting single route
+
+router.all('/user', function (req, res) {
+    console.log("User Page Called");
+    res.end();
+});
+ 
+Note : Now make any request to http://localhost:3000/user like POST, PUT, DELETE, or any other type of request.
+
+
+
+
+
+Example 2:
+
+const router = express.Router();
+app.use(router);
+
+// Setting multiple routes
+router.all('/user', function (req, res) {
+    console.log("User Page Called");
+    res.end();
+});
+ 
+router.all('/student', function (req, res) {
+    console.log("Student Page Called");
+    res.end();
+});
+ 
+router.all('/teacher', function (req, res) {
+    console.log("Teacher Page Called");
+    res.end();
+});
+ 
+
+
+Note : Now make a GET request to http://localhost:3000/user, http://localhost:3000/student, and http://localhost:3000/teacher 
+
+
+
+ */
+
+
+
+
+
+
+
+
+
+
+/**                                         Express.js router.param() function 
+
+
+
+The parameters of router.param() are a name and function. Where the name is the actual name of the parameter and the function is the callback function. Basically, the router.param() function triggers the callback function whenever the user routes to the parameter. This callback function will be called only a single time in the request-response cycle, even if the user routes to the parameter multiple times.
+
+Syntax:
+router.param(name, function)
+
+Parameters of the callback function are: 
+
+req: the request object
+res: the response object
+next: the next middleware function
+id: the value of the name parameter
+
+
+
+
+router.param('coolParamName') essentially registers a callback that will get called for any route (in that router) that uses the :coolParamName parameter and
+matches the current request. The callback will get called once per request BEFORE the route that matches the request that contains the :coolParamName parameter.
+
+It's kind of like middleware for a matching parameter. It allows you to automatically configure some setup code anytime that particular parameter is matched in a route.
+
+Note : router.param() may be one of the least used features of Express.
+
+ */
+
+
+
+
+
+
+
+
+
+/**                                         Express.js router.route() Function 
+
+The router.route() function returns an instance of a single route that you can then use to handle HTTP verbs with optional middleware. You can also use the router.route() function to avoid duplicate route naming as well as typing errors. 
+
+Syntax:
+router.route( path )
+
+Parameter: The path parameter holds the path of the specified URL. 
+
+Return Value: It returns responses. 
+
+
+
+Example 1:
+
+app.use(router);
+
+// Single routing
+router.route('/user').get(function (req, res, next) {
+        console.log("GET request called");
+        res.end();
+    });
+ 
+
+Example 2:
+
+ 
+app.use(router);
+
+// Multiple routing
+
+router.route('/user')
+    .get(function (req, res, next) {
+        console.log("GET request called");
+        res.end();
+    })
+    .post(function (req, res, next) {
+        console.log("POST request called");
+        res.end();
+    })
+    .put(function (req, res, next) {
+        console.log("PUT request called");
+        res.end();
+    });
+
+
+
+ Note : Now make GET, POST, and PUT requests to http://localhost:3000/user
+
+
+
+Note :
+
+
+router.route(): this is nice way to define the different Method implementations for a single url end point.
+
+lets just say you have two api end points. router.get("/jkl") and router.post("/jkl"), with router.route() you can sort of combine these different api handlers..
+
+you can say router.route("/jkl").get(fn1).post(fn2)
+
+
+
+
+ */
+
+
+
+   
+
+
+
+
+
+/**                             Express.js | router.use() Function
+
+
+
+
+The router.use() function uses the specified middleware function or functions. It basically mounts middleware for the routes which are being served by the specific router. 
+
+Syntax:
+router.use( path, function )
+
+Parameters:
+Path: It is the path to this middleware, if we can have /user, now this middleware is called for all API’s having /user of this router.
+function: This function is passed as a callback, it is called when the specified path is called in this router.
+
+
+
+Example :
+
+// All requests to this router will
+// first hit this middleware
+
+router.use(function (req, res, next) {
+    console.log("Middleware Called");
+    next();
+})
+ 
+// Always invoked
+router.use(function (req, res, next) {
+    res.send("Greetings from GeeksforGeeks");
+})
+ 
+app.use('/user', router);
+
+
+Note:
+
+router.use() : router.use() helps you write modular routes and modules.. You basically define a middle ware for routes.
+
+router.use("/pqr", pqrRoutes)
+
+now for all requests that start with /pqr like /pqr/new or /pqr/xyz can be handles inside the pqrRoutes.
+
+
+ */
+
+
+
+
+
+
+
+
+
+/**                                                             For UnderStanding
+
+
+Note :
+
+
+
+router.get is only for defining subpaths. Consider this example:
+
+var router = express.Router();
+
+app.use('/first', router); // Mount the router as middleware at path /first
+
+router.get('/sud', smaller);
+
+router.get('/user', bigger);
+If you open /first/sud, then the smaller function will get called.
+If you open /first/user, then the bigger function will get called.
+
+In short, app.use('/first', router) mounts the middleware at path /first, then router.get sets the subpath accordingly.
+
+
+
+
+
+
+
+But if we instead use the following:
+
+app.use('/first', fun);
+
+app.get('/sud', bigger);
+
+app.get('/user', smaller);
+
+If you open /first in your browser, fun will get called,
+For /sud, bigger will get called
+For /user, smaller will get called
+But remember for /first/sud, no function will get called.
+
+
+
+
+ */
+
+
+
+
+
+/**                                         middleware for use in Express apps 
+
+
+Middleware functions are functions that have access to the request object (req), the response object (res), and 
+the next function in the application’s request-response cycle. The next function is a function in the Express router which, 
+when invoked, executes the middleware succeeding the current middleware.
+
+Middleware functions can perform the following tasks:
+
+1.Execute any code.
+2.Make changes to the request and the response objects.
+3.End the request-response cycle.
+4.Call the next middleware in the stack.
+5.If the current middleware function does not end the request-response cycle, it must call next() to pass control to the next middleware function.
+    Otherwise, the request will be left hanging.
 
 
  */
