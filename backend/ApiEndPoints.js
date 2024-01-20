@@ -7,7 +7,7 @@ const cors = require("cors");
 const cookieParser = require('cookie-parser');
 const app = express();
 
-const PORT = 3000;
+const PORT = process.env.PORT || 5000
 
 app.use(bodyParser.json());
 app.use(express.json({limit:'50mb'})); 
@@ -217,6 +217,125 @@ Where + means ascending and - means descending. So we sort by author’s name in
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+//                                                                      Cache data to improve performance
+
+
+// We can add caching to return data from the local memory cache instead of querying the database to get the data every time we want to retrieve some data that users request.
+//  The good thing about caching is that users can get data faster. However, the data that users get may be outdated.
+//  This may also lead to issues when debugging in production environments when something goes wrong as we keep seeing old data.
+// There are many kinds of caching solutions like Redis, in-memory caching, and more. We can change the way data is cached as our needs change.
+
+// For instance, Express has the apicache middleware to add caching to our app without much configuration. We can add a simple in-memory cache into our server like so:
+
+
+
+
+
+const apicache = require('apicache');
+let cache = apicache.middleware;
+
+
+// Note :  we imported the apicache module and accessed its middleware. we can cache our API in two ways.
+
+// One is to cache each route separately and the second is to cache all API routes. I will show you both.
+
+// In order to cache the API, we will call the cache middleware function as follows:
+// cache(“[time unit]”)
+// time: can be any number
+// unit: can be seconds, minutes, hours, or days
+// The time will determine how long we want to keep the response of a request in cache storage.
+
+
+
+// Method 1.  By Cache a single Route:
+
+
+// employees data in a database
+const employee = [
+  { firstName: 'Jane', lastName: 'Smith', age: 20 },
+  { firstName: 'John', lastName: 'Smith', age: 30 },
+  { firstName: 'Mary', lastName: 'Green', age: 50 },
+]
+
+//here we cached our employees route only.  It will cache the response on this route for 5 minutes
+app.get('/employees',cache('5 minutes'),(req, res) => {
+  res.json(employee);
+});
+
+app.post('/post',(req, res) => {
+    res.json(employee);
+  });
+
+
+// The code above just references the apicache middleware with apicache.middleware and then we have: app.use(cache('5 minutes'))
+// to apply the caching to the whole app. We cache the results for five minutes, for example. We can adjust this for our needs.
+// If you are using caching, you should also include Cache-Control information in your headers. This will help users effectively use your caching system.
+
+
+
+
+
+
+// Method 2.    By Cache all Routes:
+
+
+//  Here we cached all routes (get,post delete,patch) by using app.use()
+app.use(cache('5 minutes'));
+
+app.get('/employees',(req, res) => {
+  res.send('Hello World!')
+})
+
+app.post('/post',(req, res) => {
+    res.json(employee);
+  });
+
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//                                                          Cache new example
+
+
+// There are several ways to implement caching in an Express API. Here are some common techniques:
+
+//  1. In-memory caching: In this technique, the data is stored in memory, which allows for quick retrieval of data.
+//  This technique is useful for frequently accessed data that doesn’t change frequently.
+//  You can use a caching library like “memory-cache” or “lru-cache” to implement in-memory caching in your Express API.
+
+// 2. Redis caching: Redis is an in-memory data store that can be used to cache data in a scalable and high-performance way.
+//  You can use the “redis” package to implement Redis caching in your Express API.
+
+// 3. Browser caching: You can configure your API to set appropriate cache headers in the HTTP response, which allows the client’s browser to cache the response. 
+// This technique is useful for responses that don’t change frequently and can be safely cached by the client.
+
+
+
+const cache = require('memory-cache');
+
+
+
+app.get('/api/data', (req, res) => {
+  const data = cache.get('data');
+  
+  if (data) {
+    console.log('Serving from cache');
+    return res.json(data);
+  } else {
+    console.log('Serving from API');
+    const newData = // fetch data from API
+    cache.put('data', newData, 60 * 1000); // cache for 1 minute
+    return res.json(newData);
+  }
+});
+
+
+
+/**
+ * In this example, the API endpoint “/api/data” checks if the data is available in the cache. If it is, it serves the response from the cache, otherwise, 
+ * it fetches the data from the API and caches it for 1 minute using the “memory-cache” package. 
+ * This technique can be used for any API endpoint that returns frequently accessed data that doesn’t change frequently.
+ * 
+ */
 
 
 
@@ -224,6 +343,43 @@ Where + means ascending and - means descending. So we sort by author’s name in
 
 
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+//                                                             Versioning our APIs
+
+
+/**
+We should have different versions of API if we're making any changes to them that may break clients.
+ The versioning can be done according to semantic version (for example, 2.0.6 to indicate major version 2 and the sixth patch) like most apps do nowadays.
+
+This way, we can gradually phase out old endpoints instead of forcing everyone to move to the new API at the same time. 
+The v1 endpoint can stay active for people who don’t want to change, while the v2, with its shiny new features, can serve those who are ready to upgrade. 
+This is especially important if our API is public. We should version them so that we won't break third party apps that use our APIs.
+
+Versioning is usually done with /v1/, /v2/, etc. added at the start of the API path.
+
+
+
+For example, we can do that with Express as follows:
+ 
+ */
+
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+app.get('/v1/employees', (req, res) => {
+  const employees = [];
+  // code to get employees
+  res.json(employees);
+});
+
+app.get('/v2/employees', (req, res) => {
+  const employees = [];
+  // different code to get employees
+  res.json(employees);
+});
 
 
 
@@ -231,6 +387,7 @@ Where + means ascending and - means descending. So we sort by author’s name in
 
 
 
+//   We just add the version number to the start of the endpoint URL path to version them.
 
 
 
