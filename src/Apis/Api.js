@@ -4,7 +4,7 @@ import axios from "axios";
 // ---------------------------------------------------------------GET API---------------------------------------------------------------------------------------------------------
 
 const getallData = () => {
-  return axios.get("http://localhost:5000/api/products");
+  return axios.get("http://localhost:5000/api/products",{ headers: {'Content-Type': 'application/json','Cache-Control':'public, max-age="60000"'}});
 };
 
 
