@@ -2,10 +2,15 @@
 //   Create a file app.js or index.js (Can give any name),we will write the whole express code in that file.
 
 //   🔽Import express with require keyword and create an app by calling the express() function provided by the express framework.
+// Note : require() is a node.js function used to load the external modules. Here ‘express’ is that external module.
 const express = require("express");
+
 const cors = require("cors"); // CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
+
 const bodyParser = require("body-parser");
+
 const cookieParser = require('cookie-parser');
+
 // Creating express app 
 const app = express();
 
@@ -169,7 +174,11 @@ app.get("/hello", (req, res) => {
 
 app.post("/posting", (req, res) => {
   const { name } = req.body;
-  res.send(`Welcome ${name},now you can access data.`);
+  if(name){
+    res.send(`Welcome ${name},now you can access data.`);
+  }else{
+    res.status(400).json({message:'Please provide valid name'})
+  }
 });
 
 
@@ -179,7 +188,12 @@ app.set('title', 'Please confirm your presence');
 
 app.post("/postingTwo", (req, res) => {
   const { name } = req.body;
-  res.send(`${name},${app.get('title')}`);
+  if(name){
+    res.send(`${name},${app.get('title')}`);
+  }else{
+    res.status(400).json({message:'Please provide valid name'})
+  }
+ 
 });
 
 

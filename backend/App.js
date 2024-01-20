@@ -110,7 +110,13 @@ console.log(app.locals);
 //  Example: So instead of writing app.get we can use app.all ,it automatically accept all type of HTTP request (POST, GET, PATCH, DELETE,).we just have make get call with axios.get() where we have defined our apis.
 
 app.get('/user', function (req, res, next){
+//Here  setting attributes of the response header by updating the status code as 200, mime-type as ‘text/plain’,finally sends the message ‘Success’ to the browser.
+    res.type('text/plain');
+    res.send(200)
     res.send('Success')
+
+//         OR Directly we can send like below:
+            // res.status(200).send('Success')  // send itself have feature to estimate the type of file is being send,no need of res.type() 
 
 })
 
