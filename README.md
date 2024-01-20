@@ -139,3 +139,9 @@ HTTP Methods: RESTful APIs use standard HTTP methods to perform CRUD(Create, Rea
 3. Representations: Resources can have multiple representations, such as JSON, XML, HTML, or others. Clients can specify the desired representation using the HTTP “Accept” header.
 
 4. Stateless Communication: Each request made by the client to the server must include all required data. The client’s state in-between queries is not recorded by the server. This approach makes it easier to implement the server and improves scalability.
+
+
+
+
+### NOTE :
+To make sure that when our REST API app responds with JSON that clients interpret it as such, we should set Content-Type in the response header to "application/json" after the request is made. Many server-side app frameworks set the response header automatically. Some HTTP clients look at the Content-Type response header and parse the data according to that format.

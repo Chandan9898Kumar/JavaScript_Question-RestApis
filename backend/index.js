@@ -7,7 +7,7 @@ const express = require("express");
 
 const cors = require("cors"); // CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
 
-const bodyParser = require("body-parser");
+const bodyParser = require("body-parser"); // bodyParser.json() parses the JSON request body string into a JavaScript object and then assigns it to the req.body object.
 
 const cookieParser = require('cookie-parser');
 
@@ -381,19 +381,24 @@ app.get('/api/products/item',(request,response) => {
 //  Here in backend we just have to write till here -  /api/product.  in frontend we have used ? so after this query it will take automatically the rest of url parts.
 app.get('/api/product',(request,response) => {
   const {Id,name} = request.query
-  
+  let fetchedProduct = []
+
   // console.log(request.url,request.originalUrl) // /product/name=mobile&Id=1    . when open your network in browser the api with this type of url will be shown. 
 
   // console.log(request.route);                    //  The req.route property contains the currently-matched route which is a string. 
   
   // console.log(request.secure);                    //  The req.secure property is a Boolean property that is true if a TLS connection is established else returns false. 
   
-  const fetchedProduct = data.filter((item)=>item.id == Id)
-  if(fetchedProduct){
-    response.status(200).send(fetchedProduct)
-  }else{
-    response.status(400).json({statusbar: 'Something went wrong.',})
-  }
+ if (Id && name === "") {
+   fetchedProduct = data.filter((item) => +item.id === +Id);
+ } else if (name && Id === "") {
+   fetchedProduct = data.filter((item) => item.name === name);
+ } else if (name && Id) {
+   fetchedProduct = data.filter((item) => +item.id === +Id && item.name === name);
+ } else {
+   return response.status(400).json({ statusbar: "Something went wrong." });
+ }
+ return response.status(200).send(fetchedProduct);
 
 })
 
