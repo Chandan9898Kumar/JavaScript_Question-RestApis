@@ -23,7 +23,7 @@ const getImage=()=>{
 
 //  Note: Here we have passed data in params and in backend we are accessing it through request.query  not request.params. 
 const getSpecificItem=(payload)=>{
-    return axios.get("http://localhost:5000/api/products/item",{params:{Id:payload.id}},{headers: {'Content-Type': 'application/json'}})
+    return axios.get("http://localhost:5000/api/products/item",{params:{Id:payload.id}},{headers: {'Content-Type': 'application/json','Cache-Control': 'no-cache'}})
 }
 
 //  Below method is better then above because it structured with with query parameters. it help to understand which item is being called.this is best-way to access the data by request.query

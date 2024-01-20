@@ -257,7 +257,14 @@ const employee = [
   { firstName: 'Mary', lastName: 'Green', age: 50 },
 ]
 
-//here we cached our employees route only.  It will cache the response on this route for 5 minutes
+//here we cached our employees route only.  It will cache the response on this route for 5 minutes.
+
+//  Here we have given 5 minutes time to cache responses (Basically it store this response in its memory for 5 minutes). 
+// within this 5 minutes no matter how many times you call this api, it will give response data from its memory,it will not get the response from server.
+// even if you have update something and calling this api to get updated response,then also it will give old response which you set here here.
+//  but when the 5 mins time gets over(cache will remove the stored data from its memory) and after that if you call this get method then it will actually call this method
+//  and give you fresh data. and again it will save data in cache for next 5 minutes,and this process will keep on going. 
+
 app.get('/employees',cache('5 minutes'),(req, res) => {
   res.json(employee);
 });
