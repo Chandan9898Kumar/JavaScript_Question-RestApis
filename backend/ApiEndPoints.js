@@ -314,9 +314,15 @@ const cache = require('memory-cache');
 
 
 
+
+// Note :  Initially, you will see a long response time. If you send the GET request several times, 
+// you will notice that data is retrieved much faster than the initial response time due to response caching. When we request a resource for the first time, 
+// the data gets cached and on requesting it again, the cached data is returned instead of hitting the API endpoint, resulting in faster response times. 
+
 app.get('/api/data', (req, res) => {
+
   const data = cache.get('data');
-  
+
   if (data) {
     console.log('Serving from cache');
     return res.json(data);
