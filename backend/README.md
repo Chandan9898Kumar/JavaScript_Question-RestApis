@@ -136,10 +136,20 @@ When data is cached, it can be quickly accessed, which reduces the amount of tim
 
 
 
-
-
-
 ###  JWT Authentication with Node.js
 
 JSON Web Token is an open standard for securely transferring data within parties using a JSON object. JWT is used for stateless authentication mechanisms for users and providers,
 this means maintaining sessions on the client side instead of storing sessions on the server. 
+
+                                              Token-Based Authentication:
+It is a more secure and scalable alternative to basic authentication.
+JSON Web Tokens(JWT) are commonly used in Express to implement token-based authentication.
+When the user logs in, the server generates a token containing the user’s information.
+Then the server sends the token to the client in response.
+The client stores the token in the form of a cookie or local storage.
+In the subsequent request, the client includes this token in the header, enabling the server to validate the user.
+The features of token-based auth include expiration time and digital signatures enhancing the security and integrity of the data.
+
+
+`Note :`
+JSON web token is an efficient, secured as well mostly used method of transferring or exchanging data on the internet. Generally, it is used for authentication and authorization in applications. The workflow of the authentication is we generate the token at the server and send back it to the client which is used for further requests on the server.

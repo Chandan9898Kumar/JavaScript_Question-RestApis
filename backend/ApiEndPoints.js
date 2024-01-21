@@ -452,7 +452,7 @@ app.get("/user/validateToken", (req, res) => {
 
       const token = req.headers.authorization.split(" ")[1]
       const verified = jwt.verify(token, jwtSecretKey);
-      
+
       if (verified) {
           return res.send("Successfully Verified");
       } else {
@@ -482,3 +482,230 @@ app.listen(PORT, (error) => {
       console.log("Error occurred, server can't start", error);
     }
   });
+
+
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//                                                                  ###  Authentication strategies available in Express.
+
+// Authentication is an important aspect of web development, which ensures that users accessing an application are who they claim to be.
+
+
+// There are two types of authentication patterns:
+
+
+//                                                                       1. Stateless Authentication
+// The server does not store any data or state of the user between requests. It means each request from the client/ User to the server contains all the data needed to authenticate the user.
+
+// Some Stateless authentication strategies in ExpressJS are
+
+// a. Basic Authentication
+// b. Token-Based Authentication
+// c. OAuth Authentication (when implemented with stateless tokens)
+
+
+
+
+
+/** //                                                                  A. Basic Authentication
+// Basic Authentication is one of the simplest and most widely used auth strategy across the web.
+// In express, it involves sending the user’s credentials i.e username, and password with each HTTP request coded in “base64-encoded format”
+// Though it is easy to implement, its base64-encoded format can be easily decoded so it is recommended to use this method only when coupled with a secure transport layer
+   such as HTTPS.
+
+
+You can use "express-basic-auth" middleware in Express to implement this authentication method.
+
+Example :
+
+const express = require("express");
+const basicAuth = require("express-basic-auth");
+const app = express();
+ 
+app.use(
+    basicAuth({
+        users: { username: "password" },
+        challenge: true,
+        unauthorizedResponse:
+            "Unauthorized access. Please provide valid credentials.",
+    })
+);
+ 
+app.get("/secure-data", (req, res) => {
+    res.send("This is secure data that requires valid credentials.");
+});
+ 
+const port = 3000;
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
+
+
+
+ */
+
+
+
+
+/**                                                             B. Token-Based Authentication:
+ * 
+1. It is a more secure and scalable alternative to basic authentication.
+2. JSON Web Tokens(JWT) are commonly used in Express to implement token-based authentication.
+3. When the user logs in, the server generates a token containing the user’s information.
+4. Then the server sends the token to the client in response.
+5. The client stores the token in the form of a cookie or local storage.
+6. In the subsequent request, the client includes this token in the header, enabling the server to validate the user.
+7. The features of token-based auth include expiration time and digital signatures enhancing the security and integrity of the data.
+
+
+Example :
+
+
+const jwt = require("jsonwebtoken");
+ 
+// Generating a token
+const token = jwt.sign({ userId: "246" }, "secretKey", { expiresIn: "2h" });
+ 
+
+
+
+// Verifying the token
+jwt.verify(token, "secretKey", (err, decoded) => {
+    if (err) {
+        // Token is invalid
+    } else {
+        // Token is valid, and decoded contains user information
+    }
+});
+
+
+
+ */
+
+
+
+
+
+
+/**                                                                   C. OAuth Authentication
+1. OAuth (Open Authorization) is an industry-standard protocol for authentication.
+2. OAuth enables users to grant third-party applications limited access to their resources without sharing credentials (passwords).
+3. In Express JS with the help of Passport.JS, one can integrate OAuth authentication strategies for popular providers such as Google, Twitter, or Facebook.
+4. OAuth leverages the existing credentials from trusted providers, offering a secure user experience.
+
+
+
+Example:
+
+//app.js
+
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+
+passport.use(
+	new GoogleStrategy(
+		{
+			clientID: "your-id",
+			clientSecret: "your-secret",
+			callbackURL: "http://app/callback",
+		},
+		(accessToken, refreshToken, profile, done) => {
+			// Use profile information to create or authenticate a user
+			// Call done(null, user) upon success
+		}
+	)
+);
+
+app.get(
+	"/auth/google",
+	passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+app.get(
+	"/auth/google/callback",
+	passport.authenticate("google", {
+		successRedirect: "/dashboard",
+		failureRedirect: "/login",
+	})
+);
+
+
+
+ */
+
+
+
+//                                                                  2. Stateful Authentication
+
+/**In this authentication pattern, the Server stores the state or data of the user about the user session or authentication state. 
+ * The server uses this information/ Data to authenticate the user. Stateful authentication uses cookies to identify the user with their request. 
+ * 
+ * In Express.js Authentication strategies such as Passport.js and Middleware-based authentication can be both stateful or stateless depending on the use case 
+ * and implementation chosen by developers.
+
+
+
+
+                                                                    A. Passport.js Middleware
+1. Passport.js is the authentication middleware for Node.js applications, especially for frameworks like ExpressJS.
+2. It supports various strategies such as local authentication, OAuth, OpenID, and others.
+3. It’s flexible to allow developers to choose the strategies that align with their web app the best.
+4. Passport.JS delegates the intricacies of different strategies to specialized modules.
+5. This modular design makes it easy to integrate for changing requirements.
+
+
+Example:
+
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+
+passport.use(new LocalStrategy(
+	(username, password, done) => {
+		// Validate user credentials
+		// If valid, call done(null, user)
+		// Otherwise, call done(null, false, { message: 'Incorrect credentials.' })
+	}
+));
+
+app.post('/login', passport.authenticate('local', {
+	successRedirect: '/dashboard',
+	failureRedirect: '/login',
+	failureFlash: true
+}));
+
+
+
+
+
+
+
+                                                                  B. Middleware-Based Authentication
+1. Middleware-based authentications involve using custom middleware functions for authorization
+2. Middleware functions are the functions that have access to the request, response, and the next function in the application’s request-response cycle
+3. They can modify request and response objects, call the next function, and end the request-response cycle in the stack.
+4. Middleware-based authentication offers maximum flexibility among others. It allows developers to customize authentication logic to specific application requirements.
+
+
+
+Example:
+
+
+function authenticate(req, res, next) {
+	// Custom authentication logic
+	if (req.headers.authorization === 'valid-token') {
+		return next(); // User is authenticated
+	} else {
+		return res.status(401).json({ message: 'Unauthorized access.' });
+	}
+}
+
+app.get('/protected-route', authenticate, (req, res) => {
+	// Route handling logic for authenticated users
+});
+
+
+
+
+
+ */

@@ -455,7 +455,7 @@ app.post("/user/generateToken", (req, res) => {
       userId: 12,
   }
 
-  const token = jwt.sign(data, jwtSecretKey);
+  const token = jwt.sign(data, jwtSecretKey,{ expiresIn: "2h" });
 
   res.send(token);
 });
