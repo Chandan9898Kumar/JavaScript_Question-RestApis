@@ -68,7 +68,11 @@ const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
 
 
-
+const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
+ 
+// Set up Global configuration access
+dotenv.config();
 
 
 //  Enabling CORS for specific origins only.
@@ -434,6 +438,60 @@ app.use(router);
 
 
 
+
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//                                                                      JWT Authentication
+
+  
+// Generating JWT
+app.post("/user/generateToken", (req, res) => {
+  // Validate User Here
+  // Then generate JWT Token
+
+  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+  let data = {
+      time: Date(),
+      userId: 12,
+  }
+
+  const token = jwt.sign(data, jwtSecretKey);
+
+  res.send(token);
+});
+
+
+// Verification of JWT
+app.get("/user/validateToken", (req, res) => {
+  // Tokens are generally passed in header of request
+  // Due to security reasons.
+  
+  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+
+  try {
+
+      const token = req.headers.authorization.split(" ")[1]
+      const verified = jwt.verify(token, jwtSecretKey);
+      
+      if (verified) {
+          return res.send("Successfully Verified");
+      } else {
+          // Access Denied
+          return res.status(401).send(error);
+      }
+  } catch (error) {
+      // Access Denied
+      return res.status(401).send(error);
+  }
+});
+
+
+
+
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 //  Call the listen() function, It requires path and callback as an argument. It starts listening to the connection on the specified path,
 // the default host is localhost, and our default path for the local machine is the localhost:5000, here 5000 is the port which we have set earlier.
 // The callback function gets executed either on the successful start of the server or due to an error.
@@ -452,11 +510,19 @@ app.listen(PORT, (error) => {
 
 
 
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
 
 
 
 //  Step to run the application: Now as we have created a server we can successfully start running it to see it’s working,
 //  write this command in your terminal to start the express server.  -:  node index.js OR nodemon index.js
+
+
+
 
 
 

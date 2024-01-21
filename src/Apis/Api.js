@@ -100,8 +100,25 @@ const updateItemTwo=(payload)=>{
 
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+//                                                        Creating JWT and Access Token.
 
 
+// 1. Create jwt token.
+
+const createUserToken=()=>{
+    return axios.post('http://localhost:5000/user/generateToken')
+}
+
+
+// 2.  Access token
+
+const getUserToken=(token)=>{
+    return axios.get('http://localhost:5000/user/generateToken',{headers: {'Authorization': `Bearer ${token}`}})
+
+}
+
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const api = {
   getallData,
   getImage,
@@ -113,7 +130,9 @@ const api = {
   updateItemTwo,
   getSpecificItem,
   getSpecificItemByParams,
-  getSpecificItemByQuery
+  getSpecificItemByQuery,
+  createUserToken,
+  getUserToken
 };
 
 export default api;

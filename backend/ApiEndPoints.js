@@ -397,10 +397,76 @@ app.get('/v2/employees', (req, res) => {
 
 
 
-
-
-
 //   We just add the version number to the start of the endpoint URL path to version them.
+
+
+
+
+// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+//                                                                JWT Authentication with Node.js
+
+
+// Step 1.    npm install express dotenv jsonwebtoken
+
+// Step 2.    Create Configuration File (.env). This files contains those variables that we need to pass to our application’s environment.
+
+//  Step 3.   Create Route for Generating JWTCreating a ‘post’ request that sends the JWT token in the response.
+
+//  Step 4.   Create Route for Validating JWT Creating a ‘get’ request that contains the JWT token in the header and sends verification status as a response.
+
+const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
+ 
+// Set up Global configuration access
+dotenv.config();
+
+
+// Main Code Here  //
+// Generating JWT
+app.post("/user/generateToken", (req, res) => {
+  // Validate User Here
+  // Then generate JWT Token
+
+  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+  let data = {
+      time: Date(),
+      userId: 12,
+  }
+
+  const token = jwt.sign(data, jwtSecretKey);
+
+  res.send(token);
+});
+
+
+// Verification of JWT
+app.get("/user/validateToken", (req, res) => {
+  // Tokens are generally passed in header of request
+  // Due to security reasons.
+  
+  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+
+  try {
+
+      const token = req.headers.authorization.split(" ")[1]
+      const verified = jwt.verify(token, jwtSecretKey);
+      
+      if (verified) {
+          return res.send("Successfully Verified");
+      } else {
+          // Access Denied
+          return res.status(401).send(error);
+      }
+  } catch (error) {
+      // Access Denied
+      return res.status(401).send(error);
+  }
+});
+
+
+
 
 
 

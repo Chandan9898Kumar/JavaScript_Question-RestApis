@@ -125,7 +125,7 @@ Controllers: The controllers contain the logic to be executed. They also control
 
 
 
-###                      Cache
+###  Cache
 A cache is a storage location where data can be stored for quick and easy access. Caches are used in a variety of applications, including computers, web browsers, and web servers.
 
 When data is stored in a cache, it is stored in a temporary location so that it can be quickly accessed.
@@ -133,3 +133,13 @@ When data is stored in a cache, it is stored in a temporary location so that it 
 Caching is important because it helps improve the speed and performance of a system.
 
 When data is cached, it can be quickly accessed, which reduces the amount of time that a system must wait for data to be retrieved from the main memory.
+
+
+
+
+
+
+###  JWT Authentication with Node.js
+
+JSON Web Token is an open standard for securely transferring data within parties using a JSON object. JWT is used for stateless authentication mechanisms for users and providers,
+this means maintaining sessions on the client side instead of storing sessions on the server. 
