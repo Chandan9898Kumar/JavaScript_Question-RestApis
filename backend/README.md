@@ -60,14 +60,17 @@ Step 6.   `npm install cookie-parser`
 
 
 
-###  Cache
+###                                                         Cache
+
+`A cache is a temporary storage that provides quick access to frequently used data. And it’s usually stored in memory for low latency. But available memory is limited. So it’s important to update the cache the right way.`
+
+                                                            OR
+
 A cache is a storage location where data can be stored for quick and easy access. Caches are used in a variety of applications, including computers, web browsers, and web servers.
-
 When data is stored in a cache, it is stored in a temporary location so that it can be quickly accessed.
-
 Caching is important because it helps improve the speed and performance of a system.
-
 When data is cached, it can be quickly accessed, which reduces the amount of time that a system must wait for data to be retrieved from the main memory.
+
 
 
 
