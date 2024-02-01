@@ -705,7 +705,4 @@ app.get('/protected-route', authenticate, (req, res) => {
 });
 
 
-
-
-
  */
