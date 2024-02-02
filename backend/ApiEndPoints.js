@@ -430,12 +430,12 @@ app.post("/user/generateToken", (req, res) => {
   // Then generate JWT Token
 
   let jwtSecretKey = process.env.JWT_SECRET_KEY;
-  let data = {
+  let payload = {
       time: Date(),
       userId: 12,
   }
 
-  const token = jwt.sign(data, jwtSecretKey);
+  const token = jwt.sign(payload, jwtSecretKey,{expiresIn:'60s'});
 
   res.send(token);
 });

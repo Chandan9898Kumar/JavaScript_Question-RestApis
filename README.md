@@ -145,3 +145,5 @@ HTTP Methods: RESTful APIs use standard HTTP methods to perform CRUD(Create, Rea
 
 ### NOTE :
 To make sure that when our REST API app responds with JSON that clients interpret it as such, we should set Content-Type in the response header to "application/json" after the request is made. Many server-side app frameworks set the response header automatically. Some HTTP clients look at the Content-Type response header and parse the data according to that format.
+
+### Note : always try to generate your URL in lowercase. EX: /data
