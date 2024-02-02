@@ -162,15 +162,23 @@ app.delete('/delete', (req, res) => {
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                                                      app.use()
 
-// This middleware will not allow the
-// request to go beyond it
+
+
+//  Note :  app.use act as a super route or middleware meaning that it gets called on every route written below/after app.use.This middleware applied to all requests,either for specified paths or all paths:
+//  "use" is used to apply some logic (middleware) to specific route or entire application, regardless of request method.
+
+
+
+// This middleware will not allow the request to go beyond it
 app.use(function (req, res, next) {
     console.log("Middleware called")
     next(); // It means pass control to the next handler
     //  if we remove next() method then below app.get() will not be called. 
 });
  
-// Requests will never reach this route
+
+
+// Requests will never reach this route if we remove middleware next() method from app.use()
 app.get('/user', function (req, res) {
     console.log("/user request called");
     console.log(req.app);  // The req.app property holds the reference to the instance of the Express application that is using the middleware. 
@@ -200,6 +208,64 @@ app.get('/user', function (req, res) {
 
 
 
+
+/**
+ app.use : it is useful for "middlewares", it will apply to all the GETs, POSTs, etc. you indicate afterwords. 
+ For example, you can use a Middleware only before the GETs you want to be "with user/pass authentication".
+
+1. Indicate the folder for static contents: app.use(express.static(__dirname + "/public"));
+
+2. Including a parser for JSON contents: app.use(bodyParser.json());
+
+3. Define the "Cookie Parser" signing string: app.use(cookieParser("Signing text example"));
+
+4. Separate Routers for your URLs in different files: app.use("/api", apiRouter); or app.use("/news", newsRouter); or app.use("/", siteRouter);
+
+5. For a custom error handler: app.use(sites404handler); or app.use(globalErrorHandler);
+
+
+
+app.use basically used for :
+
+
+
+1. Use for static path
+
+//Set static path
+app.use(express.static(__dirname + '/public'));
+
+
+
+2. use as router
+//user
+app.use('/', require('./controllers/user'));
+
+
+
+3. use for handling middleware
+//Body-parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));// Body parser use JSON data
+
+
+
+4. Use for custom middleware
+// force https
+app.use ( (req, res, next) =>{
+    if (req.secure) {
+        // request was via https, so do no special handling
+        next();
+    } else {
+        // request was via http, so redirect to https
+        res.redirect('https://' + req.headers.host + req.url);
+    }
+});
+
+
+
+ */
 
 
 

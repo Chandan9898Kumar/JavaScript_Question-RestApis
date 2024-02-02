@@ -1,3 +1,5 @@
+//                                                              NOTE : NODE RUNS Line By Line. (order matters)
+
 // Steps -
 //   Create a file app.js or index.js (Can give any name),we will write the whole express code in that file.
 

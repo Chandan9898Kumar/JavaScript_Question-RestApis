@@ -466,6 +466,23 @@ app.get("/user/validateToken", (req, res) => {
 });
 
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//  How to add a 404 error page i.e not found using the express server. 404 is the status code which means not found in the server.
+
+
+
+  
+// Handling GET /hello request 
+app.get("/hello", (req, res, next) => { 
+  res.send("This is the hello response"); 
+}) 
+
+// Handling non matching request from the client , we can use and http methods here as well.
+app.use((req, res, next) => { 
+  res.status(404).send( "<h1>Page not found on the server</h1>") 
+}) 
+
+
 
 
 
