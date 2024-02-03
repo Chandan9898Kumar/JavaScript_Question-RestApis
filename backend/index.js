@@ -11,42 +11,40 @@ const cors = require("cors"); // CORS is a node.js package for providing a Conne
 
 const bodyParser = require("body-parser"); // bodyParser.json() parses the JSON request body string into a JavaScript object and then assigns it to the req.body object.
 
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 
-// Creating express app 
+const helmet = require("helmet"); // Helmet helps secure Express apps by setting HTTP response headers. : npm install helmet
+
+const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
+
+// Set up Global configuration access
+dotenv.config();
+
+// Creating express app
 const app = express();
 
+//  Note : Express apps have a use() function, This function adds a new middleware to the app.Essentially, whenever a request hits your backend, Express will execute the functions you passed to app.use() in order.
+//  It is mostly used to set up middleware for your application.
 
-
-//  Note : The app.use() function adds a new middleware to the app. Essentially, whenever a request hits your backend, Express will execute the functions you passed to app.use() in order.
-//  It is mostly used to set up middleware for your application. 
-
-
-//  These are working as a MIDDLEWARES : 
+//  These are working as a MIDDLEWARES :
 app.use(express.json()); // The express.json() middleware is used to parses the incoming request object as a JSON object. It parses incoming JSON requests and puts the parsed data in req.body.The app.use() is the syntax to use any middleware.
 
-//  To enable CORS. do app.use(cors()); Now all requests received by the server will have cors enabled in them. 
-app.use(cors());         // Calling use(cors()) will enable the express server to respond to preflight requests.A preflight request is basically an OPTION request sent to the server before the actual request is sent, in order to ask which origin and which request options the server accepts.
+//  To enable CORS. do app.use(cors()); Now all requests received by the server will have cors enabled in them.
+app.use(cors()); // Calling use(cors()) will enable the express server to respond to preflight requests.A preflight request is basically an OPTION request sent to the server before the actual request is sent, in order to ask which origin and which request options the server accepts.
 
 //  Cors can be enabled for multiple methods and not just the GET method. You can also enable it for methods like PATCH, POST, DELETE.etc. using the below code.
-//  app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']})); 
+//  app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']}));
 
-
-// Express.js express.raw() Function : The express.raw() function is a built-in middleware function in Express. It parses incoming request payloads into a Buffer and is based on body-parser. 
-app.use(express.raw()); // Make a POST request with header set to ‘content-type’ – ‘application/octet-stream’ 
-
-
+// Express.js express.raw() Function : The express.raw() function is a built-in middleware function in Express. It parses incoming request payloads into a Buffer and is based on body-parser.
+app.use(express.raw()); // Make a POST request with header set to ‘content-type’ – ‘application/octet-stream’
 
 app.use(cookieParser());
 
-
 //  The express.urlencoded() function is a built-in middleware function in Express. It parses incoming requests with URL-encoded payloads and is based on a body parser.
-app.use(express.urlencoded({ extended: true})); // Parse x-www-form-urlencoded request into req.body. make a POST request with header set to ‘content-type: application/x-www-form-urlencoded’ and body {“name”:”Geeky”}.and do  console.log(req.body)
-
+app.use(express.urlencoded({ extended: true })); // Parse x-www-form-urlencoded request into req.body. make a POST request with header set to ‘content-type: application/x-www-form-urlencoded’ and body {“name”:”Geeky”}.and do  console.log(req.body)
 
 app.use(express.text()); // It parses the incoming request payloads into a string and is based on body-parser.make a POST request with header set to ‘content-type: text/plain’ and body {“title”:”Geeky”}.
-
-
 
 //  Note :  bodyParser (in newer version of express it is not needed) instead use  app.use(express.json());.
 
@@ -57,41 +55,26 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 // app.use(bodyParser.raw({ type: 'application/vnd.custom-type' }))
 // app.use(bodyParser.json({ type: 'application/*+json' }))
 
-// express.bodyParser() needs to be told what type of content it is that it's parsing. 
+// express.bodyParser() needs to be told what type of content it is that it's parsing.
 // Therefore, you need to make sure that when you're executing a POST request, that you're including the "Content-Type" header.
 // Otherwise, bodyParser may not know what to do with the body of your POST request.
 
-
-
-
-
+app.use(helmet());
 
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
 
-
-const dotenv = require('dotenv');
-const jwt = require('jsonwebtoken');
- 
-// Set up Global configuration access
-dotenv.config();
-
-
 //  Enabling CORS for specific origins only.
 const corsOPtions = {
-  origin: '*' // if you need to enable cors on all the sites and make the data available across then you can change the origin to a star which means that you can use cors enabled for all websites. 
-              // which means now you can got to any website and if you want to access "http://localhost:5000/api/products" api  at line 64.then it will not throw an error.
+  origin: "*", // if you need to enable cors on all the sites and make the data available across then you can change the origin to a star which means that you can use cors enabled for all websites.
+  // which means now you can got to any website and if you want to access "http://localhost:5000/api/products" api  at line 64.then it will not throw an error.
 
-//                                                              OR
-//  origin: ["https://www.wikipedia.org", "https://www.google.com"] 
-//  Use the following code adding the origin as the website.now if we go wikipedia page or google page 
-//  there inside console tab and try to access this api (http://localhost:5000/api/products) using fetch method then you will will see entire data without any cors error.
-//  But other than these two website you can't access this api data, It will throw CORS error.
-
-}
-
-
-
+  //                                                              OR
+  //  origin: ["https://www.wikipedia.org", "https://www.google.com"]
+  //  Use the following code adding the origin as the website.now if we go wikipedia page or google page
+  //  there inside console tab and try to access this api (http://localhost:5000/api/products) using fetch method then you will will see entire data without any cors error.
+  //  But other than these two website you can't access this api data, It will throw CORS error.
+};
 
 // REST API to get all products details at once With this api the frontend will only get the data .The frontend cannot modify or update the data Because we are only using the GET method here.
 
@@ -111,18 +94,16 @@ Syntax: The basic syntax of these types of routes looks like this, the given fun
 //                                                            Example 1.
 //  Note: instead of app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']})) above we have done line 20, here  We have passed cors as a parameter to the route as a middleware function .which in turn will make the checks to enable cors or not for a specific method.
 //  We don't need put cors(corsOptions) here explicitly because,we have already used : app.use(cors()); which will enabled cors in all apis automatically and any website can access these apis.
-//  But if you want this  api to be accessed by some specific website then you can put cors inside api like this. 
-app.get("/api/products",cors(corsOPtions) ,(req, res) => {
+//  But if you want this  api to be accessed by some specific website then you can put cors inside api like this.
+app.get("/api/products", cors(corsOPtions), (req, res) => {
   res.status(200);
-  res.send(data);   // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
+  res.send(data); // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
   // res.json(data) // Send a JSON response.
-  res.end()         // End the response process
+  res.end(); // End the response process
 
-//  Note :
-// 1.  Here req is request, when the client/user call api/make request to the server and pass data in  apis url then this req will be called and have those data in req.body.
-// 2.  Here res is response when the client/user call api/make request to the server after that server(backend) send data to client/user as a response. 
-
-
+  //  Note :
+  // 1.  Here req is request, when the client/user call api/make request to the server and pass data in  apis url then this req will be called and have those data in req.body.
+  // 2.  Here res is response when the client/user call api/make request to the server after that server(backend) send data to client/user as a response.
 });
 
 /**
@@ -139,11 +120,6 @@ app.get("/api/products",cors(corsOPtions) ,(req, res) => {
  * also there are lots of types of response in express like res.json() which is used to send JSON object, res.sendFile() which is used to send a file, etc.
  */
 
-
-
-
-
-
 //                                                         Example 2: Setting up one more get request route on the ‘/hello’ path.
 
 // Most of the things are the same as the previous example.
@@ -155,11 +131,6 @@ app.get("/hello", (req, res) => {
   res.set("Content-Type", "text/html");
   res.status(200).send("<h1>Hello  Learner!</h1>");
 });
-
-
-
-
-
 
 //                                                          Example 3: Now we will see how to send data to server.
 
@@ -176,42 +147,32 @@ app.get("/hello", (req, res) => {
 // const {name}, which is the syntax in ES6 to extract the given property/es from the object. Here we are extracting the name property which was sent by the user with this request object.
 // After that, we are simply sending a response to indicate that we have successfully received data. If this `${} ` is looking weird to you then let me tell you that it is the syntax in ES6 to generate strings with javascript expression in ES6. We can inject any javascript expression inside ${}.
 
-
-
 app.post("/posting", (req, res) => {
   const { name } = req.body;
-  if(name){
+  if (name) {
     res.send(`Welcome ${name},now you can access data.`);
-  }else{
-    res.status(400).json({message:'Please provide valid name'})
+  } else {
+    res.status(400).json({ message: "Please provide valid name" });
   }
 });
 
-
-// The app.set() function is used to assign the setting name to value. You may store any value that you want, but certain names can be used to configure the behavior of the server. 
-app.set('title', 'Please confirm your presence');
+// The app.set() function is used to assign the setting name to value. You may store any value that you want, but certain names can be used to configure the behavior of the server.
+app.set("title", "Please confirm your presence");
 //  we can set any values this application and can send this client/user like below we did.
 
 app.post("/postingTwo", (req, res) => {
   const { name } = req.body;
-  if(name){
-    res.send(`${name},${app.get('title')}`);
-  }else{
-    res.status(400).json({message:'Please provide valid name'})
+  if (name) {
+    res.send(`${name},${app.get("title")}`);
+  } else {
+    res.status(400).json({ message: "Please provide valid name" });
   }
- 
 });
-
-
 
 //                                                               Example 4:   Sending Files from Server
 //  Now we will see how to send files from the server.
 // Several times we need to transfer the resources from the server as per user request, there are majorly two methods to send files one is sending static files using middleware
 // and the other one is sending a single file on a route.
-
-
-
-
 
 //                                                               Method  1: Serving entire directory using middleware.
 
@@ -231,13 +192,9 @@ const path = require("path");
 const { request } = require("http");
 app.use("/static", express.static(path.join(__dirname, "Static file")));
 
-
-
-
-
 //                                          Method 2: Sending a single file on a route with the sendFile() function.
 
-// The sendFile() function transfers the file at the given path and it sets the Content-Type response HTTP header field based on the filename extension. 
+// The sendFile() function transfers the file at the given path and it sets the Content-Type response HTTP header field based on the filename extension.
 
 // Syntax:
 //         res.sendFile(path [, options] [, fn])
@@ -250,12 +207,10 @@ app.use("/static", express.static(path.join(__dirname, "Static file")));
 // After then we are creating the absolute path by joining the path of current __dirname and the name of the file we want to send and then passing it to sendFile().
 // Then route sends the image.jpg file to the user as an HTTP response.
 
-
 //  Example 1.
 app.get("/file", (req, res) => {
   res.sendFile(path.join(__dirname, "RefreeTwo.jpg"));
 });
-
 
 //  Example 2.
 
@@ -273,19 +228,8 @@ app.get("/file", (req, res) => {
 //   });
 // });
 
-
-
-
-
-
-
-
-
-
-
-
 // The app.METHOD() function is used to route an HTTP request, where METHOD is the HTTP method of the request, such as GET, PUT, POST, and so on, in lowercase.
-// Thus, the actual methods are app.get(), app.post(), app.patch(),app.delete() and so on. 
+// Thus, the actual methods are app.get(), app.post(), app.patch(),app.delete() and so on.
 
 //                                                              Post api to create a new item
 
@@ -294,11 +238,6 @@ app.post("/create", (req, res) => {
   data.push(payload);
   res.status(200).json({ status: "Successfully created item." });
 });
-
-
-
-
-
 
 //                                                              Delete Api
 
@@ -318,11 +257,6 @@ app.delete("/delete/:id", (request, response) => {
   }
 });
 
-
-
-
-
-
 //                                                               Patch api to update item
 
 app.patch("/update", (request, response) => {
@@ -330,7 +264,9 @@ app.patch("/update", (request, response) => {
 
   // const {id} = request.query      OR Below
 
-  const {payload: { id }} = request.body;
+  const {
+    payload: { id },
+  } = request.body;
   let findById = data.some((item) => item.id == id);
   const random = Math.floor(Math.random() * 20 + 1);
 
@@ -348,151 +284,166 @@ app.patch("/update", (request, response) => {
   }
 });
 
-
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 //                                              Note : we can access data of a particular item with get api by passing unique values  to get api.we have 2 method.
 
-//  Method 1: by simply defining route and access the data through query.                                     
+//  Method 1: by simply defining route and access the data through query.
 
 //                          Call get api to access specific item by passing params in api in frontend side.and in backend side we can access it through query.
 
-app.get('/api/products/item',(request,response) => {
-  const {Id} = request.query
-  const fetchedProduct = data.filter((item)=>item.id == Id)
-  if(fetchedProduct){
-    response.status(200).send(fetchedProduct)
-  }else{
-    response.status(400).json({statusbar: 'Something went wrong.',})
+app.get("/api/products/item", (request, response) => {
+  const { Id } = request.query;
+  const fetchedProduct = data.filter((item) => item.id == Id);
+  if (fetchedProduct) {
+    response.status(200).send(fetchedProduct);
+  } else {
+    response.status(400).json({ statusbar: "Something went wrong." });
   }
-
-})
+});
 
 //                                            Below method is good for accessing data from request.query
 
-
 //                                        Express.js req.query Property
 
-// The req.query property is an object containing the property for each query string parameter in the route. 
+// The req.query property is an object containing the property for each query string parameter in the route.
 
 // Syntax:
 // req.query
 
-//  Note: In frontend we are calling like this- 
+//  Note: In frontend we are calling like this-
 // axios.get(`http://localhost:5000/api/product?name=${payload.name}&Id=${payload.id}`,{headers:{'Content-Type': 'application/json',"Authorization":"***"}})
 
-
-
 //  Here in backend we just have to write till here -  /api/product.  in frontend we have used ? so after this query it will take automatically the rest of url parts.
-app.get('/api/product',(request,response) => {
-  const {Id,name} = request.query
-  let fetchedProduct = []
+app.get("/api/product", (request, response) => {
+  const { Id, name } = request.query;
+  let fetchedProduct = [];
 
-  // console.log(request.url,request.originalUrl) // /product/name=mobile&Id=1    . when open your network in browser the api with this type of url will be shown. 
+  // console.log(request.url,request.originalUrl) // /product/name=mobile&Id=1    . when open your network in browser the api with this type of url will be shown.
 
-  // console.log(request.route);                    //  The req.route property contains the currently-matched route which is a string. 
-  
-  // console.log(request.secure);                    //  The req.secure property is a Boolean property that is true if a TLS connection is established else returns false. 
-  
- if (Id && name === "") {
-   fetchedProduct = data.filter((item) => +item.id === +Id);
- } else if (name && Id === "") {
-   fetchedProduct = data.filter((item) => item.name === name);
- } else if (name && Id) {
-   fetchedProduct = data.filter((item) => +item.id === +Id && item.name === name);
- } else {
-   return response.status(400).json({ statusbar: "Something went wrong." });
- }
- return response.status(200).send(fetchedProduct);
+  // console.log(request.route);                    //  The req.route property contains the currently-matched route which is a string.
 
-})
+  // console.log(request.secure);                    //  The req.secure property is a Boolean property that is true if a TLS connection is established else returns false.
 
+  if (Id && name === "") {
+    fetchedProduct = data.filter((item) => +item.id === +Id);
+  } else if (name && Id === "") {
+    fetchedProduct = data.filter((item) => item.name === name);
+  } else if (name && Id) {
+    fetchedProduct = data.filter(
+      (item) => +item.id === +Id && item.name === name
+    );
+  } else {
+    return response.status(400).json({ statusbar: "Something went wrong." });
+  }
+  return response.status(200).send(fetchedProduct);
+});
 
-//  Method 2: by  defining data in route for specific item. Note: when we define anything in route then we can access it through params ( request.params ) not query( request.query ).  
+//  Method 2: by  defining data in route for specific item. Note: when we define anything in route then we can access it through params ( request.params ) not query( request.query ).
 
 //  Enable CORS(cross-origin resource sharing) for a Single Route.  CORS is basically a set of headers sent by the server to the browser.
-app.get('/api/products/item/:Id',cors(corsOPtions),(request,response) => {
-  const {Id} = request.params
-  const fetchedProduct = data.filter((item)=>item.id == Id)
-  if(fetchedProduct){
-    response.status(200).send(fetchedProduct)
-  }else{
-    response.status(400).json({statusbar: 'Something went wrong.',})
+app.get("/api/products/item/:Id", cors(corsOPtions), (request, response) => {
+  const { Id } = request.params;
+  const fetchedProduct = data.filter((item) => item.id == Id);
+  if (fetchedProduct) {
+    response.status(200).send(fetchedProduct);
+  } else {
+    response.status(400).json({ statusbar: "Something went wrong." });
   }
-
-})
+});
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 // when you want to create a new router object in our program to handle requests. We can do it by using : express.Router() Function. It create a new router object.
 
 // Single routing
 const router = express.Router();
-router.get('/', function (req, res, next) {
+router.get("/", function (req, res, next) {
   console.log("Router Working");
   res.end();
-})
+});
 
 app.use(router);
-
-
-
-
-
 
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                                                      JWT Authentication
 
-  
 // Generating JWT
 app.post("/user/generateToken", (req, res) => {
   // Validate User Here
   // Then generate JWT Token
 
   let jwtSecretKey = process.env.JWT_SECRET_KEY;
-  let data = {
-      time: Date(),
-      userId: 12,
-  }
+  let refreshTokenKey = process.env.REFRESH_TOKEN_SECRET;
 
-  const token = jwt.sign(data, jwtSecretKey,{ expiresIn: "2h" });
+  let payload = {
+    time: Date(),
+    userId: 12,
+  };
 
-  res.send(token);
+  const ACCESS_TOKEN = jwt.sign(payload, jwtSecretKey, { expiresIn: "10s" });
+
+  // Creating refresh token not that expiry of refresh token is greater than the access token
+  const REFRESH_TOKEN = jwt.sign(payload, refreshTokenKey, { expiresIn: "1h" });
+
+  //  we can also  store token in cookie and header of response :
+  // res.cookie('refreshToken',REFRESH_TOKEN,{httpOnly:true,safe:true,sameSite: "None",secure: true,maxAge: 24 * 60 * 60 * 1000}).header('Authorization',ACCESS_TOKEN).send({ACCESS_TOKEN,REFRESH_TOKEN})
+
+  res.send({ ACCESS_TOKEN, REFRESH_TOKEN });
 });
-
 
 // Verification of JWT
 app.get("/user/validateToken", (req, res) => {
   // Tokens are generally passed in header of request
   // Due to security reasons.
-  
+
   let jwtSecretKey = process.env.JWT_SECRET_KEY;
 
   try {
+    const token = req.headers.authorization.split(" ")[1];
+    const verified = jwt.verify(token, jwtSecretKey);
 
-      const token = req.headers.authorization.split(" ")[1]
-      const verified = jwt.verify(token, jwtSecretKey);
-      
-      if (verified) {
-          return res.send("Successfully Verified");
-      } else {
-          // Access Denied
-          return res.status(401).send(error);
-      }
-  } catch (error) {
+    if (verified) {
+      return res.send("Successfully Verified");
+    } else {
       // Access Denied
-      return res.status(401).send(error);
+      return res.status(401).send("<h1>Page not found on the server</h1>");
+    }
+  } catch (error) {
+    // Access Denied
+    return res.status(401).send(error);
   }
 });
 
+app.post("/refreshToken", (req, res) => {
+  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+
+  let payload = {
+    time: Date(),
+    userId: 12,
+  };
 
 
+  try {
+    const refreshToken = req.body.refreshToken;
+    const Verified_Refresh_Token = jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRET);
 
+    //  After refresh token is verified then again we are signing the Access Token, it will keep on going whenever the access token expires.
+    if (Verified_Refresh_Token) {
+      const ACCESS_TOKEN = jwt.sign(payload, jwtSecretKey, {expiresIn: "10s"});
+      return res.send(ACCESS_TOKEN);
+    } else {
+      // Access Denied
+      return res.status(401).send("<h1>Page not found on the server</h1>");
+    }
+  } catch (error) {
+    // Access Denied
+    return res.status(401).send("<h1>Page not found on the server</h1>");
+  }
+  
+});
 
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 //  Call the listen() function, It requires path and callback as an argument. It starts listening to the connection on the specified path,
 // the default host is localhost, and our default path for the local machine is the localhost:5000, here 5000 is the port which we have set earlier.
@@ -509,31 +460,12 @@ app.listen(PORT, (error) => {
 
 // The app.listen() function is used to bind and listen to the connections on the specified host and port. This method is identical to Node’s http.Server.listen() method.
 
-
-
-
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
 
 //  Step to run the application: Now as we have created a server we can successfully start running it to see it’s working,
 //  write this command in your terminal to start the express server.  -:  node index.js OR nodemon index.js
 
-
-
-
-
-
-
-
-
-
-
-//                                              The word CORS stands for “Cross-Origin Resource Sharing”. 
+//                                              The word CORS stands for “Cross-Origin Resource Sharing”.
 // CORS is an acronym that stands for “Cross-Origin Resource Sharing.” Cross-Origin Resource Sharing (CORS) is a browser-implemented HTTP-header-based mechanism that allows a server or an API (Application Programming Interface)
 //  to indicate any origins (different in terms of protocol, hostname, or port) other than its origin from which the unknown origin gets permission to access and load resources.
 
@@ -547,16 +479,11 @@ app.listen(PORT, (error) => {
 
 //                                              Why Would You Want to Implement CORS?
 // From a security standpoint, browsers assume that your server doesn't want to share resources with websites it doesn't know.
-// However, there are many situations where you explicitly want to enable CORS on your server. 
+// However, there are many situations where you explicitly want to enable CORS on your server.
 
 // If you make a request to your app, you will notice a new header being returned:
 // Access-Control-Allow-Origin: *
 // The Access-Control-Allow-Origin header determines which origins are allowed to access server resources over CORS (the * wildcard allows access from any origin).
-
-
-
-
-
 
 //                                               Point to remember about express.json() and express.urlencoded()
 
@@ -583,10 +510,6 @@ b. express.urlencoded() is a method inbuilt in express to recognize the incoming
  *
  */
 
-
-
-
-
 //                                                Cookies
 
 // A cookie is a piece of data that is sent to the client-side with a request and is stored on the client-side itself by the Web Browser the user is currently using. With the help of cookies –
@@ -594,70 +517,41 @@ b. express.urlencoded() is a method inbuilt in express to recognize the incoming
 // It is easy to capture the user’s browsing history
 // It is also useful in storing the user’s sessions
 
-
-
 //                                              Express.js req.route Property
 
-// The req.route property contains the currently-matched route which is a string. 
+// The req.route property contains the currently-matched route which is a string.
 
 // Syntax:
 // req.route
 
-// Parameter: No parameters. 
-
-
-
-
+// Parameter: No parameters.
 
 //                                              Express.js req.secure Property
 
-// The req.secure property is a Boolean property that is true if a TLS connection is established else returns false. 
+// The req.secure property is a Boolean property that is true if a TLS connection is established else returns false.
 
 // Syntax:
 // req.secure
 
-// Return Value: It returns a Boolean value either True or False. 
-
-
-
-
-
-
-
+// Return Value: It returns a Boolean value either True or False.
 
 //                                          Express.js req.app Property
 
-
-// The req.app property holds the reference to the instance of the Express application that is using the middleware. 
+// The req.app property holds the reference to the instance of the Express application that is using the middleware.
 
 // Syntax:
 // req.app
 
-// Parameter: No parameters. 
-
-
-
-
-
-
-
-
+// Parameter: No parameters.
 
 //                                          Express.js req.baseUrl Property
 
-//   The req.baseUrl property is the URL path on which a router instance was mounted. The req.baseUrl property is similar to the mount path property of the app object, except app.mountpath returns the matched path pattern(s). 
+//   The req.baseUrl property is the URL path on which a router instance was mounted. The req.baseUrl property is similar to the mount path property of the app object, except app.mountpath returns the matched path pattern(s).
 
 // Syntax:
 // req.baseUrl
 
-// Parameter: No parameters. 
-
-
-
-
-
-
-
+// Parameter: No parameters.
 
 /**                                         Express req.body Property
  * 
@@ -670,14 +564,6 @@ Parameter: No parameters.
  * 
  */
 
-
-
-
-
-
-
-
-
 /**                                         Express.js req.cookies Property
  * 
  * The req.cookies property is used when the user is using cookie-parser middleware. This property is an object that contains cookies sent by the request. 
@@ -688,11 +574,6 @@ req.cookies
 Parameter: No parameters. 
  * 
  */
-
-
-
-
-
 
 /**                                         Express.js req.fresh Property
  * 
@@ -707,9 +588,6 @@ Return Value: True or False
  * 
  */
 
-
-
-
 /**                                        Express.js req.fresh Property
  * 
  * The req.fresh property returns true if the response is still ‘fresh’ in the client’s cache else it will return false. 
@@ -723,9 +601,6 @@ Return Value: True or False
  * 
  */
 
-
-
-
 /**                                     Express.js req.accepts() Function
  * 
  * The req.accepts() function checks if the specified content types are acceptable on the basis of the requests Accept HTTP header field. 
@@ -738,9 +613,6 @@ Parameter: The type value is a single MIME type string.
 Return Value: String 
 
  */
-
-
-
 
 /**                                   Express req.params Property
  * 
@@ -778,13 +650,6 @@ app.listen(PORT, function (err) {
 
  */
 
-
-
-
-
-
-
-
 /**                                         Express.js req.ip Property
  * 
  * The req.ip property contains the remote IP address of the request. It is useful when the user wants the IP address of the incoming request made to the application. 
@@ -800,14 +665,6 @@ Return Value: String
  * Note : make a GET request with the header set to x-forwarded-for: 203.0.113.195, and in console.log(request.ip) you will see this.
  * 
  */
-
-
-
-
-
-
-
-
 
 /**                                         Express.js req.ips Property
 
@@ -827,11 +684,6 @@ Return Value: Array
 
  */
 
-
-
-
-
-
 /**                                       Express.js req.path Property
 
 The req.path property contains the path of the request URL. This property is widely used to get the path part of the incoming request URL. 
@@ -846,16 +698,6 @@ Return Value: String
  * 
  */
 
-
-
-
-
-
-
-
-
-
-
 /**                                         Express.js req.protocol Property
 
 The req.protocol property contains the request protocol string which is either HTTP or (for TLS requests) https. When the trust proxy setting does not evaluate to false, 
@@ -869,4 +711,3 @@ Parameter: No parameters.
 Returns: String. 
  * 
  */
-

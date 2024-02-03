@@ -113,8 +113,13 @@ const createUserToken=()=>{
 // 2.  Access token
 
 const getUserToken=(token)=>{
-    return axios.get('http://localhost:5000/user/generateToken',{headers: {'Authorization': `Bearer ${token}`}})
+    return axios.get('http://localhost:5000/user/validateToken',{headers: {'Authorization': `Bearer ${token}`}})
 
+}
+
+
+const refreshToken=(refreshToken)=>{
+    return axios.post('http://localhost:5000/refreshToken',{refreshToken})
 }
 
 
@@ -132,7 +137,8 @@ const api = {
   getSpecificItemByParams,
   getSpecificItemByQuery,
   createUserToken,
-  getUserToken
+  getUserToken,
+  refreshToken
 };
 
 export default api;

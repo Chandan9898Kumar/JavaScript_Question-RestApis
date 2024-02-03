@@ -171,7 +171,7 @@ app.delete('/delete', (req, res) => {
 
 // This middleware will not allow the request to go beyond it
 app.use(function (req, res, next) {
-    console.log("Middleware called")
+    console.log("Middleware called",req.url) // it will show urls whenever we hit the apis.
     next(); // It means pass control to the next handler
     //  if we remove next() method then below app.get() will not be called. 
 });
@@ -270,6 +270,112 @@ app.use ( (req, res, next) =>{
 
 
 
+//  NOTE : Important
+
+//                                                              The Middleware Stack
+
+/**
+ In Express, everything is middleware. Internally, an Express app has a middleware stack, and calling use() adds a new layer to the stack. 
+ Functions that define route handlers, like get() and post() also add layers to the stack. Express executes the middleware stack in order, 
+ so the order in which you call use() function matters (will execute line by line meaning one after other).
+
+
+For example :
+one of the most common middleware functions is the cors middleware, which attaches CORS headers to your Express HTTP responses.
+Make sure you call app.use(cors()) before defining any route handlers or anything else that sends an HTTP response, otherwise you won't get CORS headers!
+
+
+
+EX: 1
+
+
+const app = require('express')();
+
+// This response will **NOT** have CORS headers, because order matters.Express will run the CORS middleware _after_ this route handler.
+
+app.get('/nocors', (req, res) => {
+  res.send('ok');
+});
+
+app.use(require('cors')());
+
+// This response will have CORS headers, because this route handler is after the CORS middleware in the middleware list.
+
+app.get('/cors', (req, res) => {
+  res.send('ok');
+});
+
+
+
+
+
+
+
+EX: 2
+
+Another common middleware function is Express' body parser. This middleware is responsible for parsing the request body and setting the req.body property. 
+Make sure you call app.use(express.json()) before using req.body, otherwise it will be undefined!
+
+
+
+const express = require('express');
+const app = express();
+
+// for this post method `body` will always be `undefined` in the HTTP response, because Express will run the JSON body parser _after_ this route handler.
+
+app.post('/nobody', (req, res) => {
+  res.json({ body: req.body });
+});
+
+app.use(express.json());
+
+// for this post method `body` will contain the inbound request body.this route handler is after the json middleware in the middleware list
+app.post('/body', (req, res) => {
+  res.json({ body: req.body });
+});
+
+
+
+
+
+//  ----------------------------------------------------------------The path Parameter--------------------------------------------------------------------------------
+
+Although the use() function is typically called with only 1 parameter, you can also pass it a path that tells Express to only execute the given middleware
+when it receives a request for a URL that starts with the given path.
+
+Ex: 3
+
+const app = require('express')();
+
+app.use('/cors', require('cors')());
+
+// This response will **NOT** have CORS headers, because the path '/nocors' doesn't start with '/cors'
+app.get('/nocors', (req, res) => {
+  res.send('ok');
+});
+
+
+// This response will have CORS headers
+app.get('/cors', (req, res) => {
+  res.send('ok');
+});
+
+
+// This response will also have CORS headers, because '/cors/test' starts with '/cors'
+app.get('/cors/test', (req, res) => {
+  res.send('ok');
+});
+
+
+ */
+
+
+
+
+
+
+
+
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                            Express app.listen() Function
@@ -352,6 +458,10 @@ Locals are available in middleware via req.app.locals;
 
 
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 //                                                      Express.js app.mountpath Property
 /**
  * The app.mountpath property contains one or more path patterns on which a sub-app was mounted. 
@@ -364,6 +474,10 @@ Locals are available in middleware via req.app.locals;
  * 
  */
 
+
+
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -418,6 +532,9 @@ Return Value: Since it’s an event so it doesn’t have any return value.
 // app.disable('trust proxy');
  
 // console.log(app.get('trust proxy')); //  o/p - false
+
+
+
 
 
 
@@ -529,6 +646,12 @@ app.get('/getApp', function (req, res) {
 
 
 
+
+
+
+
+
+
 /**                                 Express.js res.headersSent Property
  * 
  * 
@@ -550,6 +673,8 @@ app.get('/', function (req, res) {
 });
 
  */
+
+
 
 
 
@@ -585,6 +710,9 @@ app.get('/', function (req, res) {
 
 
 
+
+
+
 /**                                     Express.js res.append() Function
  * 
  * 
@@ -612,6 +740,10 @@ app.get('/', function (req, res) {
 
 
  */
+
+
+
+
 
 
 
@@ -651,6 +783,10 @@ app.get('/', function (req, res) {
 
 
 
+
+
+
+
 /**                                            Express res.cookie() Function
  * 
 
@@ -677,6 +813,11 @@ we see this cookie in network tab in response headers. it will be in Set-Cookie
 
 
  */
+
+
+
+
+
 
 
 
@@ -715,6 +856,9 @@ app.get('/', function (req, res) {
 
 
 
+
+
+
 /**                                 Express.js res.download() Function
  * 
  * 
@@ -742,6 +886,9 @@ app.get('/', function (req, res) {
 
 
  */
+
+
+
 
 
 
@@ -809,6 +956,10 @@ res.status(500).send({ error: 'something blew up' });
 
 
 
+
+
+
+
 /**                                 Express.js res.end() Function
 
 The res.end() function is used to end the response process. This method actually comes from the Node core, specifically the response.end() method of HTTP.ServerResponse. Use to quickly end the response without any data.
@@ -839,6 +990,9 @@ with res.end() ,you can only respond with text and it will not set "Content-Type
       }); 
 
  */
+
+
+
 
 
 
@@ -889,6 +1043,8 @@ if the Accept header field is set to ‘text/plain’, we will get “Greetings 
 
 
 
+
+
 /**                                         Express.js res.get() Function 
 
 
@@ -928,6 +1084,9 @@ Note : we can access whatever is in the response header here. by using res.get()
 
 
 
+
+
+
 /**                           Express res.json() Function
 
 The res.json() function sends a JSON response. This method sends a response (with the correct content-type) 
@@ -954,6 +1113,9 @@ app.get('/', function (req, res) {
 
 
  */
+
+
+
 
 
 
