@@ -62,11 +62,43 @@ axios.interceptors.response.use((response) => response,async (error) => {
   }
 );
 
+/**
+                          So let me explain the code above so that we understand why we need interceptors and how the above code is working.
+
+On each response error with the status code 401 which is the status code for Unauthorized and no "retry" Flag means that the JWT token has expired. 
+Hence we need to fetch the new token using the JWTrefreshToken and then we set the newly generated JWT authToken and send the request again for the failed request.
+In case of any JWT refreshToken error we can redirect to log in so that we can fetch new JWT authToken and JWTrefreshToken.
+ */
+
+
+
+
+
+/**                                                                         NOTE
+To implement authentication in a React application, one popular approach is to use JSON Web Tokens (JWT). Here's a summary of the steps involved:
+
+1. Create a Login component that handles the login form and makes an API call to authenticate the user. Store the received JWT authToken and JWT refreshToken in localStorage.
+
+2. Set up an Axios instance with request interceptors to automatically include the JWT authToken in the headers of authenticated API requests.(just like above )
+
+3. Add a response interceptor to handle JWT token expiration. If a request receives a 401 error (Unauthorized) and there is a JWT refreshToken available, 
+   use it to fetch a new JWT authToken and update it in localStorage. Then retry the original request with the new authToken.
+
+4. Use the configured Axios instance in your components to make authenticated API calls.
+
+5. Remember to handle errors, redirect to login on refreshToken failure, and consider security aspects when storing tokens.
+
+By implementing JWT authentication with refresh tokens and using Axios interceptors, you can create a secure and efficient authentication system in your React application.
+ */
+
+
 if (process.env.NODE_ENV === 'production') {
   console.log = () => {}
   console.error = () => {}
   console.debug = () => {}
 }
+
+
 
 root.render(
   <React.StrictMode>

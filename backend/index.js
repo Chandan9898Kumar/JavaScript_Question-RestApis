@@ -21,6 +21,10 @@ const jwt = require("jsonwebtoken");
 // Set up Global configuration access
 dotenv.config();
 
+
+const compression = require('compression');
+
+
 // Creating express app
 const app = express();
 
@@ -60,6 +64,20 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 // Otherwise, bodyParser may not know what to do with the body of your POST request.
 
 app.use(helmet());
+
+
+
+/**
+Compression is a technique that is used mostly by servers to compress the assets before serving them over to the network. 
+This makes a whole lot of difference ass such as 70% of your React bundle size can be optimized using this method if your server already not doing them.
+Widely accepted Algorithms are Gzip, Brotli, and Deflate. Where Gzip is accepted by all browsers nowadays.
+This method is not related to React but it's standard practice
+ */
+
+
+// add compression middleware
+app.use(compression());
+
 
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
