@@ -305,4 +305,25 @@ Let's talk about the benefits of JSON Web Tokens (JWT) when compared to Simple W
 Regarding usage, JWT is used at Internet scale. This highlights the ease of client-side processing of the JSON Web token on multiple platforms, especially mobile.
 
 
+
+
+
 <!--                                                                                                                                                                             -->
+###                                                       What is API authentication?
+
+API authentication verifies that a user is who they claim to be.But no matter what method you use, you want to make sure that each user (or client application) connecting to your API proves their identity.
+
+1. Basic authentication
+Basic HTTP authentication is the simplest method of API authentication. It involves adding a username and password to the request in every API call.
+
+2. Token Authentication
+Token authentication is also known as bearer authentication. To use it, you just specify -  Authorization: Bearer <token>, where the token is a string that represents the user’s identity and permissions. If you have (bear) the token, you can get the appropriate access to the API.
+
+3. OAuth authentication
+OAuth is an open authorization framework that uses a type of token authentication, but it leverages credentials from one service provider to log into other service providers.
+
+
+
+###                                                       What is API authorization?
+
+After you prove the user's identity, you can check which data that user is allowed to access. That process is authorization. Authorization ensures that the user is authorized to view or edit a specific set of data.
