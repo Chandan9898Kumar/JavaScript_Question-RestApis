@@ -1,16 +1,22 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
+import "../src/DarkLightTheme/styles.scss";
+
 const MyApp = lazy(() => import("./Component/MyApp"));
+const DarkModeToggle = lazy(() => import("./DarkLightTheme/DarkModeToggle"));
 function App() {
   return (
     <>
-      <Suspense fallback={<Loading />}> 
-      <BrowserRouter>
-        <Routes>
-          <Route exact path="/" element={<MyApp />} />
-        </Routes>
-      </BrowserRouter>
+      <Suspense fallback={<Loading />}>
+        <BrowserRouter>
+          <div className="navbar">
+            <DarkModeToggle />
+          </div>
+          <Routes>
+            <Route exact path="/" element={<MyApp />} />
+          </Routes>
+        </BrowserRouter>
       </Suspense>
     </>
   );

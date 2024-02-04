@@ -247,6 +247,8 @@ app.post("/login", (req, res) => {
   }
 });
 
+
+//  If token is in cookies then access from there else if it is coming from req.body then access from there.
 app.post("/refresh", (req, res) => {
   if (req.cookies?.jwt) {
     // Destructuring refreshToken from cookie
