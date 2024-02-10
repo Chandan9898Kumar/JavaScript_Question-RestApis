@@ -38,7 +38,7 @@
     "react/jsx-uses-vars": 1,
     "react/display-name": 1,
     "no-unused-vars": "warn",
-    "no-console": 1,
+    "no-console": 1, // 1 is true
     "no-unexpected-multiline": "warn",
     "no-var": "warn", // To prevent the use of the var keyword, you can use the following rule:,
     "object-curly-spacing": ["warn", "always"],

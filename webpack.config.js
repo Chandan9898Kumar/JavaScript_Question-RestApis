@@ -85,23 +85,15 @@ module.exports = {
         test: /\.m?js$/,
         type: 'javascript/auto',
       },
+
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader?cacheDirectory=true',
-        },
-      },
-      {
-        test: /\.html$/,
-        exclude: [/node_modules/, require.resolve('./public/index.html')],
-      },
-      {
-        test: /\.js$/,
-        exclude: [/node_modules/, require.resolve('./public/index.html')],
-        use: {
           loader: 'babel-loader',
           options: {
+            cacheDirectory: true,
+            cacheCompression: false,
             presets: ['@babel/preset-env'],
             plugins: ['@babel/plugin-proposal-class-properties'],
           },
@@ -109,13 +101,51 @@ module.exports = {
       },
 
       {
-        test: /\.(png|svg|jpg|gif)$/,
-        use: [{ loader: 'file-loader' }],
+        test: /\.html$/,
+        exclude: [/node_modules/, require.resolve('./public/index.html')],
       },
+
+      {
+        test: /\.js$/,
+        exclude: [/node_modules/, require.resolve('./public/index.html')],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            cacheCompression: false,
+            presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-proposal-class-properties'],
+          },
+        },
+      },
+
+
+      //                                                        Image Loader 
+      //  npm install -D url-loader
+      // Webpack can also be used to load static resources such as images, videos, and other binary files. 
+      // The most generic way of handling such types of files is by using file-loader or url-loader, which will provide a URL reference for the required resources to its consumers.
+
+      // In this section, we will add url-loader to handle common image formats. What sets url-loader apart from file-loader is that if the size of the original file is smaller 
+      // than a given threshold, it will embed the entire file in the URL as base64-encoded contents, thus removing the need for an additional request.
+      {
+        test: /\.(png|svg|jpg|gif)$/i,
+        use: [{ 
+          loader: 'file-loader' ,
+          options: {
+                limit: 8192,
+                name: "static/media/[name].[hash:8].[ext]"
+             }
+      }],
+      },
+
+      // css-loader: Parses CSS files, resolving external resources, such as images, fonts, and additional style imports.
+      // style-loader: During development, injects loaded styles into the document at runtime.
+      // npm install -D css-loader style-loader
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
+
       {
         test:  /\.(js|mjs|jsx|ts|tsx)$/,
         exclude: /node_modules/,
@@ -128,11 +158,13 @@ module.exports = {
           },
         },
       },
+
       {
         test: /\.handlebars/,
         use: 'handlebars-loader',
         exclude: /node_modules/,
       },
+
       {
         test: /\.(sass|scss)$/,
         use: [
@@ -149,6 +181,20 @@ module.exports = {
           { loader: "sass-loader", options: { sourceMap: true, implementation: require('sass') } },
         ],
       },
+
+
+      //                                        File-loader
+      // When we need to reference any other kinds of files, the generic file-loader will do the job. It works similarly to url-loader, 
+      // providing an asset URL to the code that requires it, but it makes no attempt to optimize it.
+      //  npm install -D file-loader
+      {
+      test: /\.(eot|otf|ttf|woff|woff2)$/,
+      loader: require.resolve("file-loader"),
+      options: {
+              name: "static/media/[name].[hash:8].[ext]"
+              }
+      },
+
     //   {
     //     test: /\.(sass|scss|css)$/,
     //     use: [
@@ -167,6 +213,7 @@ module.exports = {
       deep: true,
     }),
 
+    //  The generated public/index.html file will load our bundle and bootstrap our application.
     new HtmlWebpackPlugin({
       template: path.resolve('./public/index.html'),
       filename: './index.html',
@@ -188,6 +235,7 @@ module.exports = {
       cleanOnceBeforeBuildPatterns: ['**/*', '!stats.json', '!important.js', '!folder/**/*'],
     }),
 
+    // mini-css-extract-plugin: Extracts loaded styles into separate files for production use to take advantage of browser caching.
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css',
@@ -215,8 +263,19 @@ module.exports = {
     },
     removeAvailableModules: false,
     removeEmptyChunks: false,
-    minimizer: [new TerserPlugin({ parallel: true, test: /\.js(\?.*)?$/i, terserOptions: { compress: false, mangle: true } })],
+    minimizer: [new TerserPlugin({ parallel: true, test: /\.js(\?.*)?$/i, terserOptions: { compress: false, mangle: true ,output: { comments: false, ascii_only: true } } })],
   },
 
   performance: false,
+
+  //                                    Configuring External Webpack Dependencies
+
+  // If we want to include modules from externally hosted scripts, we need to define them in the configuration. Otherwise, Webpack cannot generate the final bundle.
+  // We can configure external scripts by using the Webpack externals configuration option. For example, we can use a library from a CDN via a separate <script> tag,
+  // while still explicitly declaring it as a module dependency in our project.
+  
+//   externals: {
+//     react: 'React',
+//     'react-dom': 'ReactDOM'
+//  }
 };

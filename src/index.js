@@ -100,6 +100,10 @@ if (process.env.NODE_ENV === 'production') {
 
 
 
+// Opt-in to Webpack hot module replacement
+if (module.hot) module.hot.accept();
+
+
 root.render(
   <React.StrictMode>
     <App />
