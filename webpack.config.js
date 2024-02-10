@@ -23,9 +23,9 @@ module.exports = {
 
   devtool: isProd ? 'eval-cheap-module-source-map' : 'source-map',
 
-  resolveLoader: {
-    modules: [path.join(__dirname, 'node_modules')],
-  },
+  // resolveLoader: {
+  //   modules: [path.join(__dirname, 'node_modules')],
+  // },
 
   resolve: {
     modules: ['node_modules', path.resolve(__dirname, 'src')],
@@ -145,8 +145,19 @@ module.exports = {
               implementation: require('sass'),
             },
           },
+          { loader: "postcss-loader", options: { sourceMap: true } },
+          { loader: "sass-loader", options: { sourceMap: true, implementation: require('sass') } },
         ],
       },
+    //   {
+    //     test: /\.(sass|scss|css)$/,
+    //     use: [
+    //         "style-loader",
+    //         {loader: "css-loader",options: { sourceMap: true, importLoaders: 1, modules: false }},
+    //         { loader: "postcss-loader", options: { sourceMap: true } },
+    //         { loader: "sass-loader", options: { sourceMap: true, implementation: require('sass') } },
+    //     ],
+    // },
     ],
   },
 
@@ -196,7 +207,12 @@ module.exports = {
   optimization: {
     minimize: true,
     runtimeChunk: true,
-    splitChunks: false,
+    // splitChunks: false,
+    splitChunks: {
+      chunks: 'all',
+      minSize: 10000,
+      maxSize: 250000,
+    },
     removeAvailableModules: false,
     removeEmptyChunks: false,
     minimizer: [new TerserPlugin({ parallel: true, test: /\.js(\?.*)?$/i, terserOptions: { compress: false, mangle: true } })],
