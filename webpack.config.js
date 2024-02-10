@@ -23,10 +23,6 @@ module.exports = {
 
   devtool: isProd ? 'eval-cheap-module-source-map' : 'source-map',
 
-  // resolveLoader: {
-  //   modules: [path.join(__dirname, 'node_modules')],
-  // },
-
   resolve: {
     modules: ['node_modules', path.resolve(__dirname, 'src')],
 

@@ -4,12 +4,12 @@ import axios from "axios";
 // ---------------------------------------------------------------GET API---------------------------------------------------------------------------------------------------------
 
 const getallData = () => {
-  return axios.get("http://localhost:5000/api/products",{ headers: {'Content-Type': 'application/json','Cache-Control':'public, max-age="60000"'}});
+  return axios.get("http://localhost:5000/api/products",{ headers: {'Content-Type': 'application/json','Cache-Control':'public, max-age="60000"' } });
 };
 
 
 const getImage=()=>{
-    return axios.get("http://localhost:5000/file",{responseType: "arraybuffer",})
+    return axios.get("http://localhost:5000/file",{responseType: "arraybuffer" })
 }
 
 

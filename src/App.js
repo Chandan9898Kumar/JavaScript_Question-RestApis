@@ -7,7 +7,7 @@ const MyApp = lazy(() => import("./Component/MyApp"));
 const DarkModeToggle = lazy(() => import("./DarkLightTheme/DarkModeToggle"));
 function App() {
   return (
-    <>
+    
       <Suspense fallback={<Loading />}>
         <BrowserRouter>
           <div className="navbar">
@@ -18,7 +18,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </Suspense>
-    </>
+      
   );
 }
 export default App;

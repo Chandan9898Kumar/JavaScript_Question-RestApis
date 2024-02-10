@@ -1,19 +1,22 @@
 {
-  "extends": ["@sanity/eslint-config-studio"],
   "root": true,
+  "extends": ["@sanity/eslint-config-studio", "react-app"],
+
+  "plugins": ["react-hooks"],
 
   "parserOptions": {
-    "parser": "@babel/eslint-parser",
+    "parser": "@babel-eslint",
     "ecmaVersion": 2020,
     "sourceType": "module",
     "ecmaFeatures": {
+      "impliedStrict": true,
       "jsx": true,
       "modules": true,
       "experimentalObjectRestSpread": true
     }
   },
+  "ignorePatterns": ["coverage/", ".nyc_output/"],
 
-  // "parser": "esprima",
   "env": {
     "browser": true,
     "node": true,
@@ -23,25 +26,75 @@
   },
   "rules": {
     "quotes": "off",
+
     // "quotes": [
     //   2,
     //   "single",
     //   { "avoidEscape": true, "allowTemplateLiterals": true }
     // ],
-    "max-len": [
-      "warn",
-      {
-        "code": 200
-      }
-    ],
-    "comma-dangle": 0,
+
+    "max-len": [1, 200, {
+      "ignoreStrings": true,
+      "ignoreTemplateLiterals": true,
+      "ignoreComments": true
+    }],
+
+    "consistent-return": 0,
+    "strict": [1, "safe"],
+
+                                                    //  ESLint rule
+    // 0 - turns the rule off
+    // 1 - turn the rule on as a warning (doesn't affect exit code)
+    // 2 - turn the rule on as an error (exit code is 1 when triggered,:- error will throw)
+    "comma-dangle": [1, "always-multiline"],
     "react/jsx-uses-vars": 1,
-    "react/display-name": 1,
-    "no-unused-vars": "warn",
+    "react/display-name": "warn", // This rule warns when a component does not have a displayName property or a named function declaration.
+    "no-unused-vars": 1,
     "no-console": 1, // 1 is true
     "no-unexpected-multiline": "warn",
     "no-var": "warn", // To prevent the use of the var keyword, you can use the following rule:,
     "object-curly-spacing": ["warn", "always"],
-    "no-console-log": "off"
-  }
+    "no-console-log": "off",
+    "react-hooks/rules-of-hooks": "error", //  This rule enforces the correct use of React Hooks.
+    "react-hooks/exhaustive-deps": "warn",
+    "react/no-unescaped-entities": 1, // This rule warns when unescaped HTML entities are used in JSX.
+    "react/self-closing-comp": [1, { "component": true, "html": false }], // This rule enforces the use of self-closing tags for elements without children.
+    "react/jsx-no-undef": 1, // This rule warns when a variable or function is used without being defined in a JSX expression.
+    "react/jsx-no-useless-fragment": [1, { "allowExpressions": true }],//  This rule enforces the use of fragments instead of wrapping elements in unnecessary containers.
+    "react/jsx-fragments" : ["warn", "element"], //  This rule enforces the use of fragments instead of wrapping elements in unnecessary containers.
+    "react/jsx-uses-react": 1, // This rule warns when a variable is declared but not used in a JSX expression. 
+    "react/prop-types": 1, // This rule warns when a component's props are not correctly defined or validated.
+
+    "valid-jsdoc": [1, {
+      "requireReturn": false,
+      "requireParamDescription": false,
+      "requireReturnDescription": false
+    }],
+    
+    "no-param-reassign": 1,
+    "function-call-argument-newline": 1,
+    "function-paren-newline": 1,
+    "no-plusplus": [1, {"allowForLoopAfterthoughts": true}]
+  },
+
+  "overrides": [
+    {
+      "files": ["example/e2e/tests/*.ts"],
+      "rules": {
+        "jest/*": "off"
+      }
+    },
+    {
+      "files": ["scripts/*.js"],
+      "rules": {
+        "import/no-commonjs": "off"
+      }
+    },
+    {
+      "files": ["**/config/*.{ts,js}", "*.config.{ts,js}"],
+      "rules": {
+        "import/no-default-export": "off"
+      }
+    }
+  ]
 }
