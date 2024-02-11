@@ -33,16 +33,23 @@
     //   { "avoidEscape": true, "allowTemplateLiterals": true }
     // ],
 
-    "max-len": [1, 200, {
-      "ignoreStrings": true,
-      "ignoreTemplateLiterals": true,
-      "ignoreComments": true
-    }],
+    "max-len": [
+      1,
+      200,
+      {
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreComments": true,
+        "ignorePattern": "readJson\\(|^import",
+        "ignoreUrls": true,
+        "tabWidth": 2
+      }
+    ],
 
     "consistent-return": 0,
     "strict": [1, "safe"],
 
-                                                    //  ESLint rule
+    //  ESLint rule
     // 0 - turns the rule off
     // 1 - turn the rule on as a warning (doesn't affect exit code)
     // 2 - turn the rule on as an error (exit code is 1 when triggered,:- error will throw)
@@ -60,21 +67,70 @@
     "react/no-unescaped-entities": 1, // This rule warns when unescaped HTML entities are used in JSX.
     "react/self-closing-comp": [1, { "component": true, "html": false }], // This rule enforces the use of self-closing tags for elements without children.
     "react/jsx-no-undef": 1, // This rule warns when a variable or function is used without being defined in a JSX expression.
-    "react/jsx-no-useless-fragment": [1, { "allowExpressions": true }],//  This rule enforces the use of fragments instead of wrapping elements in unnecessary containers.
-    "react/jsx-fragments" : ["warn", "element"], //  This rule enforces the use of fragments instead of wrapping elements in unnecessary containers.
-    "react/jsx-uses-react": 1, // This rule warns when a variable is declared but not used in a JSX expression. 
+    "react/jsx-no-useless-fragment": [1, { "allowExpressions": true }], //  This rule enforces the use of fragments instead of wrapping elements in unnecessary containers.
+    "react/jsx-fragments": ["warn", "element"], //  This rule enforces the use of fragments instead of wrapping elements in unnecessary containers.
+    "react/jsx-uses-react": 1, // This rule warns when a variable is declared but not used in a JSX expression.
     "react/prop-types": 1, // This rule warns when a component's props are not correctly defined or validated.
 
-    "valid-jsdoc": [1, {
-      "requireReturn": false,
-      "requireParamDescription": false,
-      "requireReturnDescription": false
-    }],
-    
+    "valid-jsdoc": [
+      0,
+      {
+        "requireReturn": false,
+        "requireParamDescription": false,
+        "requireReturnDescription": false
+      }
+    ],
+
     "no-param-reassign": 1,
-    "function-call-argument-newline": 1,
-    "function-paren-newline": 1,
-    "no-plusplus": [1, {"allowForLoopAfterthoughts": true}]
+    // "function-call-argument-newline": 1,
+    // "function-paren-newline": 1,
+    "no-plusplus": [1, { "allowForLoopAfterthoughts": true }],
+    "import/group-exports": 1,
+    "import/exports-last": 1,
+    "eqeqeq": 1,
+    "indent": [
+      1,
+      2,
+      {
+        "SwitchCase": 1,
+        "VariableDeclarator": 2,
+        "CallExpression": { "arguments": "off" },
+        "MemberExpression": "off",
+        "FunctionExpression": { "body": 1, "parameters": 2 },
+        "ignoredNodes": [
+          "ConditionalExpression > :matches(.consequent, .alternate)",
+          "VariableDeclarator > ArrowFunctionExpression > :expression.body",
+          "CallExpression > ArrowFunctionExpression > :expression.body"
+        ]
+      }
+    ],
+    "no-floating-decimal": 1,
+    "no-empty": [
+      1,
+      {
+        "allowEmptyCatch": true
+      }
+    ],
+    "no-implicit-coercion": [
+      1,
+      {
+        "boolean": false,
+        "number": true,
+        "string": true
+      }
+    ],
+    "no-unused-expressions": [
+      1,
+      {
+        "allowShortCircuit": true,
+        "allowTernary": false
+      }
+    ],
+    "no-cond-assign": 1,
+    "space-infix-ops": 1,
+    "prefer-const": 1,
+    "operator-linebreak": ["warn", "after", {"overrides": {"?": "ignore", ":": "ignore"}}],
+    "arrow-parens": 0,
   },
 
   "overrides": [

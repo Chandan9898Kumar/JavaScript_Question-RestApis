@@ -1,6 +1,10 @@
+**/third_party/**
+**/source-maps/**
+
 node_modules/
 coverage/
 dist/
+build/
 lib/
 web-build/
 web-report/
@@ -8,3 +12,7 @@ web-report/
 .expo/
 .yarn/
 .vscode/
+
+core/scripts/legacy-javascript/variants
+
+third-party/**

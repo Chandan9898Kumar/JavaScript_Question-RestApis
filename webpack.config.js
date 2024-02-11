@@ -13,7 +13,7 @@ dotenv.config();
 module.exports = {
   name: "React Webpack",
 
-  mode: process.env.NODE_ENV == "production" ? "production" : "development",
+  mode: process.env.NODE_ENV === "production" ? "production" : "development",
 
   target: "web",
 
@@ -82,16 +82,17 @@ module.exports = {
         type: "javascript/auto",
       },
 
+      // npm i babel-plugin-styled-components  --legacy-peer-deps
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader:  require.resolve('babel-loader'),
           options: {
             cacheDirectory: true,
             cacheCompression: false,
-            presets: ["@babel/preset-env"],
-            plugins: ["@babel/plugin-proposal-class-properties"],
+            presets: [require.resolve('@babel/preset-env')],
+            plugins: ["@babel/plugin-proposal-class-properties", require.resolve('babel-plugin-styled-components')],
           },
         },
       },
@@ -105,12 +106,12 @@ module.exports = {
         test: /\.js$/,
         exclude: [/node_modules/, require.resolve("./public/index.html")],
         use: {
-          loader: "babel-loader",
+          loader:  require.resolve('babel-loader'),
           options: {
             cacheDirectory: true,
             cacheCompression: false,
-            presets: ["@babel/preset-env"],
-            plugins: ["@babel/plugin-proposal-class-properties"],
+            presets: [require.resolve('@babel/preset-env')],
+            plugins: ["@babel/plugin-proposal-class-properties", require.resolve('babel-plugin-styled-components')],
           },
         },
       },
@@ -294,7 +295,7 @@ module.exports = {
     // },
     removeAvailableModules: true,
     removeEmptyChunks: true,
-    mergeDuplicateChunks: true,  
+    mergeDuplicateChunks: true,
     minimizer: [new TerserPlugin({ parallel: true, test: /\.js(\?.*)?$/i, terserOptions: { compress: false, mangle: true, output: { comments: false, ascii_only: true } } })],
     flagIncludedChunks: true,
     usedExports: true,
@@ -314,3 +315,13 @@ module.exports = {
   //     'react-dom': 'ReactDOM'
   //  }
 };
+
+
+
+//         Whenever babel core issue comes up.
+// "dependencies": {
+//   "@babel/core": "^7.4.5",
+//   "core-js": "^2.6.5",
+// },
+
+// npm uninstall core-js, delete your node_modules. Then run npm install and npm install core-js

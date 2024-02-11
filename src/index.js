@@ -28,8 +28,6 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-
-
 /**                                                           Refresh the Token if it is expired
 The above code solves the problem of authenticating each request but what about the JWT token expiration? What will we do when the JWT authToken expires?
 Now we can ask users to log in again but that is not a good UX, a better way is to automatically fetch the new JWT authToken if the JWT refreshToken exists.
@@ -37,18 +35,19 @@ To do that we will again use Axios interceptor but not at request but at respons
  */
 
 // Add a response interceptor
-axios.interceptors.response.use((response) => response,async (error) => {
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
     const originalRequest = error.config;
-    
+
     // If the error status is 401 and there is no originalRequest._retry flag,
     // it means the token has expired and we need to refresh it
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        
-        const response = await api.refreshToken(localStorage.getItem("Refresh_Token"))
-        localStorage.setItem("Access_Token",response.data);
+        const response = await api.refreshToken(localStorage.getItem("Refresh_Token"));
+        localStorage.setItem("Access_Token", response.data);
 
         // Retry the original request with the new token
         originalRequest.headers.Authorization = `Bearer ${response.data}`;
@@ -70,10 +69,6 @@ Hence we need to fetch the new token using the JWTrefreshToken and then we set t
 In case of any JWT refreshToken error we can redirect to log in so that we can fetch new JWT authToken and JWTrefreshToken.
  */
 
-
-
-
-
 /**                                                                         NOTE
 To implement authentication in a React application, one popular approach is to use JSON Web Tokens (JWT). Here's a summary of the steps involved:
 
@@ -91,18 +86,14 @@ To implement authentication in a React application, one popular approach is to u
 By implementing JWT authentication with refresh tokens and using Axios interceptors, you can create a secure and efficient authentication system in your React application.
  */
 
-
-if (process.env.NODE_ENV === 'production') {
-  console.log = () => {}
-  console.error = () => {}
-  console.debug = () => {}
+if (process.env.NODE_ENV === "production") {
+  console.log = () => {};
+  console.error = () => {};
+  console.debug = () => {};
 }
-
-
 
 // Opt-in to Webpack hot module replacement
 if (module.hot) module.hot.accept();
-
 
 root.render(
   <React.StrictMode>

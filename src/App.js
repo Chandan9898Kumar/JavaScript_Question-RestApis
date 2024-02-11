@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import "../src/DarkLightTheme/styles.scss";
 
@@ -22,7 +22,7 @@ function App() {
 export default App;
 
 export const Loading = () => {
-  return <div>Loading ...</div>;
+  return <div style={{ color: "red", fontFamily: "sans-serif", fontSize: "20px" }}>Loading ...</div>;
 };
 
 /**

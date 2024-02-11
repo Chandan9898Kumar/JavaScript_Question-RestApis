@@ -1,5 +1,5 @@
-import React from "react";
-
+import React, { Suspense } from "react";
+import { Loading } from "../App";
 import Toggle from "./Toggle";
 import useDarkMode from "use-dark-mode";
 
@@ -15,7 +15,9 @@ const DarkModeToggle = () => {
         <button type="button" onClick={darkMode.disable}>
           ☀
         </button>
-        <Toggle checked={darkMode.value} onChange={darkMode.toggle} />
+        <Suspense fallback={<Loading />}>
+          <Toggle checked={darkMode.value} onChange={darkMode.toggle} />
+        </Suspense>
         <button type="button" onClick={darkMode.enable}>
           ☾
         </button>
