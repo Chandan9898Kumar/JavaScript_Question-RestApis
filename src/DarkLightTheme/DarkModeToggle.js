@@ -9,14 +9,17 @@ const DarkModeToggle = () => {
   const darkMode = useDarkMode(false);
 
   return (
-    <div className="dark-mode-toggle">
-      <button type="button" onClick={darkMode.disable}>
-        ☀
-      </button>
-      <Toggle checked={darkMode.value} onChange={darkMode.toggle} />
-      <button type="button" onClick={darkMode.enable}>
-        ☾
-      </button>
+    <div className="centerElem">
+      <div style={{ display: "inline-block", float: "inline-start", fontFamily: "sans-serif", fontSize: "larger", fontWeight: "bolder", color: "wheat" }}>Dark And Light Mode</div>
+      <div className="dark-mode-toggle">
+        <button type="button" onClick={darkMode.disable}>
+          ☀
+        </button>
+        <Toggle checked={darkMode.value} onChange={darkMode.toggle} />
+        <button type="button" onClick={darkMode.enable}>
+          ☾
+        </button>
+      </div>
     </div>
   );
 };

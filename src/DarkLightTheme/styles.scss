@@ -80,7 +80,8 @@ body.light-mode {
   
   .dark-mode-toggle {
     display: flex;
-    margin: 0 auto;
+    float: inline-end;
+    margin-right: 30px;
     
     & > button {
       font-size: 1.2em;
@@ -142,3 +143,7 @@ body.light-mode {
     }
   }
   
+
+  .centerElem{
+    width: 100%;
+  }
