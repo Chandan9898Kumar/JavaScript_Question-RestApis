@@ -6,7 +6,7 @@ function MyApp() {
   const [image, setImage] = useState("");
   const [result, setResult] = useState("");
   const [deleteMessage, setDeleteSuccess] = useState("");
-  const [token, setToken] = useState({accessToken:'',refreshToken:''});
+  const [token, setToken] = useState({ accessToken: "", refreshToken: "" });
 
   useEffect(() => {
     //   Calling get api
@@ -18,12 +18,7 @@ function MyApp() {
     //    To get image from api
     const getImage = () => {
       api.getImage().then((res) => {
-        const base64 = btoa(
-          new Uint8Array(res.data).reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            ""
-          )
-        );
+        const base64 = btoa(new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), ""));
         setImage(base64);
       });
     };
@@ -54,7 +49,7 @@ function MyApp() {
 
   const deleteItem = async (params) => {
     try {
-      const userValidation = await api.getUserToken(localStorage.getItem('Access_Token'));
+      const userValidation = await api.getUserToken(localStorage.getItem("Access_Token"));
       if (userValidation.status === 200) {
         try {
           const deleteResult = await api.deleteItem(params);
@@ -78,8 +73,7 @@ function MyApp() {
       name: `Product ${token}`,
       description: `Description of Product ${token}`,
       price: Date.now(),
-      image:
-        "https://media.geeksforgeeks.org/wp-content/uploads/20230728155224/images.jfif",
+      image: "https://media.geeksforgeeks.org/wp-content/uploads/20230728155224/images.jfif",
     };
     const createdItemsSuccess = await api.createItem(payload);
     getProductDetails();
@@ -101,9 +95,9 @@ function MyApp() {
 
   const CreateUserToken = async () => {
     const userToken = await api.createUserToken();
-    localStorage.setItem('Access_Token',userToken.data.ACCESS_TOKEN);
-    localStorage.setItem('Refresh_Token',userToken.data.REFRESH_TOKEN);
-    setToken({...token,accessToken:userToken.data.ACCESS_TOKEN,refreshToken:userToken.data.REFRESH_TOKEN});
+    localStorage.setItem("Access_Token", userToken.data.ACCESS_TOKEN);
+    localStorage.setItem("Refresh_Token", userToken.data.REFRESH_TOKEN);
+    setToken({ ...token, accessToken: userToken.data.ACCESS_TOKEN, refreshToken: userToken.data.REFRESH_TOKEN });
   };
 
   return (
@@ -113,11 +107,16 @@ function MyApp() {
         <button onClick={addItems}>Create Item</button>
       </h2>
       {
-        <div className="products">
+        <div>
           {data?.map((data) => {
             return (
-              <div key={data.id}>
-                <img className="img" src={data.image} alt="img" loading="eager" />
+              <div key={data.id} style={{ margin: "10px" }}>
+                <picture>
+                  <source srcSet={data.image} media="(min-width: 992px)" />
+                  <source srcSet={data.image} media="(min-width: 768px)" />
+                  <source srcSet={data.image} media="(min-width: 0px)" />
+                  <img src={data.image} alt="img" loading="eager" width="300px" height="200px" />
+                </picture>
                 <h1>{data.name}</h1>
                 <p>{data.description}</p>
                 <p>
@@ -125,22 +124,13 @@ function MyApp() {
                   {data.price}
                 </p>
                 <div>
-                  <button
-                    onClick={() => deleteItem(data)}
-                    style={{ marginLeft: "5px", marginRight: "5px" }}
-                  >
+                  <button onClick={() => deleteItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
                     Delete Item
                   </button>
-                  <button
-                    onClick={() => updateItem(data)}
-                    style={{ marginLeft: "5px", marginRight: "5px" }}
-                  >
+                  <button onClick={() => updateItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
                     Update Item
                   </button>
-                  <button
-                    onClick={() => GetItem(data)}
-                    style={{ marginLeft: "5px", marginRight: "5px" }}
-                  >
+                  <button onClick={() => GetItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
                     Get Item
                   </button>
                 </div>
@@ -149,13 +139,13 @@ function MyApp() {
           })}
         </div>
       }
-      <div>
-        <img
-          src={`data:;base64,${image}`}
-          alt="Ref_Image"
-          height="300px"
-          loading="eager"
-        />
+      <div style={{ marginTop: "10px" }}>
+        <picture>
+          <source srcSet={`data:;base64,${image}`} media="(min-width: 992px)" />
+          <source srcSet={`data:;base64,${image}`} media="(min-width: 768px)" />
+          <source srcSet={`data:;base64,${image}`} media="(min-width: 0px)" />
+          <img src={`data:;base64,${image}`} alt="Ref_Image" width="300px" height="300px" loading="eager" />
+        </picture>
       </div>
       <div>{deleteMessage && deleteMessage}</div>
     </div>

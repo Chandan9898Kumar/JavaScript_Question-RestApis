@@ -1,62 +1,62 @@
-const path = require('path');
-const webpack = require('webpack');
-const dotenv = require('dotenv');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanObsoleteChunks = require('webpack-clean-obsolete-chunks');
-const TerserPlugin = require('terser-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require("path");
+const webpack = require("webpack");
+const dotenv = require("dotenv");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CleanObsoleteChunks = require("webpack-clean-obsolete-chunks");
+const TerserPlugin = require("terser-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const isProd = process.env.NODE_ENV !== 'production';
+const isProd = process.env.NODE_ENV !== "production";
 dotenv.config();
 
 module.exports = {
-  name: 'React Webpack',
+  name: "React Webpack",
 
-  mode: process.env.NODE_ENV == 'production' ? 'production' : 'development',
+  mode: process.env.NODE_ENV == "production" ? "production" : "development",
 
-  target: 'web',
+  target: "web",
 
   entry: {
-    bundle: path.resolve(__dirname, './src/index.js'),
+    bundle: path.resolve(__dirname, "./src/index.js"),
   },
 
-  devtool: isProd ? 'eval-cheap-module-source-map' : 'source-map',
+  devtool: isProd ? "eval-cheap-module-source-map" : "source-map",
 
   resolve: {
-    modules: ['node_modules', path.resolve(__dirname, 'src')],
+    modules: ["node_modules", path.resolve(__dirname, "src")],
 
     alias: {
-      process: 'process/browser',
+      process: "process/browser",
     },
 
-    extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
+    extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
     fallback: {
       fs: false,
-      path: require.resolve('path-browserify'),
+      path: require.resolve("path-browserify"),
     },
   },
 
   output: {
-    path: path.resolve(__dirname, 'build'),
-    publicPath: '/',
+    path: path.resolve(__dirname, "build"),
+    publicPath: "/",
     pathinfo: true,
-    filename: process.env.NODE_ENV === 'production' ? '[name].[chunkhash].js' : '[name].[fullhash].js',
-    chunkFilename: process.env.NODE_ENV === 'production' ? 'chunk.[name].[chunkhash].js' : 'chunk.[name].[fullhash].js',
-    libraryTarget: 'umd',
+    filename: process.env.NODE_ENV === "production" ? "[name].[chunkhash].js" : "[name].[fullhash].js",
+    chunkFilename: process.env.NODE_ENV === "production" ? "chunk.[name].[chunkhash].js" : "chunk.[name].[fullhash].js",
+    libraryTarget: "umd",
     clean: true, // Clean the output directory before emit.
-    assetModuleFilename: '[name][ext]',
-    sourceMapFilename: '[name].js.map',
+    assetModuleFilename: "[name][ext]",
+    sourceMapFilename: "[name].js.map",
   },
 
   devServer: {
     headers: {
-      'access-control-allow-origin': '*',
-      'Access-Control-Allow-Credentials': true,
-      'cache-control': 'private, max-age=31536000',
+      "access-control-allow-origin": "*",
+      "Access-Control-Allow-Credentials": true,
+      "cache-control": "private, max-age=31536000",
     },
-    server: 'http',
-    allowedHosts: 'auto',
+    server: "http",
+    allowedHosts: "auto",
 
     client: {
       progress: true,
@@ -65,13 +65,13 @@ module.exports = {
     port: 3000,
     historyApiFallback: true,
     static: {
-      directory: path.join(__dirname, 'public'),
-      publicPath: ['/'],
+      directory: path.join(__dirname, "public"),
+      publicPath: ["/"],
       serveIndex: true,
     },
     compress: true,
     hot: true,
-    host: 'localhost',
+    host: "localhost",
   },
 
   module: {
@@ -79,59 +79,92 @@ module.exports = {
     rules: [
       {
         test: /\.m?js$/,
-        type: 'javascript/auto',
+        type: "javascript/auto",
       },
 
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
             cacheDirectory: true,
             cacheCompression: false,
-            presets: ['@babel/preset-env'],
-            plugins: ['@babel/plugin-proposal-class-properties'],
+            presets: ["@babel/preset-env"],
+            plugins: ["@babel/plugin-proposal-class-properties"],
           },
         },
       },
 
       {
         test: /\.html$/,
-        exclude: [/node_modules/, require.resolve('./public/index.html')],
+        exclude: [/node_modules/, require.resolve("./public/index.html")],
       },
 
       {
         test: /\.js$/,
-        exclude: [/node_modules/, require.resolve('./public/index.html')],
+        exclude: [/node_modules/, require.resolve("./public/index.html")],
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
             cacheDirectory: true,
             cacheCompression: false,
-            presets: ['@babel/preset-env'],
-            plugins: ['@babel/plugin-proposal-class-properties'],
+            presets: ["@babel/preset-env"],
+            plugins: ["@babel/plugin-proposal-class-properties"],
           },
         },
       },
 
-
-      //                                                        Image Loader 
+      //                                                        Image Loader
       //  npm install -D url-loader
-      // Webpack can also be used to load static resources such as images, videos, and other binary files. 
+      // Webpack can also be used to load static resources such as images, videos, and other binary files.
       // The most generic way of handling such types of files is by using file-loader or url-loader, which will provide a URL reference for the required resources to its consumers.
 
-      // In this section, we will add url-loader to handle common image formats. What sets url-loader apart from file-loader is that if the size of the original file is smaller 
+      // In this section, we will add url-loader to handle common image formats. What sets url-loader apart from file-loader is that if the size of the original file is smaller
       // than a given threshold, it will embed the entire file in the URL as base64-encoded contents, thus removing the need for an additional request.
       {
         test: /\.(png|svg|jpg|gif)$/i,
-        use: [{ 
-          loader: 'file-loader' ,
-          options: {
-                limit: 8192,
-                name: "static/media/[name].[hash:8].[ext]"
-             }
-      }],
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              limit: 8192,
+              name: "static/media/[name].[hash:8].[ext]",
+            },
+          },
+        ],
+      },
+
+      //                             Below: npm i image-webpack-loader
+
+      {
+        test: /\.(gif|png|jpe?g|svg)$/i,
+        use: [
+          "file-loader",
+          {
+            loader: "image-webpack-loader",
+            options: {
+              mozjpeg: {
+                progressive: true,
+              },
+              // optipng.enabled: false will disable optipng
+              optipng: {
+                enabled: false,
+              },
+              pngquant: {
+                quality: [0.65, 0.9],
+                speed: 4,
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+              // the webp option will enable WEBP
+              webp: {
+                quality: 75,
+              },
+            },
+          },
+        ],
       },
 
       // css-loader: Parses CSS files, resolving external resources, such as images, fonts, and additional style imports.
@@ -139,67 +172,67 @@ module.exports = {
       // npm install -D css-loader style-loader
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
 
       {
-        test:  /\.(js|mjs|jsx|ts|tsx)$/,
+        test: /\.(js|mjs|jsx|ts|tsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: require.resolve('babel-loader'),
+          loader: require.resolve("babel-loader"),
           options: {
-            presets: [['@babel/preset-env', { targets: 'defaults' }]],
-            plugins: ['@babel/plugin-proposal-class-properties'],
-            customize: require.resolve('babel-preset-react-app/webpack-overrides'),
+            presets: [["@babel/preset-env", { targets: "defaults" }]],
+            plugins: ["@babel/plugin-proposal-class-properties"],
+            customize: require.resolve("babel-preset-react-app/webpack-overrides"),
           },
         },
       },
 
       {
         test: /\.handlebars/,
-        use: 'handlebars-loader',
+        use: "handlebars-loader",
         exclude: /node_modules/,
       },
 
+      //   For Scss files
       {
         test: /\.(sass|scss)$/,
         use: [
-          'style-loader',
-          'css-loader',
-          'postcss-loader',
+          "style-loader",
+          "css-loader",
+          "postcss-loader",
           {
-            loader: 'sass-loader',
+            loader: "sass-loader",
             options: {
-              implementation: require('sass'),
+              implementation: require("sass"),
             },
           },
           { loader: "postcss-loader", options: { sourceMap: true } },
-          { loader: "sass-loader", options: { sourceMap: true, implementation: require('sass') } },
+          { loader: "sass-loader", options: { sourceMap: true, implementation: require("sass") } },
         ],
       },
 
-
       //                                        File-loader
-      // When we need to reference any other kinds of files, the generic file-loader will do the job. It works similarly to url-loader, 
+      // When we need to reference any other kinds of files, the generic file-loader will do the job. It works similarly to url-loader,
       // providing an asset URL to the code that requires it, but it makes no attempt to optimize it.
       //  npm install -D file-loader
       {
-      test: /\.(eot|otf|ttf|woff|woff2)$/,
-      loader: require.resolve("file-loader"),
-      options: {
-              name: "static/media/[name].[hash:8].[ext]"
-              }
+        test: /\.(eot|otf|ttf|woff|woff2)$/,
+        loader: require.resolve("file-loader"),
+        options: {
+          name: "static/media/[name].[hash:8].[ext]",
+        },
       },
 
-    //   {
-    //     test: /\.(sass|scss|css)$/,
-    //     use: [
-    //         "style-loader",
-    //         {loader: "css-loader",options: { sourceMap: true, importLoaders: 1, modules: false }},
-    //         { loader: "postcss-loader", options: { sourceMap: true } },
-    //         { loader: "sass-loader", options: { sourceMap: true, implementation: require('sass') } },
-    //     ],
-    // },
+      //   {
+      //     test: /\.(sass|scss|css)$/,
+      //     use: [
+      //         "style-loader",
+      //         {loader: "css-loader",options: { sourceMap: true, importLoaders: 1, modules: false }},
+      //         { loader: "postcss-loader", options: { sourceMap: true } },
+      //         { loader: "sass-loader", options: { sourceMap: true, implementation: require('sass') } },
+      //     ],
+      // },
     ],
   },
 
@@ -211,38 +244,40 @@ module.exports = {
 
     //  The generated public/index.html file will load our bundle and bootstrap our application.
     new HtmlWebpackPlugin({
-      template: path.resolve('./public/index.html'),
-      filename: './index.html',
-      favicon: './public/favicon.ico',
-      manifest: './public/manifest.json',
+      template: path.resolve("./public/index.html"),
+      filename: "./index.html",
+      favicon: "./public/favicon.ico",
+      manifest: "./public/manifest.json",
       minify: {
         removeComments: true,
+        removeAttributeQuotes: true,
         collapseWhitespace: true,
+        collapseBooleanAttributes: true,
       },
       inject: true,
       hash: true,
-      title: 'development',
+      title: "development",
     }),
 
     new CleanWebpackPlugin({
       root: process.cwd(),
       verbose: true,
       dry: false,
-      cleanOnceBeforeBuildPatterns: ['**/*', '!stats.json', '!important.js', '!folder/**/*'],
+      cleanOnceBeforeBuildPatterns: ["**/*", "!stats.json", "!important.js", "!folder/**/*"],
     }),
 
     // mini-css-extract-plugin: Extracts loaded styles into separate files for production use to take advantage of browser caching.
     new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css',
+      filename: "[name].css",
+      chunkFilename: "[id].css",
     }),
 
     new webpack.ProvidePlugin({
-      process: 'process/browser',
+      process: "process/browser",
     }),
 
     new webpack.DefinePlugin({
-      'process.env': JSON.stringify(process.env),
+      "process.env": JSON.stringify(process.env),
     }),
 
     new webpack.HotModuleReplacementPlugin(),
@@ -251,15 +286,19 @@ module.exports = {
   optimization: {
     minimize: true,
     runtimeChunk: true,
-    // splitChunks: false,
-    splitChunks: {
-      chunks: 'all',
-      minSize: 10000,
-      maxSize: 250000,
-    },
-    removeAvailableModules: false,
-    removeEmptyChunks: false,
-    minimizer: [new TerserPlugin({ parallel: true, test: /\.js(\?.*)?$/i, terserOptions: { compress: false, mangle: true ,output: { comments: false, ascii_only: true } } })],
+    splitChunks: false,
+    // splitChunks: {
+    //   chunks: "all",
+    //   minSize: 10000,
+    //   maxSize: 250000,
+    // },
+    removeAvailableModules: true,
+    removeEmptyChunks: true,
+    mergeDuplicateChunks: true,  
+    minimizer: [new TerserPlugin({ parallel: true, test: /\.js(\?.*)?$/i, terserOptions: { compress: false, mangle: true, output: { comments: false, ascii_only: true } } })],
+    flagIncludedChunks: true,
+    usedExports: true,
+    sideEffects: true,
   },
 
   performance: false,
@@ -269,9 +308,9 @@ module.exports = {
   // If we want to include modules from externally hosted scripts, we need to define them in the configuration. Otherwise, Webpack cannot generate the final bundle.
   // We can configure external scripts by using the Webpack externals configuration option. For example, we can use a library from a CDN via a separate <script> tag,
   // while still explicitly declaring it as a module dependency in our project.
-  
-//   externals: {
-//     react: 'React',
-//     'react-dom': 'ReactDOM'
-//  }
+
+  //   externals: {
+  //     react: 'React',
+  //     'react-dom': 'ReactDOM'
+  //  }
 };
