@@ -79,6 +79,10 @@ This method is not related to React but it's standard practice
 app.use(compression());
 
 
+const apicache = require('apicache');
+const cache = apicache.middleware;
+
+
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
 
@@ -93,6 +97,9 @@ const corsOPtions = {
   //  there inside console tab and try to access this api (http://localhost:5000/api/products) using fetch method then you will will see entire data without any cors error.
   //  But other than these two website you can't access this api data, It will throw CORS error.
 };
+
+
+
 
 // REST API to get all products details at once With this api the frontend will only get the data .The frontend cannot modify or update the data Because we are only using the GET method here.
 
@@ -109,11 +116,17 @@ Syntax: The basic syntax of these types of routes looks like this, the given fun
  * 
  */
 
+
+//  I have cached data only for this route for 5 seconds
+app.use("/api/products",cache('5 seconds'),(req,res,next)=>{
+  next()
+})
+
 //                                                            Example 1.
 //  Note: instead of app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']})) above we have done line 20, here  We have passed cors as a parameter to the route as a middleware function .which in turn will make the checks to enable cors or not for a specific method.
 //  We don't need put cors(corsOptions) here explicitly because,we have already used : app.use(cors()); which will enabled cors in all apis automatically and any website can access these apis.
 //  But if you want this  api to be accessed by some specific website then you can put cors inside api like this.
-app.get("/api/products", cors(corsOPtions), (req, res) => {
+app.get("/api/products",cors(corsOPtions), (req, res) => {
   res.status(200);
   res.send(data); // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
   // res.json(data) // Send a JSON response.
@@ -138,6 +151,9 @@ app.get("/api/products", cors(corsOPtions), (req, res) => {
  * also there are lots of types of response in express like res.json() which is used to send JSON object, res.sendFile() which is used to send a file, etc.
  */
 
+
+
+
 //                                                         Example 2: Setting up one more get request route on the ‘/hello’ path.
 
 // Most of the things are the same as the previous example.
@@ -149,6 +165,9 @@ app.get("/hello", (req, res) => {
   res.set("Content-Type", "text/html");
   res.status(200).send("<h1>Hello  Learner!</h1>");
 });
+
+
+
 
 //                                                          Example 3: Now we will see how to send data to server.
 
@@ -187,6 +206,10 @@ app.post("/postingTwo", (req, res) => {
   }
 });
 
+
+
+
+
 //                                                               Example 4:   Sending Files from Server
 //  Now we will see how to send files from the server.
 // Several times we need to transfer the resources from the server as per user request, there are majorly two methods to send files one is sending static files using middleware
@@ -209,6 +232,10 @@ app.post("/postingTwo", (req, res) => {
 const path = require("path");
 const { request } = require("http");
 app.use("/static", express.static(path.join(__dirname, "Static file")));
+
+
+
+
 
 //                                          Method 2: Sending a single file on a route with the sendFile() function.
 
@@ -257,6 +284,9 @@ app.post("/create", (req, res) => {
   res.status(200).json({ status: "Successfully created item." });
 });
 
+
+
+
 //                                                              Delete Api
 
 app.delete("/delete/:id", (request, response) => {
@@ -285,7 +315,7 @@ app.patch("/update", (request, response) => {
   const {
     payload: { id },
   } = request.body;
-  let findById = data.some((item) => item.id == id);
+  const findById = data.some((item) => item.id == id);
   const random = Math.floor(Math.random() * 20 + 1);
 
   if (findById) {

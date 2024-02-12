@@ -315,7 +315,7 @@ app.post('/post',(req, res) => {
 
 
 
-const cache = require('memory-cache');
+const caches = require('memory-cache');
 
 
 
@@ -326,7 +326,7 @@ const cache = require('memory-cache');
 
 app.get('/api/data', (req, res) => {
 
-  const data = cache.get('data');
+  const data = caches.get('data');
 
   if (data) {
     console.log('Serving from cache');
@@ -334,7 +334,7 @@ app.get('/api/data', (req, res) => {
   } else {
     console.log('Serving from API');
     const newData = // fetch data from API
-    cache.put('data', newData, 60 * 1000); // cache for 1 minute
+    caches.put('data', newData, 60 * 1000); // cache for 1 minute
     return res.json(newData);
   }
 });
