@@ -1,6 +1,5 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import "../src/DarkLightTheme/styles.scss";
 
 const MyApp = lazy(() => import("./Component/MyApp"));
