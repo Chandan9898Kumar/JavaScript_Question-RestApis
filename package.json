@@ -26,12 +26,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "webpack-dev-server --mode development",
+    "start": "cross-env NODE_ENV=development NODE_OPTIONS=--trace-deprecation webpack-dev-server",
     "test": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "format": "prettier --write \"src/**/*.js\"",
-    "build": "react-scripts build  webpack --mode production && GENERATE_SOURCEMAP=false ",
-    "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build"
+    "build": "cross-env NODE_ENV=production react-scripts build  webpack && GENERATE_SOURCEMAP=false ",
+    "winBuild": "cross-env NODE_ENV=production set \"GENERATE_SOURCEMAP=false\" && react-scripts build"
   },
   "eslintConfig": {
     "extends": [
@@ -76,6 +76,7 @@
     "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-react-hooks": "^4.6.0",
     "file-loader": "^6.2.0",
+    "html-loader": "^5.0.0",
     "html-webpack-plugin": "^5.5.4",
     "less": "^4.2.0",
     "less-loader": "^11.1.3",

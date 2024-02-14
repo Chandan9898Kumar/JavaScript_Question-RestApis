@@ -22,7 +22,8 @@
     "node": true,
     "es6": true,
     "worker": true,
-    "mocha": true
+    "mocha": true,
+    "es2020": true
   },
   "rules": {
     "quotes": "off",

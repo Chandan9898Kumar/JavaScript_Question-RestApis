@@ -1,23 +1,34 @@
 {
-    "presets": ["@babel/preset-env","@babel/preset-react"],
-    "plugins": ["@babel/plugin-proposal-class-properties","@babel/plugin-transform-object-rest-spread"]
+  "presets": ["@babel/preset-env", "@babel/preset-react"],
+  "plugins": [
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": true
+      }
+    ],
+    "@babel/plugin-transform-object-rest-spread",
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ]
+  ]
 }
 
-
 //  --------------------------------                                Note
-
 
 // @babel/preset-env: Transforms modern JavaScript features into backwards-compatible code.
 
 // @babel/preset-react: Transforms JSX syntax into plain-vanilla JavaScript function calls.
 
-
-
-
-// Babel is a JavaScript compiler with many plugins for code transformation. In this section, we will introduce it as a loader into our Webpack configuration 
+// Babel is a JavaScript compiler with many plugins for code transformation. In this section, we will introduce it as a loader into our Webpack configuration
 // and configure it for transforming modern JavaScript code into such that is understood by common browsers.
 
 // First, we will need to install babel-loader and @babel/core:
 
 // npm install -D @babel/core babel-loader
+
+
 // making babel-loader responsible for loading JavaScript files: in webpack

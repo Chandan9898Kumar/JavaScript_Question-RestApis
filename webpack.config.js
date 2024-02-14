@@ -30,7 +30,8 @@ module.exports = {
       process: "process/browser",
     },
 
-    extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
+    extensions: [".js", ".jsx", ".json", ".ts", ".tsx", ".scss"],
+
     fallback: {
       fs: false,
       path: require.resolve("path-browserify"),
@@ -87,12 +88,26 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
-          loader:  require.resolve('babel-loader'),
+          loader: "babel-loader",
           options: {
             cacheDirectory: true,
             cacheCompression: false,
-            presets: [require.resolve('@babel/preset-env')],
-            plugins: ["@babel/plugin-proposal-class-properties", require.resolve('babel-plugin-styled-components')],
+            presets: ["@babel/preset-env"],
+            plugins: ["@babel/plugin-proposal-class-properties","babel-plugin-styled-components"],
+          },
+        },
+      },
+
+      {
+        test: /\.js$/,
+        exclude: [/node_modules/, require.resolve("./public/index.html")],
+        use: {
+          loader: "babel-loader",
+          options: {
+            cacheDirectory: true,
+            cacheCompression: false,
+            presets: [require.resolve("@babel/preset-env")],
+            plugins: ["@babel/plugin-proposal-class-properties", require.resolve("babel-plugin-styled-components")],
           },
         },
       },
@@ -100,20 +115,12 @@ module.exports = {
       {
         test: /\.html$/,
         exclude: [/node_modules/, require.resolve("./public/index.html")],
-      },
-
-      {
-        test: /\.js$/,
-        exclude: [/node_modules/, require.resolve("./public/index.html")],
-        use: {
-          loader:  require.resolve('babel-loader'),
-          options: {
-            cacheDirectory: true,
-            cacheCompression: false,
-            presets: [require.resolve('@babel/preset-env')],
-            plugins: ["@babel/plugin-proposal-class-properties", require.resolve('babel-plugin-styled-components')],
+        use: [
+          {
+            loader: "html-loader",
+            options: { minimize: !isProd },
           },
-        },
+        ],
       },
 
       //                                                        Image Loader
@@ -130,7 +137,7 @@ module.exports = {
             loader: "file-loader",
             options: {
               limit: 8192,
-              name: "static/media/[name].[hash:8].[ext]",
+              name: "[path][name].[hash:8].[ext]",
             },
           },
         ],
@@ -180,7 +187,7 @@ module.exports = {
         test: /\.(js|mjs|jsx|ts|tsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: require.resolve("babel-loader"),
+          loader: "babel-loader",
           options: {
             presets: [["@babel/preset-env", { targets: "defaults" }]],
             plugins: ["@babel/plugin-proposal-class-properties"],
@@ -221,7 +228,7 @@ module.exports = {
         test: /\.(eot|otf|ttf|woff|woff2)$/,
         loader: require.resolve("file-loader"),
         options: {
-          name: "static/media/[name].[hash:8].[ext]",
+          name: "[path][name].[hash:8].[ext]",
         },
       },
 
@@ -282,6 +289,7 @@ module.exports = {
     }),
 
     new webpack.HotModuleReplacementPlugin(),
+
   ],
 
   optimization: {
@@ -316,8 +324,6 @@ module.exports = {
   //  }
 };
 
-
-
 //         Whenever babel core issue comes up.
 // "dependencies": {
 //   "@babel/core": "^7.4.5",
@@ -325,3 +331,7 @@ module.exports = {
 // },
 
 // npm uninstall core-js, delete your node_modules. Then run npm install and npm install core-js
+
+
+
+// cross-env :   Run scripts that set and use environment variables across platforms.
