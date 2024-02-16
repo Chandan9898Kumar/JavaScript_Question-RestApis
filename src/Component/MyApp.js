@@ -30,7 +30,7 @@ function MyApp() {
       const userToken = await api.createUserToken();
       localStorage.setItem("Access_Token", userToken.data.ACCESS_TOKEN);
       localStorage.setItem("Refresh_Token", userToken.data.REFRESH_TOKEN);
-      setToken((token)=>({ ...token, accessToken: userToken.data.ACCESS_TOKEN, refreshToken: userToken.data.REFRESH_TOKEN }));
+      setToken((token) => ({ ...token, accessToken: userToken.data.ACCESS_TOKEN, refreshToken: userToken.data.REFRESH_TOKEN }));
     };
 
     CreateUserToken();
@@ -89,10 +89,14 @@ function MyApp() {
   };
 
   const updateItem = async (params) => {
-    const updatedItems = await api.updateItemTwo(params);
-    if (updatedItems.status === 200) {
-      setItemInfo([]);
-      getProductDetails();
+    try {
+      const updatedItems = await api.updateItemTwo(params);
+      if (updatedItems.status === 200) {
+        setItemInfo([]);
+        getProductDetails();
+      }
+    } catch (error) {
+      console.log(error?.response?.data)
     }
   };
 
@@ -144,7 +148,7 @@ function MyApp() {
             })}
 
           {itemInfo &&
-            itemInfo.length &&
+            itemInfo.length > 0 &&
             itemInfo?.map((data) => {
               return (
                 <div key={data.id} style={{ margin: "10px" }}>

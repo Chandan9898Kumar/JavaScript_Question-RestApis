@@ -21,9 +21,9 @@ const jwt = require("jsonwebtoken");
 // Set up Global configuration access
 dotenv.config();
 
+const compression = require("compression");
 
-const compression = require('compression');
-
+const RateLimit = require("express-rate-limit");
 
 // Creating express app
 const app = express();
@@ -63,9 +63,7 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 // Therefore, you need to make sure that when you're executing a POST request, that you're including the "Content-Type" header.
 // Otherwise, bodyParser may not know what to do with the body of your POST request.
 
-app.use(helmet());
-
-
+app.use(helmet()); // Helmet helps to protect your app from well-known web vulnerabilities.
 
 /**
 Compression is a technique that is used mostly by servers to compress the assets before serving them over to the network. 
@@ -74,14 +72,18 @@ Widely accepted Algorithms are Gzip, Brotli, and Deflate. Where Gzip is accepted
 This method is not related to React but it's standard practice
  */
 
-
 // add compression middleware
-app.use(compression());
+app.use(compression()); // Compress all routes
 
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 2, // max to api call will be possible in 1 minute.
+});
 
-const apicache = require('apicache');
+app.use("/update", limiter); // Apply rate limiter to update request. if user call this api more than 2 times in 1 minute then api will fail.
+
+const apicache = require("apicache");
 const cache = apicache.middleware;
-
 
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
@@ -98,9 +100,6 @@ const corsOPtions = {
   //  But other than these two website you can't access this api data, It will throw CORS error.
 };
 
-
-
-
 // REST API to get all products details at once With this api the frontend will only get the data .The frontend cannot modify or update the data Because we are only using the GET method here.
 
 /**
@@ -116,17 +115,16 @@ Syntax: The basic syntax of these types of routes looks like this, the given fun
  * 
  */
 
-
 //  I have cached data only for this route for 5 seconds
-app.use("/api/products",cache('2 seconds'),(req,res,next)=>{
-  next()
-})
+app.use("/api/products", cache("2 seconds"), (req, res, next) => {
+  next();
+});
 
 //                                                            Example 1.
 //  Note: instead of app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']})) above we have done line 20, here  We have passed cors as a parameter to the route as a middleware function .which in turn will make the checks to enable cors or not for a specific method.
 //  We don't need put cors(corsOptions) here explicitly because,we have already used : app.use(cors()); which will enabled cors in all apis automatically and any website can access these apis.
 //  But if you want this  api to be accessed by some specific website then you can put cors inside api like this.
-app.get("/api/products",cors(corsOPtions), (req, res) => {
+app.get("/api/products", cors(corsOPtions), (req, res) => {
   res.status(200);
   res.send(data); // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
   // res.json(data) // Send a JSON response.
@@ -151,9 +149,6 @@ app.get("/api/products",cors(corsOPtions), (req, res) => {
  * also there are lots of types of response in express like res.json() which is used to send JSON object, res.sendFile() which is used to send a file, etc.
  */
 
-
-
-
 //                                                         Example 2: Setting up one more get request route on the ‘/hello’ path.
 
 // Most of the things are the same as the previous example.
@@ -165,9 +160,6 @@ app.get("/hello", (req, res) => {
   res.set("Content-Type", "text/html");
   res.status(200).send("<h1>Hello  Learner!</h1>");
 });
-
-
-
 
 //                                                          Example 3: Now we will see how to send data to server.
 
@@ -206,10 +198,6 @@ app.post("/postingTwo", (req, res) => {
   }
 });
 
-
-
-
-
 //                                                               Example 4:   Sending Files from Server
 //  Now we will see how to send files from the server.
 // Several times we need to transfer the resources from the server as per user request, there are majorly two methods to send files one is sending static files using middleware
@@ -232,10 +220,6 @@ app.post("/postingTwo", (req, res) => {
 const path = require("path");
 const { request } = require("http");
 app.use("/static", express.static(path.join(__dirname, "Static file")));
-
-
-
-
 
 //                                          Method 2: Sending a single file on a route with the sendFile() function.
 
@@ -284,9 +268,6 @@ app.post("/create", (req, res) => {
   res.status(200).json({ status: "Successfully created item." });
 });
 
-
-
-
 //                                                              Delete Api
 
 app.delete("/delete/:id", (request, response) => {
@@ -311,24 +292,25 @@ app.patch("/update", (request, response) => {
   //  Here we are matching id of the product whose details we want to update.
 
   // const {id} = request.query      OR Below
-
-  const {
-    payload: { id },
-  } = request.body;
+  const { payload: { id }} = request.body;
   const findById = data.some((item) => item.id == id);
   const random = Math.floor(Math.random() * 20 + 1);
 
-  if (findById) {
-    data.forEach((item, index) => {
-      if (item.id == id) {
-        item.name = `Product ${random}`;
-        item.description = `Description of Product ${random}`;
-        item.price = random * 10;
-      }
-    });
-    response.status(200).json({ status: "Successfully created item" });
+  if (request.rateLimit.remaining) {
+    if (findById) {
+      data.forEach((item, index) => {
+        if (item.id == id) {
+          item.name = `Product ${random}`;
+          item.description = `Description of Product ${random}`;
+          item.price = random * 10;
+        }
+      });
+      response.status(200).json({ status: "item updated Successfully" });
+    } else {
+      response.status(400).json({ status: "Something went wrong." });
+    }
   } else {
-    response.status(400).json({ status: "Something went wrong." });
+    response.status(429).send("Too many requests, please try again after some time.");
   }
 });
 
@@ -378,9 +360,7 @@ app.get("/api/product", (request, response) => {
   } else if (name && Id === "") {
     fetchedProduct = data.filter((item) => item.name === name);
   } else if (name && Id) {
-    fetchedProduct = data.filter(
-      (item) => +item.id === +Id && item.name === name
-    );
+    fetchedProduct = data.filter((item) => +item.id === +Id && item.name === name);
   } else {
     return response.status(400).json({ statusbar: "Something went wrong." });
   }
@@ -471,14 +451,13 @@ app.post("/refreshToken", (req, res) => {
     userId: 12,
   };
 
-
   try {
     const refreshToken = req.body.refreshToken;
-    const Verified_Refresh_Token = jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRET);
+    const Verified_Refresh_Token = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
     //  After refresh token is verified then again we are signing the Access Token, it will keep on going whenever the access token expires.
     if (Verified_Refresh_Token) {
-      const ACCESS_TOKEN = jwt.sign(payload, jwtSecretKey, {expiresIn: "10s"});
+      const ACCESS_TOKEN = jwt.sign(payload, jwtSecretKey, { expiresIn: "10s" });
       return res.send(ACCESS_TOKEN);
     } else {
       // Access Denied
@@ -488,7 +467,6 @@ app.post("/refreshToken", (req, res) => {
     // Access Denied
     return res.status(401).send("<h1>Page not found on the server</h1>");
   }
-  
 });
 
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -498,9 +476,7 @@ app.post("/refreshToken", (req, res) => {
 // The callback function gets executed either on the successful start of the server or due to an error.
 app.listen(PORT, (error) => {
   if (!error) {
-    console.log(
-      "Server is Successfully Running,and App is listening on port " + PORT
-    );
+    console.log("Server is Successfully Running,and App is listening on port " + PORT);
   } else {
     console.log("Error occurred, server can't start", error);
   }

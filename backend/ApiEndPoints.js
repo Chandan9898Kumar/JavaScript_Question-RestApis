@@ -50,6 +50,22 @@ app.delete('/articles/:id', (req, res) => {
 
 
 
+
+/**
+router.get("/about", function (req, res) {
+  res.send("About this wiki");
+});
+
+
+Note: Router functions are Express middleware, which means that they must either complete (respond to) the request or call the next function in the chain. 
+In the case above we complete the request using send(), so the next argument is not used (and we choose not to specify it).
+
+The router function above takes a single callback, but you can specify as many callback arguments as you want, or an array of callback functions. 
+Each function is part of the middleware chain, and will be called in the order it is added to the chain (unless a preceding function completes the request).
+ */
+
+
+
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //                                                                          Use logical nesting on endpoints
@@ -414,6 +430,84 @@ app.get("/hello", (req, res, next) => {
 app.use((req, res, next) => { 
   res.status(404).send( "<h1>Page not found on the server</h1>") 
 }) 
+
+
+
+
+// ==========================================================================================================================================================================
+
+
+/**
+ *                                                                                        Route parameters
+ * 
+Route parameters are named URL segments used to capture values at specific positions in the URL. 
+The named segments are prefixed with a colon and then the name (E.g., /:your_parameter_name/).
+ The captured values are stored in the req.params object using the parameter names as keys (E.g., req.params.your_parameter_name).
+
+So for example, consider a URL encoded to contain information about users and books: http://localhost:3000/users/34/books/8989.(frontend api) 
+We can extract this information as shown below, with the userId and bookId path parameters:
+
+Example :
+
+app.get("/users/:userId/books/:bookId", (req, res) => {
+  // Access userId via: req.params.userId
+  // Access bookId via: req.params.bookId
+  res.send(req.params);
+});
+ */
+
+
+// ==============================================================================================================================================================================
+
+
+
+/**
+ *                                                                   Add rate limiting to the API routes
+ * 
+Express-rate-limit is a middleware package that can be used to limit repeated requests to APIs and endpoints.
+There are many reasons why excessive requests might be made to your site, such as denial of service attacks, brute force attacks,
+or even just a client or script that is not behaving as expected. Aside from performance issues that can arise from too many requests causing your server to slow down,
+you may also be charged for the additional traffic. This package can be used to limit the number of requests that can be made to a particular route or set of routes.
+
+
+
+Install : npm install express-rate-limit
+
+Example :
+
+
+const compression = require("compression");
+const helmet = require("helmet");
+
+const app = express();
+
+// Set up rate limiter: maximum of twenty requests per minute
+
+const RateLimit = require("express-rate-limit");
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20,
+});
+
+
+// Apply rate limiter to all requests
+app.use(limiter);
+
+The command above limits all requests to 20 per minute (you can change this as needed).
+
+
+
+Note: Third-party services like Cloudflare can also be used if you need more advanced protection against denial of service or other types of attacks.
+
+
+
+
+ */
+
+
+
+
+
 
 
 
