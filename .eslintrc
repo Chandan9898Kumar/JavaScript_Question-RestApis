@@ -57,12 +57,7 @@
     "comma-dangle": [1, "always-multiline"],
     "react/jsx-uses-vars": 1,
     "react/display-name": "warn", // This rule warns when a component does not have a displayName property or a named function declaration.
-    "no-unused-vars": 1,
-    "no-console": 1, // 1 is true
-    "no-unexpected-multiline": "warn",
-    "no-var": "warn", // To prevent the use of the var keyword, you can use the following rule:,
     "object-curly-spacing": ["warn", "always"],
-    "no-console-log": "off",
     "react-hooks/rules-of-hooks": "error", //  This rule enforces the correct use of React Hooks.
     "react-hooks/exhaustive-deps": "warn",
     "react/no-unescaped-entities": 1, // This rule warns when unescaped HTML entities are used in JSX.
@@ -72,7 +67,11 @@
     "react/jsx-fragments": ["warn", "element"], //  This rule enforces the use of fragments instead of wrapping elements in unnecessary containers.
     "react/jsx-uses-react": 1, // This rule warns when a variable is declared but not used in a JSX expression.
     "react/prop-types": 1, // This rule warns when a component's props are not correctly defined or validated.
-
+    "space-infix-ops": 1,
+    "prefer-const": 1,
+    "operator-linebreak": ["warn", "after", {"overrides": {"?": "ignore", ":": "ignore"}}],
+    "arrow-parens": 0,
+    "valid-typeof":"warn",
     "valid-jsdoc": [
       0,
       {
@@ -128,10 +127,19 @@
       }
     ],
     "no-cond-assign": 1,
-    "space-infix-ops": 1,
-    "prefer-const": 1,
-    "operator-linebreak": ["warn", "after", {"overrides": {"?": "ignore", ":": "ignore"}}],
-    "arrow-parens": 0,
+    "no-useless-escape":"warn", // Disallow unnecessary escape characters.
+    "no-func-assign":"warn",
+    "no-redeclare":"warn",
+    "no-empty-character-class":"warn",
+    "no-self-assign":"warn",
+    "no-undef":"warn",
+    "no-duplicate-case":"warn",
+    "no-control-regex":"warn",
+    "no-sparse-arrays":"warn",
+    "no-unused-vars": 1,
+    "no-console": 1, // 1 is true
+    "no-unexpected-multiline": "warn",
+    "no-var": "warn", // To prevent the use of the var keyword, you can use the following rule:,
   },
 
   "overrides": [

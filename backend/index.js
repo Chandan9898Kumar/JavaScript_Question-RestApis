@@ -118,7 +118,7 @@ Syntax: The basic syntax of these types of routes looks like this, the given fun
 
 
 //  I have cached data only for this route for 5 seconds
-app.use("/api/products",cache('5 seconds'),(req,res,next)=>{
+app.use("/api/products",cache('2 seconds'),(req,res,next)=>{
   next()
 })
 

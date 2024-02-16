@@ -7,6 +7,7 @@ function MyApp() {
   const [result, setResult] = useState("");
   const [deleteMessage, setDeleteSuccess] = useState("");
   const [token, setToken] = useState({ accessToken: "", refreshToken: "" });
+  const [itemInfo, setItemInfo] = useState([]);
 
   useEffect(() => {
     //   Calling get api
@@ -25,6 +26,13 @@ function MyApp() {
     getImage();
 
     //   User Token
+    const CreateUserToken = async () => {
+      const userToken = await api.createUserToken();
+      localStorage.setItem("Access_Token", userToken.data.ACCESS_TOKEN);
+      localStorage.setItem("Refresh_Token", userToken.data.REFRESH_TOKEN);
+      setToken((token)=>({ ...token, accessToken: userToken.data.ACCESS_TOKEN, refreshToken: userToken.data.REFRESH_TOKEN }));
+    };
+
     CreateUserToken();
   }, []);
 
@@ -82,22 +90,22 @@ function MyApp() {
 
   const updateItem = async (params) => {
     const updatedItems = await api.updateItemTwo(params);
-    getProductDetails();
+    if (updatedItems.status === 200) {
+      setItemInfo([]);
+      getProductDetails();
+    }
   };
 
   const GetItem = async (params) => {
-    const getSpecificItem = await api.getSpecificItem(params);
+    // const getSpecificItem = await api.getSpecificItem(params);
     //                    OR
-    const getSpecificItemData = await api.getSpecificItemByParams(params);
+    // const getSpecificItemData = await api.getSpecificItemByParams(params);
     //                      OR
-    const getSpecificItemWithQuery = await api.getSpecificItemByQuery(params);
-  };
-
-  const CreateUserToken = async () => {
-    const userToken = await api.createUserToken();
-    localStorage.setItem("Access_Token", userToken.data.ACCESS_TOKEN);
-    localStorage.setItem("Refresh_Token", userToken.data.REFRESH_TOKEN);
-    setToken({ ...token, accessToken: userToken.data.ACCESS_TOKEN, refreshToken: userToken.data.REFRESH_TOKEN });
+    try {
+      const getSpecificItemWithQuery = await api.getSpecificItemByQuery(params);
+      setItemInfo(getSpecificItemWithQuery.data);
+      setData([]);
+    } catch (error) {}
   };
 
   return (
@@ -108,35 +116,58 @@ function MyApp() {
       </h2>
       {
         <div>
-          {data?.map((data) => {
-            return (
-              <div key={data.id} style={{ margin: "10px" }}>
-                <picture>
-                  <source srcSet={data.image} media="(min-width: 992px)" />
-                  <source srcSet={data.image} media="(min-width: 768px)" />
-                  <source srcSet={data.image} media="(min-width: 0px)" />
-                  <img src={data.image} alt="images" loading="eager" width="300px" height="200px" />
-                </picture>
-                <h1>{data.name}</h1>
-                <p>{data.description}</p>
-                <p>
-                  Rs. {"  "}
-                  {data.price}
-                </p>
-                <div>
-                  <button onClick={() => deleteItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
-                    Delete Item
-                  </button>
-                  <button onClick={() => updateItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
-                    Update Item
-                  </button>
-                  <button onClick={() => GetItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
-                    Get Item
-                  </button>
+          {data &&
+            data.length > 0 &&
+            data?.map((data) => {
+              return (
+                <div key={data.id} style={{ margin: "10px" }}>
+                  <picture>
+                    <source srcSet={data.image} media="(min-width: 992px)" />
+                    <source srcSet={data.image} media="(min-width: 768px)" />
+                    <source srcSet={data.image} media="(min-width: 0px)" />
+                    <img src={data.image} alt="images" loading="eager" width="300px" height="200px" />
+                  </picture>
+                  <h1>{data.name}</h1>
+                  <div>
+                    <button onClick={() => deleteItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
+                      Delete Item
+                    </button>
+                    <button onClick={() => updateItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
+                      Update Item
+                    </button>
+                    <button onClick={() => GetItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
+                      Get Item Information
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+
+          {itemInfo &&
+            itemInfo.length &&
+            itemInfo?.map((data) => {
+              return (
+                <div key={data.id} style={{ margin: "10px" }}>
+                  <picture>
+                    <source srcSet={data.image} media="(min-width: 992px)" />
+                    <source srcSet={data.image} media="(min-width: 768px)" />
+                    <source srcSet={data.image} media="(min-width: 0px)" />
+                    <img src={data.image} alt="images" loading="eager" width="300px" height="200px" />
+                  </picture>
+                  <h1>{data.name}</h1>
+                  <p>{data.description}</p>
+                  <p>
+                    Rs. {"  "}
+                    {data.price}
+                  </p>
+                  <div>
+                    <button onClick={() => updateItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
+                      Update And Get All Items
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
         </div>
       }
       <div style={{ marginTop: "10px" }}>

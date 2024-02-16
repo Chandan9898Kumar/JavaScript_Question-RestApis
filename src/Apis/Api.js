@@ -42,7 +42,7 @@ const postingBody = (params) => {
 };
 
 const postingBodyTwo = (params) => {
-  //   making post api call. here in body we are sending name:'GeekyAnt' so in backend we can access it through req.body.name
+  //   making post api call. here in body we are sending name:'Sir' so in backend we can access it through req.body.name
   return axios.post("http://localhost:5000/postingTwo", { name: params.name }, { headers: { "Content-Type": "application/json" } });
 };
 
