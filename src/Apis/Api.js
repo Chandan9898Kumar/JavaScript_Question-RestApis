@@ -80,7 +80,7 @@ const updateItemTwo = (payload) => {
 // 1. Create jwt token.
 
 const createUserToken = () => {
-  return axios.post("http://localhost:5000/user/generateToken");
+  return axios.post("http://localhost:5000/user/generateToken",{ headers: { 'Content-Type': 'application/json','Accept': 'application/json' }, credentials: 'include' });
 };
 
 // 2.  Access token

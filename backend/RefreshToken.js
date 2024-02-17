@@ -185,12 +185,12 @@ app.post("/login", (req, res) => {
       { expiresIn: "1d" }
     );
 
-    // Assigning refresh token in http-only cookie
+    // Assigning refresh token in http-only cookie. we have stored Refresh token in Cookie.
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
       sameSite: "None",
       secure: true,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000, // It is the Expiry time of this cookie.
     });
 
     return res.json({ accessToken });
@@ -202,7 +202,7 @@ app.post("/login", (req, res) => {
   }
 });
 
-//  If token is in cookies then access from there else if it is coming from req.body then access from there.
+//  If token is in cookies then access from there else if it is coming from req.body then access from there.Accessing refresh token from cookie.
 app.post("/refresh", (req, res) => {
   if (req.cookies?.jwt) {
     // Destructuring refreshToken from cookie
@@ -211,7 +211,7 @@ app.post("/refresh", (req, res) => {
     // Verifying refresh token
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        // Wrong Refesh Token
+        // Wrong Refresh Token
         return res.status(406).json({ message: "Unauthorized" });
       } else {
         // Correct token we send a new access token
@@ -261,7 +261,7 @@ REFRESH_TOKEN_SECRET=MYREFRESHTOKENSECRET
  * 
 1. When you do log in, send 2 tokens (Access token, Refresh token) in response to the client.
 2. The access token will have less expiry time and Refresh will have long expiry time.
-3. The client (Front end) will store refresh token in an httponly cookie and access token in local storage.
+3. The client (Front end) will store refresh token in an http-only cookie and access token in local storage.
 4. The client will use an access token for calling APIs. But when it expires, you call auth server API to get the new token (refresh token is automatically added to http request
    since it's stored in cookies).
 5. Your auth server will have an API exposed which will accept refresh token and checks for its validity and return a new access token.
@@ -368,5 +368,85 @@ app.use(session({
 }))
 
 
+
+
+                                                                                Note :
+
+Cookie Parser parses the incoming cookies from request to JSON value.
+Whereas cookie-session or express-session is to maintain session on your server.
+
+When your frontend sends a request, if cookies are set up, it will send some cookies based on usage, which by default are hard to interpret by server,
+so here cookie parser will parse those for easy understand ability. Which in turn could be used to create/maintain sessions or Authenticate (Depends upon cookie usage).
+
+
+
+cookie-session :
+
+A user session can be stored in two main ways with cookies: on the server or on the client. This module stores the session data on the client within a cookie, 
+while a module like express-session stores only a session identifier on the client within a cookie and stores the session data on the server, typically in a database.
+
+The following points can help you choose which to use:
+
+1. cookie-session does not require any database / resources on the server side, though the total session data cannot exceed the browser’s max cookie size.
+2. cookie-session can simplify certain load-balanced scenarios.
+3. cookie-session can be used to store a “light” session and include an identifier to look up a database-backed secondary store to reduce database lookups.
+
+Install : npm install cookie-session
+
+Examples :
+
+// 
+var cookieSession = require('cookie-session')
+var express = require('express')
+
+var app = express()
+
+app.use(cookieSession({
+  name: 'session',
+  // keys: [secret keys]
+
+  // Cookie Options
+  // maxAge: 24 * 60 * 60 * 1000 // 24 hours
+// }))
+
+
+
+
+cookieSession(options) : 
+
+Create a new cookie session middleware with the provided options. This middleware will attach the property session to req, which provides an object representing the loaded session. 
+This session is either a new session if no valid session was provided in the request, or a loaded session from the request.
+
+The middleware will automatically add a Set-Cookie header to the response if the contents of req.session were altered. 
+Note that no Set-Cookie header will be in the response (and thus no session created for a specific user) unless there are contents in the session, 
+so be sure to add something to req.session as soon as you have identifying information to store for the session.
+
+Options
+Cookie session accepts these properties in the options object.
+
+name
+The name of the cookie to set, defaults to session.
+
+keys
+The list of keys to use to sign & verify cookie values, or a configured Keygrip instance. Set cookies are always signed with keys[0], 
+while the other keys are valid for verification, allowing for key rotation. If a Keygrip instance is provided, it can be used to change signature parameters like the algorithm of the signature.
+
+secret
+A string which will be used as single key if keys is not provided.
+
+Cookie Options
+Other options are passed to cookies.get() and cookies.set() allowing you to control security, domain, path, and signing among other settings.
+
+The options can also contain any of the following (for the full list, see cookies module documentation:
+
+1. maxAge: a number representing the milliseconds from Date.now() for expiry
+2. expires: a Date object indicating the cookie’s expiration date (expires at the end of session by default).
+3. path: a string indicating the path of the cookie (/ by default).
+4. domain: a string indicating the domain of the cookie (no default).
+5. sameSite: a boolean or string indicating whether the cookie is a “same site” cookie (false by default). This can be set to 'strict', 'lax', 'none', or true (which maps to 'strict').
+6. secure: a boolean indicating whether the cookie is only to be sent over HTTPS (false by default for HTTP, true by default for HTTPS). If this is set to true and Node.js is not directly over a TLS connection, be sure to read how to setup Express behind proxies or the cookie may not ever set correctly.
+7. httpOnly: a boolean indicating whether the cookie is only to be sent over HTTP(S), and not made available to client JavaScript (true by default).
+8. signed: a boolean indicating whether the cookie is to be signed (true by default).
+9. overwrite: a boolean indicating whether to overwrite previously set cookies of the same name (true by default).
 
  */

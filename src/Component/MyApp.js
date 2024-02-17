@@ -90,13 +90,13 @@ function MyApp() {
 
   const updateItem = async (params, value) => {
     if (value) {
+      setItemInfo([]);
       getProductDetails();
       return;
     }
     try {
       const updatedItems = await api.updateItemTwo(params);
       if (updatedItems.status === 200) {
-        setItemInfo([]);
         getProductDetails();
       }
     } catch (error) {

@@ -7,11 +7,11 @@
 // Note : require() is a node.js function used to load the external modules. Here ‘express’ is that external module.
 const express = require("express");
 
+const cookieParser = require("cookie-parser"); // It parses the incoming cookies from request to JSON value.
+
 const cors = require("cors"); // CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
 
 const bodyParser = require("body-parser"); // bodyParser.json() parses the JSON request body string into a JavaScript object and then assigns it to the req.body object.
-
-const cookieParser = require("cookie-parser");
 
 const helmet = require("helmet"); // Helmet helps secure Express apps by setting HTTP response headers. : npm install helmet
 
@@ -34,6 +34,9 @@ const app = express();
 //  These are working as a MIDDLEWARES :
 app.use(express.json()); // The express.json() middleware is used to parses the incoming request object as a JSON object. It parses incoming JSON requests and puts the parsed data in req.body.The app.use() is the syntax to use any middleware.
 
+// Cookie-parser middleware is used to parse the cookies that are attached to the request made by the client to the server.Here we are using cookie-parser not cookie-session
+app.use(cookieParser());
+
 //  To enable CORS. do app.use(cors()); Now all requests received by the server will have cors enabled in them.
 app.use(cors()); // Calling use(cors()) will enable the express server to respond to preflight requests.A preflight request is basically an OPTION request sent to the server before the actual request is sent, in order to ask which origin and which request options the server accepts.
 
@@ -43,14 +46,12 @@ app.use(cors()); // Calling use(cors()) will enable the express server to respon
 // Express.js express.raw() Function : The express.raw() function is a built-in middleware function in Express. It parses incoming request payloads into a Buffer and is based on body-parser.
 app.use(express.raw()); // Make a POST request with header set to ‘content-type’ – ‘application/octet-stream’
 
-app.use(cookieParser());
-
 //  The express.urlencoded() function is a built-in middleware function in Express. It parses incoming requests with URL-encoded payloads and is based on a body parser.
-app.use(express.urlencoded({ extended: true })); // Parse x-www-form-urlencoded request into req.body. make a POST request with header set to ‘content-type: application/x-www-form-urlencoded’ and body {“name”:”Geeky”}.and do  console.log(req.body)
+app.use(express.urlencoded({ extended: false })); // Parse x-www-form-urlencoded request into req.body. make a POST request with header set to ‘content-type: application/x-www-form-urlencoded’ and body {“name”:”Geeky”}.and do  console.log(req.body)
 
 app.use(express.text()); // It parses the incoming request payloads into a string and is based on body-parser.make a POST request with header set to ‘content-type: text/plain’ and body {“title”:”Geeky”}.
 
-//  Note :  bodyParser (in newer version of express it is not needed) instead use  app.use(express.json());.
+//  Note :                      bodyParser (in newer version of express it is not needed) instead use  app.use(express.json());.
 
 //  Depending on Content-Type in your client request the server should have different, one of the below app.use():
 
@@ -64,7 +65,6 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 // Otherwise, bodyParser may not know what to do with the body of your POST request.
 
 
-
 //                                                            Helmet.
 // Helmet is a collection of several smaller middleware functions that set security-related HTTP response headers. Some examples include:
 // helmet.contentSecurityPolicy which sets the Content-Security-Policy header. This helps prevent cross-site scripting attacks among many other things.
@@ -73,9 +73,7 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 app.use(helmet()); // Helmet helps to protect your app from well-known web vulnerabilities.
 
 
-
-
-/**
+/**                                                       Compress
 Compression is a technique that is used mostly by servers to compress the assets before serving them over to the network. 
 This makes a whole lot of difference ass such as 70% of your React bundle size can be optimized using this method if your server already not doing them.
 Widely accepted Algorithms are Gzip, Brotli, and Deflate. Where Gzip is accepted by all browsers nowadays.
@@ -85,8 +83,6 @@ This method is not related to React but it's standard practice
 // add compression middleware
 app.use(compression()); // Compress all routes
 
-
-
 const limiter = RateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 10, // max 10 api call will be possible in 1 minute.
@@ -94,12 +90,8 @@ const limiter = RateLimit({
 
 app.use("/update", limiter); // Apply rate limiter to update request. if user call this api more than 10 times in 1 minute then api will fail.
 
-
-
 const apicache = require("apicache");
 const cache = apicache.middleware;
-
-
 
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
@@ -108,16 +100,13 @@ const PORT = 5000; // Set the port for our local application, 3000 is the defaul
 const corsOPtions = {
   origin: "*", // if you need to enable cors on all the sites and make the data available across then you can change the origin to a star which means that you can use cors enabled for all websites.
   // which means now you can got to any website and if you want to access "http://localhost:5000/api/products" api  at line 64.then it will not throw an error.
-
+  credentials:true,
   //                                                              OR
   //  origin: ["https://www.wikipedia.org", "https://www.google.com"]
   //  Use the following code adding the origin as the website.now if we go wikipedia page or google page
   //  there inside console tab and try to access this api (http://localhost:5000/api/products) using fetch method then you will will see entire data without any cors error.
   //  But other than these two website you can't access this api data, It will throw CORS error.
 };
-
-
-
 
 // REST API to get all products details at once With this api the frontend will only get the data .The frontend cannot modify or update the data Because we are only using the GET method here.
 
@@ -139,10 +128,6 @@ app.use("/api/products", cache("2 seconds"), (req, res, next) => {
   next();
 });
 
-
-
-
-
 //                                                            Example 1.
 //  Note: instead of app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']})) above we have done line 20, here  We have passed cors as a parameter to the route as a middleware function .which in turn will make the checks to enable cors or not for a specific method.
 //  We don't need put cors(corsOptions) here explicitly because,we have already used : app.use(cors()); which will enabled cors in all apis automatically and any website can access these apis.
@@ -158,8 +143,6 @@ app.get("/api/products", cors(corsOPtions), (req, res) => {
   // 1.  Here req is request, when the client/user call api/make request to the server and pass data in  apis url then this req will be called and have those data in req.body.
   // 2.  Here res is response when the client/user call api/make request to the server after that server(backend) send data to client/user as a response.
 });
-
-
 
 /**
  * 1. With app.get() we are configuring our first route, it requires two arguments first one is the path and,
@@ -210,6 +193,8 @@ app.post("/posting", (req, res) => {
     res.status(400).json({ message: "Please provide valid name" });
   }
 });
+
+
 
 // The app.set() function is used to assign the setting name to value. You may store any value that you want, but certain names can be used to configure the behavior of the server.
 app.set("title", "Please confirm your presence");
@@ -264,7 +249,7 @@ app.use("/static", express.static(path.join(__dirname, "Static file")));
 
 //  Example 1.
 app.get("/file", (req, res) => {
-  res.sendFile(path.join(__dirname, "RefreeTwo.jpg"));
+  res.status(200).sendFile(path.join(__dirname, "RefreeTwo.jpg"));
 });
 
 //  Example 2.
@@ -318,7 +303,9 @@ app.patch("/update", (request, response) => {
   //  Here we are matching id of the product whose details we want to update.
 
   // const {id} = request.query      OR Below
-  const { payload: { id } } = request.body;
+  const {
+    payload: { id },
+  } = request.body;
   const findById = data.some((item) => item.id == id);
   const random = Math.floor(Math.random() * 20 + 1);
 
@@ -440,10 +427,19 @@ app.post("/user/generateToken", (req, res) => {
   // Creating refresh token not that expiry of refresh token is greater than the access token
   const REFRESH_TOKEN = jwt.sign(payload, refreshTokenKey, { expiresIn: "1h" });
 
+  // Assigning refresh token in http-only cookie. we can simply send this token from send() method instead of in cookie and store it in our local storage (frontend side).
+  // setting a cookie can be done as such:-
+  res.cookie("jwt",REFRESH_TOKEN, {
+    httpOnly: true,
+    sameSite: "None",
+    secure: false,
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+  //                                                      OR
   //  we can also  store token in cookie and header of response :
-  // res.cookie('refreshToken',REFRESH_TOKEN,{httpOnly:true,safe:true,sameSite: "None",secure: true,maxAge: 24 * 60 * 60 * 1000}).header('Authorization',ACCESS_TOKEN).send({ACCESS_TOKEN,REFRESH_TOKEN})
+  // res.cookie("refreshToken", REFRESH_TOKEN, { httpOnly: true, safe: true, sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 }).header("Authorization", ACCESS_TOKEN).send({ ACCESS_TOKEN, REFRESH_TOKEN });
 
-  res.send({ ACCESS_TOKEN, REFRESH_TOKEN });
+  res.status(200).send({ ACCESS_TOKEN, REFRESH_TOKEN });
 });
 
 // Verification of JWT
@@ -458,7 +454,7 @@ app.get("/user/validateToken", (req, res) => {
     const verified = jwt.verify(token, jwtSecretKey);
 
     if (verified) {
-      return res.send("Successfully Verified");
+      return res.status(200).send("Successfully Verified");
     } else {
       // Access Denied
       return res.status(401).send("<h1>Page not found on the server</h1>");
