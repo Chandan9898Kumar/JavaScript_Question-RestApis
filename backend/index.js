@@ -63,7 +63,17 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 // Therefore, you need to make sure that when you're executing a POST request, that you're including the "Content-Type" header.
 // Otherwise, bodyParser may not know what to do with the body of your POST request.
 
+
+
+//                                                            Helmet.
+// Helmet is a collection of several smaller middleware functions that set security-related HTTP response headers. Some examples include:
+// helmet.contentSecurityPolicy which sets the Content-Security-Policy header. This helps prevent cross-site scripting attacks among many other things.
+// helmet.hsts which sets the Strict-Transport-Security header. This helps enforce secure (HTTPS) connections to the server.
+// helmet.frameguard which sets the X-Frame-Options header. This provides clickjacking protection.
 app.use(helmet()); // Helmet helps to protect your app from well-known web vulnerabilities.
+
+
+
 
 /**
 Compression is a technique that is used mostly by servers to compress the assets before serving them over to the network. 
@@ -75,15 +85,21 @@ This method is not related to React but it's standard practice
 // add compression middleware
 app.use(compression()); // Compress all routes
 
+
+
 const limiter = RateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 2, // max to api call will be possible in 1 minute.
+  max: 10, // max 10 api call will be possible in 1 minute.
 });
 
-app.use("/update", limiter); // Apply rate limiter to update request. if user call this api more than 2 times in 1 minute then api will fail.
+app.use("/update", limiter); // Apply rate limiter to update request. if user call this api more than 10 times in 1 minute then api will fail.
+
+
 
 const apicache = require("apicache");
 const cache = apicache.middleware;
+
+
 
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
@@ -99,6 +115,9 @@ const corsOPtions = {
   //  there inside console tab and try to access this api (http://localhost:5000/api/products) using fetch method then you will will see entire data without any cors error.
   //  But other than these two website you can't access this api data, It will throw CORS error.
 };
+
+
+
 
 // REST API to get all products details at once With this api the frontend will only get the data .The frontend cannot modify or update the data Because we are only using the GET method here.
 
@@ -120,10 +139,15 @@ app.use("/api/products", cache("2 seconds"), (req, res, next) => {
   next();
 });
 
+
+
+
+
 //                                                            Example 1.
 //  Note: instead of app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']})) above we have done line 20, here  We have passed cors as a parameter to the route as a middleware function .which in turn will make the checks to enable cors or not for a specific method.
 //  We don't need put cors(corsOptions) here explicitly because,we have already used : app.use(cors()); which will enabled cors in all apis automatically and any website can access these apis.
 //  But if you want this  api to be accessed by some specific website then you can put cors inside api like this.
+
 app.get("/api/products", cors(corsOPtions), (req, res) => {
   res.status(200);
   res.send(data); // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
@@ -134,6 +158,8 @@ app.get("/api/products", cors(corsOPtions), (req, res) => {
   // 1.  Here req is request, when the client/user call api/make request to the server and pass data in  apis url then this req will be called and have those data in req.body.
   // 2.  Here res is response when the client/user call api/make request to the server after that server(backend) send data to client/user as a response.
 });
+
+
 
 /**
  * 1. With app.get() we are configuring our first route, it requires two arguments first one is the path and,
@@ -179,7 +205,7 @@ app.get("/hello", (req, res) => {
 app.post("/posting", (req, res) => {
   const { name } = req.body;
   if (name) {
-    res.send(`Welcome ${name},now you can access data.`);
+    res.status(200).send(`Welcome ${name},now you can access data.`);
   } else {
     res.status(400).json({ message: "Please provide valid name" });
   }
@@ -192,7 +218,7 @@ app.set("title", "Please confirm your presence");
 app.post("/postingTwo", (req, res) => {
   const { name } = req.body;
   if (name) {
-    res.send(`${name},${app.get("title")}`);
+    res.status(200).send(`${name},${app.get("title")}`);
   } else {
     res.status(400).json({ message: "Please provide valid name" });
   }
@@ -292,7 +318,7 @@ app.patch("/update", (request, response) => {
   //  Here we are matching id of the product whose details we want to update.
 
   // const {id} = request.query      OR Below
-  const { payload: { id }} = request.body;
+  const { payload: { id } } = request.body;
   const findById = data.some((item) => item.id == id);
   const random = Math.floor(Math.random() * 20 + 1);
 
@@ -356,11 +382,11 @@ app.get("/api/product", (request, response) => {
   // console.log(request.secure);                    //  The req.secure property is a Boolean property that is true if a TLS connection is established else returns false.
 
   if (Id && name === "") {
-    fetchedProduct = data.filter((item) => +item.id === +Id);
+    fetchedProduct = data.filter((item) => Number(item.id) === Number(Id));
   } else if (name && Id === "") {
     fetchedProduct = data.filter((item) => item.name === name);
   } else if (name && Id) {
-    fetchedProduct = data.filter((item) => +item.id === +Id && item.name === name);
+    fetchedProduct = data.filter((item) => Number(item.id) === Number(Id) && item.name === name);
   } else {
     return response.status(400).json({ statusbar: "Something went wrong." });
   }
@@ -401,10 +427,10 @@ app.post("/user/generateToken", (req, res) => {
   // Validate User Here
   // Then generate JWT Token
 
-  let jwtSecretKey = process.env.JWT_SECRET_KEY;
-  let refreshTokenKey = process.env.REFRESH_TOKEN_SECRET;
+  const jwtSecretKey = process.env.JWT_SECRET_KEY;
+  const refreshTokenKey = process.env.REFRESH_TOKEN_SECRET;
 
-  let payload = {
+  const payload = {
     time: Date(),
     userId: 12,
   };
@@ -425,7 +451,7 @@ app.get("/user/validateToken", (req, res) => {
   // Tokens are generally passed in header of request
   // Due to security reasons.
 
-  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+  const jwtSecretKey = process.env.JWT_SECRET_KEY;
 
   try {
     const token = req.headers.authorization.split(" ")[1];
@@ -444,9 +470,9 @@ app.get("/user/validateToken", (req, res) => {
 });
 
 app.post("/refreshToken", (req, res) => {
-  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+  const jwtSecretKey = process.env.JWT_SECRET_KEY;
 
-  let payload = {
+  const payload = {
     time: Date(),
     userId: 12,
   };

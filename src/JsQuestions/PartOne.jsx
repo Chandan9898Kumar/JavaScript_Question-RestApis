@@ -50,9 +50,9 @@ console.log(result,'result')
 
 
 
-------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
 
-Qestion. 3 . Given a number in string format, return a single-digit no by recursively adding the digits in a string format  .
+// Qestion. 3 . Given a number in string format, return a single-digit no by recursively adding the digits in a string format  .
 
 Solution -  1.
 let n = 9624
@@ -71,10 +71,10 @@ function ab(n, stri) {
 let res=ab(n)
 
 
-                                                                                         OR                                                    
+                                                                                        //  OR                                                    
 
 
-Solution    .2.
+// Solution    .2.
 
 function ab(value){
   
@@ -99,7 +99,7 @@ const res = ab(55555)
 console.log(res,'ressssssssssssss')
 
 
---------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------
 
 
 // question 4.       Reverse string  at same place =  'you are winner'
@@ -122,7 +122,7 @@ const result = rever(str)
 console.log(result)
 
 
-----------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------
 
 // ques 5.      Sort on this basis of height,ig height is same then sort on name.
 

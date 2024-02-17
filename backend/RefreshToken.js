@@ -1,10 +1,6 @@
-//  this                                                          Covering JWT 
-
-
+//  this                                                          Covering JWT
 
 // ------------------------------------------------------------JWT Authentication with Node.js---------------------------------------------------------------------------
-
-
 
 // Step 1.    npm install express dotenv jsonwebtoken
 
@@ -14,12 +10,11 @@
 
 // Step 4.   Create Route for Validating JWT Creating a ‘get’ request that contains the JWT token in the header and sends verification status as a response.
 
-const dotenv = require('dotenv');
-const jwt = require('jsonwebtoken');
- 
+const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
+
 // Set up Global configuration access
 dotenv.config();
-
 
 // Main Code Here  //
 // Generating JWT
@@ -30,51 +25,40 @@ app.post("/user/generateToken", (req, res) => {
   let jwtSecretKey = process.env.JWT_SECRET_KEY;
 
   let payload = {
-      time: Date(),
-      userId: 12,
-  }
+    time: Date(),
+    userId: 12,
+  };
 
-
-  //  this sign() method of the jsonwebtoken library is used for creating a token that accepts certain information as parameter objects and returns the generated token. 
-  const token = jwt.sign(payload, jwtSecretKey,{expiresIn:'60s'});
+  //  this sign() method of the jsonwebtoken library is used for creating a token that accepts certain information as parameter objects and returns the generated token.
+  const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "60s" });
 
   res.send(token);
 });
-
 
 // Verification of JWT
 app.get("/user/validateToken", (req, res) => {
   // Tokens are generally passed in header of request
   // Due to security reasons.
-  
+
   let jwtSecretKey = process.env.JWT_SECRET_KEY;
 
   try {
+    const token = req.headers.authorization.split(" ")[1];
+    const verified = jwt.verify(token, jwtSecretKey);
 
-      const token = req.headers.authorization.split(" ")[1]
-      const verified = jwt.verify(token, jwtSecretKey);
-
-      if (verified) {
-          return res.send("Successfully Verified");
-      } else {
-          // Access Denied
-          return res.status(401).send("<h1>Page not found on the server</h1>");
-      }
-  } catch (error) {
+    if (verified) {
+      return res.send("Successfully Verified");
+    } else {
       // Access Denied
-      return res.status(401).send(error);
+      return res.status(401).send("<h1>Page not found on the server</h1>");
+    }
+  } catch (error) {
+    // Access Denied
+    return res.status(401).send(error);
   }
 });
 
-
-
-
-
 // ======================================================== How long JWT token valid ?====================================================================================
-
-
-                                                              
-
 
 /**
 JSON web token is an efficient, secured as well mostly used method of transferring or exchanging data on the internet.
@@ -113,11 +97,9 @@ There are two methods of registering the expiry of the token both are shown belo
 
  */
 
-
 // Approach 1: There exists a key exp in which we can provide the number of seconds since the epoch and the token will be valid till those seconds.
 
-
-const token = jwt.sign({exp: Math.floor(Date.now() / 1000) + (10 * 60),data: 'Token Data'},'secretKey');
+const token = jwt.sign({ exp: Math.floor(Date.now() / 1000) + 10 * 60, data: "Token Data" }, "secretKey");
 
 const date = new Date();
 
@@ -126,18 +108,10 @@ console.log(`Token Generated at:- ${date.getHours()}:${date.getMinutes()}:${date
 // Printing the JWT token
 console.log(token);
 
-
-
-
-
-
-
-
-// Approach 2: In this method, we can pass the time to expiresIn key in the options, it requires the number of seconds till the token will remain valid or the string of duration 
+// Approach 2: In this method, we can pass the time to expiresIn key in the options, it requires the number of seconds till the token will remain valid or the string of duration
 // as ‘1h’,  ‘2h’, ’10m’, etc.
 
-
-const tokens = jwt.sign({data: 'Token Data'}, 'secretKey', {expiresIn: '10m'});
+const tokens = jwt.sign({ data: "Token Data" }, "secretKey", { expiresIn: "10m" });
 
 const dates = new Date();
 
@@ -146,21 +120,7 @@ console.log(`Token Generated at:- ${dates.getHours()}:${dates.getMinutes()}:${da
 // Printing JWT token
 console.log(tokens);
 
-
-
-
-
-
-
-
-
-
-
 // ======================================================JWT Authentication With Refresh Tokens=============================================================================
-
-                                                        
-
-
 
 /**
 When building a web application, authentication is one of the important aspects, and we usually implement authentication using JWT tokens (You can learn more about JWT here). 
@@ -184,7 +144,6 @@ const express = require("express");
 const cookieparser = require("cookie-parser");
 const bodyParser = require("body-parser");
 
-
 const app = express();
 
 // Setting up middlewares to parse request body and cookies
@@ -203,10 +162,7 @@ app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
   // Checking if credentials match
-  if (
-    username === userCredentials.username &&
-    password === userCredentials.password
-  ) {
+  if (username === userCredentials.username && password === userCredentials.password) {
     //creating a access token
     const accessToken = jwt.sign(
       {
@@ -238,7 +194,6 @@ app.post("/login", (req, res) => {
     });
 
     return res.json({ accessToken });
-
   } else {
     // Return unauthorized error if credentials don't match
     return res.status(400).json({
@@ -247,7 +202,6 @@ app.post("/login", (req, res) => {
   }
 });
 
-
 //  If token is in cookies then access from there else if it is coming from req.body then access from there.
 app.post("/refresh", (req, res) => {
   if (req.cookies?.jwt) {
@@ -255,26 +209,25 @@ app.post("/refresh", (req, res) => {
     const refreshToken = req.cookies.jwt;
 
     // Verifying refresh token
-    jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRET,(err, decoded) => {
-        if (err) {
-          // Wrong Refesh Token
-          return res.status(406).json({ message: "Unauthorized" });
-        } else {
-          // Correct token we send a new access token
-          const accessToken = jwt.sign(
-            {
-              username: userCredentials.username,
-              email: userCredentials.email,
-            },
-            process.env.ACCESS_TOKEN_SECRET,
-            {
-              expiresIn: "10m",
-            }
-          );
-          return res.json({ accessToken });
-        }
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+      if (err) {
+        // Wrong Refesh Token
+        return res.status(406).json({ message: "Unauthorized" });
+      } else {
+        // Correct token we send a new access token
+        const accessToken = jwt.sign(
+          {
+            username: userCredentials.username,
+            email: userCredentials.email,
+          },
+          process.env.ACCESS_TOKEN_SECRET,
+          {
+            expiresIn: "10m",
+          }
+        );
+        return res.json({ accessToken });
       }
-    );
+    });
   } else {
     return res.status(406).json({ message: "Unauthorized" });
   }
@@ -295,8 +248,6 @@ Authentication logic involves creating an Express app with login and refresh rou
 and access token on a successful match, while the refresh route verifies the token for a new access token or raises an authorization error.
  */
 
-
-
 /**
 .env: The below code is for .env which is used to store your sensitive credentials like API keys:
 
@@ -305,14 +256,6 @@ ACCESS_TOKEN_SECRET=MYSECRETACCESS
 REFRESH_TOKEN_SECRET=MYREFRESHTOKENSECRET
 
  */
-
-
-
-
-
-
-
-
 
 /**                                         Details on refresh token
  * 
@@ -356,8 +299,74 @@ and uses the refresh token to fetch the authToken back.
 
  */
 
-
-
-
-
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/**                                                                Use cookies securely
+ * 
+ * 
+To ensure cookies don’t open your app to exploits, don’t use the default session cookie name and set cookie security options appropriately.
+
+There are two main middleware cookie session modules:
+
+1. express-session that replaces express.session middleware built-in to Express 3.x.
+2. cookie-session that replaces express.cookieSession middleware built-in to Express 3.x.
+
+The main difference between these two modules is how they save cookie session data. The express-session middleware stores session data on the server; 
+it only saves the session ID in the cookie itself, not session data. By default, it uses in-memory storage and is not designed for a production environment. 
+In production, you’ll need to set up a scalable session-store; see the list of compatible session stores.
+
+In contrast, cookie-session middleware implements cookie-backed storage: it serializes the entire session to the cookie, rather than just a session key.
+Only use it when session data is relatively small and easily encoded as primitive values (rather than objects).
+Although browsers are supposed to support at least 4096 bytes per cookie, to ensure you don’t exceed the limit, don’t exceed a size of 4093 bytes per domain. 
+Also, be aware that the cookie data will be visible to the client, so if there is any reason to keep it secure or obscure, then express-session may be a better choice.
+
+
+
+
+                                                  Don’t use the default session cookie name
+Using the default session cookie name can open your app to attacks. The security issue posed is similar to X-Powered-By: 
+a potential attacker can use it to fingerprint the server and target attacks accordingly.
+
+To avoid this problem, use generic cookie names; for example using express-session middleware:
+Example:
+
+const session = require('express-session')
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: 's3Cur3',
+  name: 'sessionId'
+}))
+
+
+
+Set cookie security options
+Set the following cookie options to enhance security:
+
+1. secure - Ensures the browser only sends the cookie over HTTPS.
+2. httpOnly - Ensures the cookie is sent only over HTTP(S), not client JavaScript, helping to protect against cross-site scripting attacks.
+3. domain - indicates the domain of the cookie; use it to compare against the domain of the server in which the URL is being requested. If they match,
+   then check the path attribute next.
+4. path - indicates the path of the cookie; use it to compare against the request path. If this and domain match, then send the cookie in the request.
+5. expires - use to set expiration date for persistent cookies.
+
+Here is an example using cookie-session middleware:
+
+const session = require('cookie-session')
+const express = require('express')
+const app = express()
+
+const expiryDate = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+app.use(session({
+  name: 'session',
+  keys: ['key1', 'key2'],
+  cookie: {
+    secure: true,
+    httpOnly: true,
+    domain: 'example.com',
+    path: 'foo/bar',
+    expires: expiryDate
+  }
+}))
+
+
+
+ */

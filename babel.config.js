@@ -1,45 +1,43 @@
 module.exports = {
-  'plugins': [
-    '@babel/plugin-proposal-class-properties',
+  plugins: [
+    "@babel/plugin-proposal-class-properties",
     [
-      '@babel/plugin-transform-runtime',
+      "@babel/plugin-transform-runtime",
       {
-        'absoluteRuntime': false,
-        'corejs': false,
-        'helpers': true,
-        'regenerator': true,
-        'version': '7.0.0-beta.0'
-      }
+        absoluteRuntime: false,
+        corejs: false,
+        helpers: true,
+        regenerator: true,
+        version: "7.0.0-beta.0",
+      },
     ],
     "@babel/plugin-syntax-dynamic-import",
   ],
-  "presets": [
+  presets: [
     [
       "@babel/preset-env",
       {
-        modules: false
-      }
+        modules: false,
+      },
     ],
-    "@babel/preset-react"
+    "@babel/preset-react",
   ],
-  "env": {
-    "production": {
-      "only": ["src"],
-      "plugins": [
+  env: {
+    production: {
+      only: ["src"],
+      plugins: [
         [
           "transform-react-remove-prop-types",
           {
-            removeImport: true
-          }
+            removeImport: true,
+          },
         ],
         "@babel/plugin-transform-react-inline-elements",
-        "@babel/plugin-transform-react-constant-elements"
-      ]
-    }
-  }
+        "@babel/plugin-transform-react-constant-elements",
+      ],
+    },
+  },
 };
-
-
 
 // @babel/plugin-transform-runtime: Reduces code duplication by extracting Babel helpers into shared modules.
 
@@ -52,7 +50,5 @@ module.exports = {
 // @babel/plugin-transform-react-inline-elements evaluates React.createElement during compilation and inlines the result.
 
 // @babel/plugin-transform-react-constant-elements extracts static React elements as constants.
-
-
 
 //  npm install -D @babel/preset-env @babel/preset-react @babel/runtime @babel/plugin-transform-runtime @babel/plugin-syntax-dynamic-import @babel/plugin-proposal-class-properties babel-plugin-transform-react-remove-prop-types @babel/plugin-transform-react-inline-elements @babel/plugin-transform-react-constant-elements

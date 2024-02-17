@@ -88,7 +88,11 @@ function MyApp() {
     console.log(createdItemsSuccess);
   };
 
-  const updateItem = async (params) => {
+  const updateItem = async (params, value) => {
+    if (value) {
+      getProductDetails();
+      return;
+    }
     try {
       const updatedItems = await api.updateItemTwo(params);
       if (updatedItems.status === 200) {
@@ -96,7 +100,7 @@ function MyApp() {
         getProductDetails();
       }
     } catch (error) {
-      console.log(error?.response?.data)
+      console.log(error?.response?.data);
     }
   };
 
@@ -165,8 +169,8 @@ function MyApp() {
                     {data.price}
                   </p>
                   <div>
-                    <button onClick={() => updateItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
-                      Update And Get All Items
+                    <button onClick={() => updateItem(data, "Get")} style={{ marginLeft: "5px", marginRight: "5px" }}>
+                      Get All Items
                     </button>
                   </div>
                 </div>
