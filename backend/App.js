@@ -1,22 +1,21 @@
 //                                                   Note : Here we are covering Express other features.
 
-const express = require('express');
-const app = express();  // The main app
+const express = require("express");
+const app = express(); // The main app
 const student = express();
 const teacher = express();
 const PORT = 3000;
 
 // For parsing application/json
 app.use(express.json());
- 
+
 // For parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
- 
 
-//  Express.js express.text() Function : 
+//  Express.js express.text() Function :
 // The express.text() function is a built-in middleware function in Express. It parses the incoming request payloads into a string and is based on body-parser.
 
-// Syntax: 
+// Syntax:
 
 // express.text( [options] )
 // Parameter: The options parameter contains various properties like defaultCharset, inflate, limit, verify, etc.
@@ -27,14 +26,11 @@ app.use(express.text());
 
 // Note :Now make a POST request with header set to ‘content-type: text/plain’ and body {“title”:”Geeky”}.
 
-
-
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+// Express express.Router() Function :
 
-// Express express.Router() Function : 
-
-// The express.Router() function is used to create a new router object. This function is used when you want to create a new router object in your program to handle requests. 
+// The express.Router() function is used to create a new router object. This function is used when you want to create a new router object in your program to handle requests.
 
 // Syntax:
 // express.Router( [options] )
@@ -43,65 +39,55 @@ app.use(express.text());
 // case-sensitive: This enables case sensitivity.
 // mergeParams:    It preserves the req.params values from the parent router.
 // strict:         This enables strict routing.
-// Return Value:   This function returns the New Router Object. 
+// Return Value:   This function returns the New Router Object.
 
-
- 
 // Multiple routing
 const router1 = express.Router();
 const router2 = express.Router();
 const router3 = express.Router();
- 
-router1.get('/user', function (req, res, next) {
-    console.log(app.mountpath)
-    console.log("User Router Working");
-    res.end();
+
+router1.get("/user", function (req, res, next) {
+  console.log(app.mountpath);
+  console.log("User Router Working");
+  res.end();
 });
- 
-router2.get('/admin', function (req, res, next) {
-    console.log("Admin Router Working");
-    res.end();
+
+router2.get("/admin", function (req, res, next) {
+  console.log("Admin Router Working");
+  res.end();
 });
- 
-router3.get('/student', function (req, res, next) {
-    console.log("Student Router Working");
-    res.end();
+
+router3.get("/student", function (req, res, next) {
+  console.log("Student Router Working");
+  res.end();
 });
- 
+
 app.use(router1);
 app.use(router2);
 app.use(router3);
- 
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Multiple mounting : Mount Event
-teacher.on('mount', function (parent) {
-    console.log('Teacher Mounted');
+teacher.on("mount", function (parent) {
+  console.log("Teacher Mounted");
 });
- 
-student.on('mount', function (parent) {
-    console.log('Student Mounted');
+
+student.on("mount", function (parent) {
+  console.log("Student Mounted");
 });
- 
-app.use('/student', student);
-app.use('/teacher', teacher);
 
-
+app.use("/student", student);
+app.use("/teacher", teacher);
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
 // Setting multiple locals variable for app.locals.
-app.locals.domain = 'www.sample.com'
-app.locals.age = '24'
-app.locals.company = 'ABC Ltd'
- 
-console.log(app.locals);
+app.locals.domain = "www.sample.com";
+app.locals.age = "24";
+app.locals.company = "ABC Ltd";
 
+console.log(app.locals);
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -109,105 +95,87 @@ console.log(app.locals);
 
 //  Example: So instead of writing app.get we can use app.all ,it automatically accept all type of HTTP request (POST, GET, PATCH, DELETE,).we just have make get call with axios.get() where we have defined our apis.
 
-app.get('/user', function (req, res, next){
-//Here  setting attributes of the response header by updating the status code as 200, mime-type as ‘text/plain’,finally sends the message ‘Success’ to the browser.
-    res.type('text/plain');
-    res.send(200)
-    res.send('Success')
+app.get("/user", function (req, res, next) {
+  //Here  setting attributes of the response header by updating the status code as 200, mime-type as ‘text/plain’,finally sends the message ‘Success’ to the browser.
+  res.type("text/plain");
+  res.send(200);
+  res.send("Success");
 
-//         OR Directly we can send like below:
-            // res.status(200).send('Success')  // send itself have feature to estimate the type of file is being send,no need of res.type() 
-
-})
-
-
-app.all('/user', function (req, res, next) {
-    console.log('USER API CALLED');
-    res.send('Success')
+  //         OR Directly we can send like below:
+  // res.status(200).send('Success')  // send itself have feature to estimate the type of file is being send,no need of res.type()
 });
 
+app.all("/user", function (req, res, next) {
+  console.log("USER API CALLED");
+  res.send("Success");
+});
 
-app.post('/post', function (req, res, next){
-    res.status(200).send('Success')  
-})
+app.post("/post", function (req, res, next) {
+  res.status(200).send("Success");
+});
 
 //  instead we can use app.all ,in frontend we  have make get/post call and here in backend app.all automatically identify which http method is being called.
 
-app.all('/post', function (req, res, next){
-    res.status(200).send('Success')  
-})
-
+app.all("/post", function (req, res, next) {
+  res.status(200).send("Success");
+});
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                                                   app.delete()
 
 // The app.delete() function is used to route the HTTP DELETE requests to the path which is specified as a parameter with the callback functions being passed as a parameter.
 
-// Syntax: 
+// Syntax:
 
 // app.delete(path, callback)
 
-// Parameters: 
+// Parameters:
 // path: It is the path for which the middleware function is being called.
-// callback: It is a middleware function or a series/array of middleware functions. 
+// callback: It is a middleware function or a series/array of middleware functions.
 
-
-
-app.delete('/delete', (req, res) => {
-    res.send("DELETE Request Called successfully")
-})
- 
-
+app.delete("/delete", (req, res) => {
+  res.send("DELETE Request Called successfully");
+});
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                                                      app.use()
 
-
-
 //  Note :  app.use act as a super route or middleware meaning that it gets called on every route written below/after app.use.This middleware applied to all requests,either for specified paths or all paths:
 //  "use" is used to apply some logic (middleware) to specific route or entire application, regardless of request method.
 
-
-
 // This middleware will not allow the request to go beyond it
 app.use(function (req, res, next) {
-    console.log("Middleware called",req.url) // it will show urls whenever we hit the apis.
-    next(); // It means pass control to the next handler
-    //  if we remove next() method then below app.get() will not be called. 
+  console.log("Middleware called", req.url); // it will show urls whenever we hit the apis.
+  next(); // It means pass control to the next handler
+  //  if we remove next() method then below app.get() will not be called.
 });
- 
-
 
 // Requests will never reach this route if we remove middleware next() method from app.use()
-app.get('/user', function (req, res) {
-    console.log("/user request called");
-    console.log(req.app);  // The req.app property holds the reference to the instance of the Express application that is using the middleware. 
+app.get("/user", function (req, res) {
+  console.log("/user request called");
+  console.log(req.app); // The req.app property holds the reference to the instance of the Express application that is using the middleware.
 
-    console.log(req.baseUrl); // The req.baseUrl property is the URL path on which a router instance was mounted.
+  console.log(req.baseUrl); // The req.baseUrl property is the URL path on which a router instance was mounted.
 
-    //  The req.cookies property is used when the user is using cookie-parser middleware.
-    req.cookies.name = 'Gourav';
-    req.cookies.age = 12;
-    console.log(req.cookies);
+  //  The req.cookies property is used when the user is using cookie-parser middleware.
+  req.cookies.name = "Gourav";
+  req.cookies.age = 12;
+  console.log(req.cookies);
 
-    console.log(req.fresh);
+  console.log(req.fresh);
 
-    console.log(req.ip); // t is useful when the user wants the IP address of the incoming request made to the application. 
+  console.log(req.ip); // t is useful when the user wants the IP address of the incoming request made to the application.
 
-    console.log(req.ips); // It returns an array of IP addresses.
+  console.log(req.ips); // It returns an array of IP addresses.
 
-    console.log(req.path); // o/p - /user
+  console.log(req.path); // o/p - /user
 
-    console.log(req.protocol); // o/p -  http  == The req.protocol property contains the request protocol string which is either HTTP or (for TLS requests) https.
+  console.log(req.protocol); // o/p -  http  == The req.protocol property contains the request protocol string which is either HTTP or (for TLS requests) https.
 
-    res.send('Welcome to GeeksforGeeks');
+  res.send("Welcome to GeeksforGeeks");
 
-    res.end()  // Terminate the connection without sending something to the client. if we don't want to send anything to the client,just use this instead of res.send()
+  res.end(); // Terminate the connection without sending something to the client. if we don't want to send anything to the client,just use this instead of res.send()
 });
-
-
-
-
 
 /**
  app.use : it is useful for "middlewares", it will apply to all the GETs, POSTs, etc. you indicate afterwords. 
@@ -266,9 +234,6 @@ app.use ( (req, res, next) =>{
 
 
  */
-
-
-
 
 //  NOTE : Important
 
@@ -369,24 +334,13 @@ app.get('/cors/test', (req, res) => {
 
  */
 
-
-
-
-
-
-
-
-
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                            Express app.listen() Function
 
-
-
 app.listen(PORT, function (err) {
-    if (err) console.log(err);
-    console.log("Server listening on PORT", PORT);
+  if (err) console.log(err);
+  console.log("Server listening on PORT", PORT);
 });
-
 
 /**
  * app.listen() in Express is like telling your app to start listening for visitors on a specific address and port, much like how Node listens for connections. 
@@ -412,22 +366,7 @@ Callback (Optional):  It specifies a function that will get executed, once your 
  * 
  */
 
-
-
-
-
-
-
-
-
-
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
 
 //                                                      Express.js app.locals Property
 
@@ -455,12 +394,7 @@ Locals are available in middleware via req.app.locals;
  * 
  */
 
-
-
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
 
 //                                                      Express.js app.mountpath Property
 /**
@@ -474,12 +408,7 @@ Locals are available in middleware via req.app.locals;
  * 
  */
 
-
-
-
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
 
 //                                                     Express.js Mount Event
 
@@ -495,15 +424,11 @@ Return Value: Since it’s an event so it doesn’t have any return value.
  * 
  */
 
-
-
-
 //                                                   Express.js | app.all() Function
 
-
 //  The app.all() function is used to route all types of HTTP requests. Like if we have POST, GET, PUT, DELETE, etc, requests made to any specific route,
-//  let’s say /user, so instead of defining different APIs like app.post(‘/user’), app.get(‘/user’), etc, we can define single API app.all(‘/user’) 
-//  which will accept all type of HTTP request. 
+//  let’s say /user, so instead of defining different APIs like app.post(‘/user’), app.get(‘/user’), etc, we can define single API app.all(‘/user’)
+//  which will accept all type of HTTP request.
 
 // Syntax:
 // app.all( path, callback )
@@ -513,30 +438,19 @@ Return Value: Since it’s an event so it doesn’t have any return value.
 // Path: It is the path for which the middleware function is called.
 // Callback: It can be a middleware function or a series/array of functions.
 
-
-
-
-
-
 //                                                 app.disable
 
-//  The app.disable() function is used to set the boolean setting name to false. It is basically the shorthand for the app.set(name, false). 
-// So instead we can use app.disable(name) function to set the false boolean value to some system Express.js settings. 
+//  The app.disable() function is used to set the boolean setting name to false. It is basically the shorthand for the app.set(name, false).
+// So instead we can use app.disable(name) function to set the false boolean value to some system Express.js settings.
 
 // Syntax:
 
 // app.disable(name)
 
-
-//  Example :  
+//  Example :
 // app.disable('trust proxy');
- 
+
 // console.log(app.get('trust proxy')); //  o/p - false
-
-
-
-
-
 
 //                                                  app.enable
 
@@ -546,22 +460,15 @@ Return Value: Since it’s an event so it doesn’t have any return value.
 // Syntax:
 // app.enable(name)
 
-
 // Example :
 
 // app.enable('trust proxy')
- 
+
 // console.log(app.get('trust proxy')) // o/p :  true
-
-
-
-
-
-
 
 //                                                 app.use()
 
-// The app.use() function is used to mount the specified middleware function(s) at the path that is being specified. It is mostly used to set up middleware for your application. 
+// The app.use() function is used to mount the specified middleware function(s) at the path that is being specified. It is mostly used to set up middleware for your application.
 
 // Syntax:
 
@@ -571,17 +478,9 @@ Return Value: Since it’s an event so it doesn’t have any return value.
 // path: It is the path for which the middleware function is being called. It can be a string representing a path or path pattern or a regular expression pattern to match the paths.
 // callback: It is a middleware function or a series/array of middleware functions.
 
-
-
-
-
-
-
-
 //                                          Express.js | app.set() Function
 
-// The app.set() function is used to assign the setting name to value. You may store any value that you want, but certain names can be used to configure the behavior of the server. 
-
+// The app.set() function is used to assign the setting name to value. You may store any value that you want, but certain names can be used to configure the behavior of the server.
 
 // Syntax:
 // app.set(name, value)
@@ -589,16 +488,15 @@ Return Value: Since it’s an event so it doesn’t have any return value.
 //  Example 1:  it will set this to app level.
 
 // app.set('title', 'GeeksforGeeks');
- 
+
 // app.get('/', (req, res) => {
 //     res.send(app.get('title'));
 // })
- 
 
 // Example 2:
 
 // app.get('/', function (req, res) {
- 
+
 //   Setting the response in header. open network tab and check in response header it will reflect there.
 
 //     res.set({
@@ -606,19 +504,9 @@ Return Value: Since it’s an event so it doesn’t have any return value.
 //         'Content-Length': '123',
 //         ETag: '12345'
 //     });
- 
+
 //     console.log(res.get('Content-Type'));  o/p   -      "text/plain"
 // });
- 
-
-
-
-
-
-
-
-
-
 
 /**                                         Express.js res.app Property
  * 
@@ -644,14 +532,6 @@ app.get('/getApp', function (req, res) {
  * 
  */
 
-
-
-
-
-
-
-
-
 /**                                 Express.js res.headersSent Property
  * 
  * 
@@ -673,12 +553,6 @@ app.get('/', function (req, res) {
 });
 
  */
-
-
-
-
-
-
 
 /**                                     Express.js res.locals Property
  * 
@@ -707,12 +581,6 @@ app.get('/', function (req, res) {
 
  */
 
-
-
-
-
-
-
 /**                                     Express.js res.append() Function
  * 
  * 
@@ -740,13 +608,6 @@ app.get('/', function (req, res) {
 
 
  */
-
-
-
-
-
-
-
 
 /**                                     Express.js res.attachment() Function
  * 
@@ -780,13 +641,6 @@ app.get('/', function (req, res) {
 
  */
 
-
-
-
-
-
-
-
 /**                                            Express res.cookie() Function
  * 
 
@@ -813,14 +667,6 @@ we see this cookie in network tab in response headers. it will be in Set-Cookie
 
 
  */
-
-
-
-
-
-
-
-
 
 /**                        Express.js res.clearCookie() Function
  * 
@@ -851,14 +697,6 @@ app.get('/', function (req, res) {
 
  */
 
-
-
-
-
-
-
-
-
 /**                                 Express.js res.download() Function
  * 
  * 
@@ -886,13 +724,6 @@ app.get('/', function (req, res) {
 
 
  */
-
-
-
-
-
-
-
 
 /**                            Express res.send() Function
  
@@ -952,14 +783,6 @@ res.status(500).send({ error: 'something blew up' });
 
  */
 
-
-
-
-
-
-
-
-
 /**                                 Express.js res.end() Function
 
 The res.end() function is used to end the response process. This method actually comes from the Node core, specifically the response.end() method of HTTP.ServerResponse. Use to quickly end the response without any data.
@@ -990,15 +813,6 @@ with res.end() ,you can only respond with text and it will not set "Content-Type
       }); 
 
  */
-
-
-
-
-
-
-
-
-
 
 /**                                        Express.js | res.format() Function
  
@@ -1036,15 +850,6 @@ if the Accept header field is set to ‘text/plain’, we will get “Greetings 
 
  */
 
-
-
-
-
-
-
-
-
-
 /**                                         Express.js res.get() Function 
 
 
@@ -1080,13 +885,6 @@ Note : we can access whatever is in the response header here. by using res.get()
 
  */
 
-
-
-
-
-
-
-
 /**                           Express res.json() Function
 
 The res.json() function sends a JSON response. This method sends a response (with the correct content-type) 
@@ -1114,13 +912,6 @@ app.get('/', function (req, res) {
 
  */
 
-
-
-
-
-
-
-
 /**                                         Express.js res.jsonp() Function 
 
 The res.jsonp() function is used to send a JSON response with JSONP support and this function is similar to the res.json() function
@@ -1142,13 +933,6 @@ app.get('/', function (req, res) {
 });
  
  */
-
-
-
-
-
-
-
 
 /**                                             Express.js res.links() Function
 
@@ -1180,13 +964,6 @@ app.get('/', function (req, res) {
 
 
 */
- 
-
-
-
-
-
-
 
 /**                                         Express.js res.location() Function 
 
@@ -1236,17 +1013,6 @@ The only difference is res.setHeader() allows you only to set a singular header 
 
  */
 
-
-
-
-
-
-
-
-
-
-
-
 /**                                 Express JS res.redirect() Function 
 
 
@@ -1289,10 +1055,6 @@ app.get('/user', function (req, res) {
 
  */
 
-
-
-
-
 /**                                     Express res.render() Function
  
 
@@ -1328,11 +1090,6 @@ app.get('/', function (req, res) {
 
  */
 
-
-
-
-
-
 /**                         Express.js res.sendStatus() Function
 The res.sendStatus() function is used to set the response HTTP status code to statusCode and send its string representation as the response body.
 
@@ -1355,13 +1112,6 @@ app.get('/', function (req, res) {
  
  */
 
-
-
-
-
-
-
-
 /**                                     Express res.status() Function 
 
 The res.status() function sets the HTTP status for the response. It is a chainable alias of Node’s response.statusCode. 
@@ -1382,16 +1132,6 @@ app.get('/user', function (req, res) {
 
 
  */
-
-
-
-
-
-
-
-
-
-
 
 /**                                         Express.js res.set() Function
 
@@ -1424,15 +1164,6 @@ app.get('/', function (req, res) {
 
  */
 
-
-
-
-
-
-
-
-
-
 /**                                          Express.js res.type() Function 
 
 The res.type() function is used to set the Content-Type HTTP header to the MIME type determined by the mime.lookup() function for the specified type. 
@@ -1458,14 +1189,6 @@ app.get('/', function (req, res) {
 
 
  */
-
-
-
-
-
-
-
-
 
 /**                                 Express.js res.vary() Function
 
@@ -1497,14 +1220,6 @@ app.get('/', function (req, res) {
 
 
  */
-
-
-
-
-
-
-
-
 
 /**                                         Express.js router.METHOD() Function
 
@@ -1563,15 +1278,6 @@ Note : Now make GET, POST, and DELETE request to http://localhost:3000/user,
 
 
  */
-
-
-
-
-
-
-
-
-
 
 /**                                         Express.js router.all() Function
 
@@ -1640,15 +1346,6 @@ Note : Now make a GET request to http://localhost:3000/user, http://localhost:30
 
  */
 
-
-
-
-
-
-
-
-
-
 /**                                         Express.js router.param() function 
 
 
@@ -1676,14 +1373,6 @@ It's kind of like middleware for a matching parameter. It allows you to automati
 Note : router.param() may be one of the least used features of Express.
 
  */
-
-
-
-
-
-
-
-
 
 /**                                         Express.js router.route() Function 
 
@@ -1750,14 +1439,6 @@ you can say router.route("/jkl").get(fn1).post(fn2)
 
  */
 
-
-
-   
-
-
-
-
-
 /**                             Express.js | router.use() Function
 
 
@@ -1802,14 +1483,6 @@ now for all requests that start with /pqr like /pqr/new or /pqr/xyz can be handl
 
 
  */
-
-
-
-
-
-
-
-
 
 /**                                                             For UnderStanding
 
@@ -1856,10 +1529,6 @@ But remember for /first/sud, no function will get called.
 
  */
 
-
-
-
-
 /**                                         middleware for use in Express apps 
 
 
@@ -1875,6 +1544,38 @@ Middleware functions can perform the following tasks:
 4.Call the next middleware in the stack.
 5.If the current middleware function does not end the request-response cycle, it must call next() to pass control to the next middleware function.
     Otherwise, the request will be left hanging.
+
+
+
+
+
+
+Example :
+
+To load the middleware function, call app.use(), specifying the middleware function. For example, the following code loads the myLogger middleware function before the route to the root path (/).
+
+const express = require('express')
+const app = express()
+
+const myLogger = function (req, res, next) {
+  console.log('LOGGED')
+  next()
+}
+
+app.use(myLogger)
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(3000)
+
+Every time the app receives a request, it prints the message “LOGGED” to the terminal.
+The order of middleware loading is important: middleware functions that are loaded first are also executed first.
+If myLogger is loaded after the route to the root path, the request never reaches it and the app doesn’t print “LOGGED”, 
+because the route handler of the root path terminates the request-response cycle.
+The middleware function myLogger simply prints a message, then passes on the request to the next middleware function in the stack by calling the next() function.
+
 
 
  */

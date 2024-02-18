@@ -16,7 +16,10 @@ const bodyParser = require("body-parser"); // bodyParser.json() parses the JSON 
 const helmet = require("helmet"); // Helmet helps secure Express apps by setting HTTP response headers. : npm install helmet
 
 const dotenv = require("dotenv");
+
 const jwt = require("jsonwebtoken");
+
+const router = express.Router()
 
 // Set up Global configuration access
 dotenv.config();
@@ -64,12 +67,17 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 // Therefore, you need to make sure that when you're executing a POST request, that you're including the "Content-Type" header.
 // Otherwise, bodyParser may not know what to do with the body of your POST request.
 
+
+
+
 //                                                            Helmet.
 // Helmet is a collection of several smaller middleware functions that set security-related HTTP response headers. Some examples include:
 // helmet.contentSecurityPolicy which sets the Content-Security-Policy header. This helps prevent cross-site scripting attacks among many other things.
 // helmet.hsts which sets the Strict-Transport-Security header. This helps enforce secure (HTTPS) connections to the server.
 // helmet.frameguard which sets the X-Frame-Options header. This provides clickjacking protection.
 app.use(helmet()); // Helmet helps to protect your app from well-known web vulnerabilities.
+
+
 
 /**                                                       Compress
 Compression is a technique that is used mostly by servers to compress the assets before serving them over to the network. 
@@ -81,10 +89,14 @@ This method is not related to React but it's standard practice
 // add compression middleware
 app.use(compression()); // Compress all routes
 
+
+
 const limiter = RateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 10, // max 10 api call will be possible in 1 minute.
 });
+
+
 
 app.use("/update", limiter); // Apply rate limiter to update request. if user call this api more than 10 times in 1 minute then api will fail.
 
@@ -111,31 +123,40 @@ const corsOPtions = {
 /**
  *                                                             Step 4: Now we will set all the routes for our application.
 
+
+
+
 Routes are the endpoints of the server, which are configured on our backend server and 
 whenever someone tries to access those endpoints they respond accordingly to their definition at the backend. 
 If you’re a beginner you can consider route as a function that gets called when someone requests the special path associated with that function 
 and return the expected value as a response. We can create routes for HTTP methods like get, post, put, and so on. 
 
 Syntax: The basic syntax of these types of routes looks like this, the given function will execute when the path and the request method resemble.:  
-                                                                    app.anyMethod(path, function)
+
+                                                      app.anyMethod(path, function)
  * 
  */
 
-//  I have cached data only for this route for 5 seconds
+//  I have cached data only for this route for 2 seconds. This app.use() middleware cache data only fir this "/api/products" route not for all.
 app.use("/api/products", cache("2 seconds"), (req, res, next) => {
-  next();
+  
+  req.requestedTime = new Date().toISOString()
+  next(); //  passes on the request to the next middleware function in the stack by calling the next() function.
 });
 
+
+
 //                                                            Example 1.
-//  Note: instead of app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']})) above we have done line 20, here  We have passed cors as a parameter to the route as a middleware function .which in turn will make the checks to enable cors or not for a specific method.
-//  We don't need put cors(corsOptions) here explicitly because,we have already used : app.use(cors()); which will enabled cors in all apis automatically and any website can access these apis.
-//  But if you want this  api to be accessed by some specific website then you can put cors inside api like this.
+// Note: instead of app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']})) above we have done line 20, here  We have passed cors as a parameter to the route as a middleware function which in turn will make the checks to enable cors or not for a specific method.
+//  We don't need put cors(corsOptions) here explicitly because,we have already used : app.use(cors()); which will enabled cors in all apis automatically and any website can access    these apis. But if you want this  api to be accessed by some specific website then you can put cors inside api like this :-
 
 app.get("/api/products", cors(corsOPtions), (req, res) => {
+  console.log(req.requestedTime,'req')
+
   res.status(200);
-  res.send(data); // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
-  // res.json(data) // Send a JSON response.
-  res.end(); // End the response process
+  res.send(data);         // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
+  // res.json(data)      // Send a JSON response.
+  res.end();            // End the response process
 
   //  Note :
   // 1.  Here req is request, when the client/user call api/make request to the server and pass data in  apis url then this req will be called and have those data in req.body.
@@ -156,6 +177,12 @@ app.get("/api/products", cors(corsOPtions), (req, res) => {
  * also there are lots of types of response in express like res.json() which is used to send JSON object, res.sendFile() which is used to send a file, etc.
  */
 
+
+
+
+// =============================================================================================================================================================================
+
+
 //                                                         Example 2: Setting up one more get request route on the ‘/hello’ path.
 
 // Most of the things are the same as the previous example.
@@ -167,6 +194,11 @@ app.get("/hello", (req, res) => {
   res.set("Content-Type", "text/html");
   res.status(200).send("<h1>Hello  Learner!</h1>");
 });
+
+
+
+// ===============================================================================================================================================================================
+
 
 //                                                          Example 3: Now we will see how to send data to server.
 
@@ -204,6 +236,11 @@ app.post("/postingTwo", (req, res) => {
     res.status(400).json({ message: "Please provide valid name" });
   }
 });
+
+
+
+// =======================================================================================================================================================================
+
 
 //                                                               Example 4:   Sending Files from Server
 //  Now we will see how to send files from the server.
@@ -399,13 +436,14 @@ app.get("/api/products/item/:Id", cors(corsOPtions), (request, response) => {
 // when you want to create a new router object in our program to handle requests. We can do it by using : express.Router() Function. It create a new router object.
 
 // Single routing
-const router = express.Router();
-router.get("/", function (req, res, next) {
-  console.log("Router Working");
-  res.end();
-});
 
-app.use(router);
+// const router = express.Router();
+// router.get("/", function (req, res, next) {
+//   console.log("Router Working");
+//   res.end();
+// });
+
+// app.use(router);
 
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                                                      JWT Authentication
@@ -509,6 +547,11 @@ app.listen(PORT, (error) => {
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
+
+
+
 //  Step to run the application: Now as we have created a server we can successfully start running it to see it’s working,
 //  write this command in your terminal to start the express server.  -:  node index.js OR nodemon index.js
 
@@ -556,6 +599,8 @@ b. express.urlencoded() is a method inbuilt in express to recognize the incoming
  * 
  *
  */
+
+
 
 //                                                Cookies
 

@@ -58,6 +58,35 @@ Step 6.   `npm install cookie-parser`
 
 
 
+###                                                         Using middleware
+Express is a routing and middleware web framework that has minimal functionality of its own: An Express application is essentially a series of middleware function calls.
+
+Middleware functions are functions that have access to the request object (req), the response object (res), and the next middleware function in the application’s request-response cycle. The next middleware function is commonly denoted by a variable named next.
+
+Middleware functions can perform the following tasks:
+
+1. Execute any code.
+2. Make changes to the request and the response objects.
+3. End the request-response cycle.
+4. Call the next middleware function in the stack.
+5. If the current middleware function does not end the request-response cycle, it must call next() to pass control to the next middleware function. Otherwise, the request will be left hanging.
+
+An Express application can use the following types of middleware:
+
+1. Application-level middleware
+2. Router-level middleware
+3. Error-handling middleware
+4. Built-in middleware
+5. Third-party middleware
+
+
+### Express has the following built-in middleware functions:
+
+1. express.static serves static assets such as HTML files, images, and so on.
+2. express.json parses incoming requests with JSON payloads. NOTE: Available with Express 4.16.0+
+3. express.urlencoded parses incoming requests with URL-encoded payloads. NOTE: Available with Express 4.16.0+
+
+
 
 
 ###                                                         Cache
