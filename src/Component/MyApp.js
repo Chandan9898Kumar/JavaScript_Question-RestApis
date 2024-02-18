@@ -21,6 +21,8 @@ function MyApp() {
       api.getImage().then((res) => {
         const base64 = btoa(new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), ""));
         setImage(base64);
+      }).catch((error)=>{
+        console.error(error)
       });
     };
     getImage();

@@ -21,7 +21,7 @@ const jwt = require("jsonwebtoken");
 // Set up Global configuration access
 dotenv.config();
 
-const compression = require("compression");
+const compression = require("compression"); // Gzip compressing can greatly decrease the size of the response body and hence increase the speed of a web app.
 
 const RateLimit = require("express-rate-limit");
 
@@ -64,14 +64,12 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 // Therefore, you need to make sure that when you're executing a POST request, that you're including the "Content-Type" header.
 // Otherwise, bodyParser may not know what to do with the body of your POST request.
 
-
 //                                                            Helmet.
 // Helmet is a collection of several smaller middleware functions that set security-related HTTP response headers. Some examples include:
 // helmet.contentSecurityPolicy which sets the Content-Security-Policy header. This helps prevent cross-site scripting attacks among many other things.
 // helmet.hsts which sets the Strict-Transport-Security header. This helps enforce secure (HTTPS) connections to the server.
 // helmet.frameguard which sets the X-Frame-Options header. This provides clickjacking protection.
 app.use(helmet()); // Helmet helps to protect your app from well-known web vulnerabilities.
-
 
 /**                                                       Compress
 Compression is a technique that is used mostly by servers to compress the assets before serving them over to the network. 
@@ -100,7 +98,7 @@ const PORT = 5000; // Set the port for our local application, 3000 is the defaul
 const corsOPtions = {
   origin: "*", // if you need to enable cors on all the sites and make the data available across then you can change the origin to a star which means that you can use cors enabled for all websites.
   // which means now you can got to any website and if you want to access "http://localhost:5000/api/products" api  at line 64.then it will not throw an error.
-  credentials:true,
+  credentials: true,
   //                                                              OR
   //  origin: ["https://www.wikipedia.org", "https://www.google.com"]
   //  Use the following code adding the origin as the website.now if we go wikipedia page or google page
@@ -194,8 +192,6 @@ app.post("/posting", (req, res) => {
   }
 });
 
-
-
 // The app.set() function is used to assign the setting name to value. You may store any value that you want, but certain names can be used to configure the behavior of the server.
 app.set("title", "Please confirm your presence");
 //  we can set any values this application and can send this client/user like below we did.
@@ -249,7 +245,11 @@ app.use("/static", express.static(path.join(__dirname, "Static file")));
 
 //  Example 1.
 app.get("/file", (req, res) => {
-  res.status(200).sendFile(path.join(__dirname, "RefreeTwo.jpg"));
+  try {
+    res.status(200).sendFile(path.join(__dirname, "RefreeTwo.jpg"));
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 //  Example 2.
@@ -283,17 +283,20 @@ app.post("/create", (req, res) => {
 
 app.delete("/delete/:id", (request, response) => {
   const { id } = request.body;
-
-  const condition = data.some((item) => item.id == id);
-  if (condition) {
-    data.forEach((item, index) => {
-      if (item.id == id) {
-        data.splice(index, 1);
-      }
-    });
-    response.status(200).json({ status: "successfully deleted item" });
-  } else {
-    response.status(400).json({ status: "Something went wrong..." });
+  try {
+    const condition = data.some((item) => item.id == id);
+    if (condition) {
+      data.forEach((item, index) => {
+        if (item.id == id) {
+          data.splice(index, 1);
+        }
+      });
+      response.status(200).json({ status: "successfully deleted item" });
+    } else {
+      response.status(400).json({ status: "Something went wrong..." });
+    }
+  } catch (error) {
+    response.status(500).send('Internal Server Error....')
   }
 });
 
@@ -303,9 +306,7 @@ app.patch("/update", (request, response) => {
   //  Here we are matching id of the product whose details we want to update.
 
   // const {id} = request.query      OR Below
-  const {
-    payload: { id },
-  } = request.body;
+  const { payload: { id } } = request.body;
   const findById = data.some((item) => item.id == id);
   const random = Math.floor(Math.random() * 20 + 1);
 
@@ -429,7 +430,7 @@ app.post("/user/generateToken", (req, res) => {
 
   // Assigning refresh token in http-only cookie. we can simply send this token from send() method instead of in cookie and store it in our local storage (frontend side).
   // setting a cookie can be done as such:-
-  res.cookie("jwt",REFRESH_TOKEN, {
+  res.cookie("jwt", REFRESH_TOKEN, {
     httpOnly: true,
     sameSite: "None",
     secure: false,
