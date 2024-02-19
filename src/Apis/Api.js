@@ -7,7 +7,7 @@ const getallData = () => {
 };
 
 const getImage = () => {
-  return axios.get("http://localhost:5000/file", { responseType: "arraybuffer" });
+  return axios.get(`http://localhost:5000/file?imageName=${'refree'}`, { responseType: "arraybuffer" });
 };
 
 //   Note :  Here we can get specific item details by two method.
