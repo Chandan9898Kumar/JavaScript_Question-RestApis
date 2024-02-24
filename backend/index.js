@@ -148,7 +148,7 @@ app.use("/api/products", cache("2 seconds"), (req, res, next) => {
 //  We don't need put cors(corsOptions) here explicitly because,we have already used : app.use(cors()); which will enabled cors in all apis automatically and any website can access    these apis. But if you want this  api to be accessed by some specific website then you can put cors inside api like this :-
 
 app.get("/api/products", cors(corsOPtions), (req, res) => {
-  console.log(req.requestedTime, "requested time");
+  // console.log(req.requestedTime, "requested time");
 
   res.status(200);
   // res.send(data); // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()

@@ -8,10 +8,9 @@ function MyApp() {
   const [data, setData] = useState();
   const [image, setImage] = useState("");
   const [result, setResult] = useState("");
-  const [deleteMessage, setDeleteSuccess] = useState("");
+  const [message, setMessages] = useState("");
   const [token, setToken] = useState({ accessToken: "", refreshToken: "" });
   const [itemInfo, setItemInfo] = useState([]);
-  const [input, setInput] = useState("");
 
   const lengthOfStrings = useMemo(() => {
     return CountStringLength(data || []);
@@ -68,26 +67,26 @@ function MyApp() {
     CreateUserToken();
   }, []);
 
-  const deleteItem = async (params) => {
+  const deleteItem = useCallback(async (params) => {
     try {
       const userValidation = await api.getUserToken(localStorage.getItem("Access_Token"));
       if (userValidation.status === 200) {
         try {
           const deleteResult = await api.deleteItem(params);
-          setDeleteSuccess(deleteResult.data.status);
+          setMessages(deleteResult.data.status);
           getProductDetails();
         } catch (error) {
           console.error(error);
         } finally {
-          setDeleteSuccess("");
+          setMessages("");
         }
       }
     } catch (error) {
       alert("Your Token might have expired");
     }
-  };
+  }, []);
 
-  const addItems = async () => {
+  const addItems = useCallback(async () => {
     const token = String(Math.round(Date.now() / 1000)).slice(-2);
     const payload = {
       id: token,
@@ -96,12 +95,18 @@ function MyApp() {
       price: Date.now(),
       image: "https://media.geeksforgeeks.org/wp-content/uploads/20230728155224/images.jfif",
     };
-    const createdItemsSuccess = await api.createItem(payload);
-    getProductDetails();
-    console.log(createdItemsSuccess);
-  };
+    try {
+      const createdItemsSuccess = await api.createItem(payload);
+      setMessages(createdItemsSuccess.data.status);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setMessages("");
+      getProductDetails();
+    }
+  }, []);
 
-  const updateItem = async (params, value) => {
+  const updateItem = useCallback(async (params, value) => {
     if (value) {
       setItemInfo([]);
       getProductDetails();
@@ -115,7 +120,7 @@ function MyApp() {
     } catch (error) {
       console.log(error?.response?.data);
     }
-  };
+  }, []);
 
   const GetItemDetails = useCallback(async (params) => {
     try {
@@ -128,7 +133,7 @@ function MyApp() {
   return (
     <div className="App">
       <h1> {result && result}</h1>
-      <div>{deleteMessage && deleteMessage}</div>
+      <div>{message && message}</div>
       <h2>
         <button onClick={addItems}>Create Item</button>
         <span> Total String Length : {lengthOfStrings}</span>
@@ -144,7 +149,6 @@ function MyApp() {
           <img src={`data:;base64,${image}`} alt="Ref_Image" width="300px" height="250px" loading="lazy" />
         </picture>
       </div>
-      <input value={input} onChange={(e) => setInput(e.target.value)} />
     </div>
   );
 }
