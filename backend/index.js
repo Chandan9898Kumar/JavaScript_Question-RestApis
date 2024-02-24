@@ -7,6 +7,11 @@
 // Note : require() is a node.js function used to load the external modules. Here ‘express’ is that external module.
 const express = require("express");
 
+// Creating express app
+const app = express();
+
+const session = require('express-session')
+
 const cookieParser = require("cookie-parser"); // It parses the incoming cookies from request to JSON value.
 
 const cors = require("cors"); // CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
@@ -28,8 +33,7 @@ const compression = require("compression"); // Gzip compressing can greatly decr
 
 const RateLimit = require("express-rate-limit");
 
-// Creating express app
-const app = express();
+
 
 //  Note : Express apps have a use() function, This function adds a new middleware to the app.Essentially, whenever a request hits your backend, Express will execute the functions you passed to app.use() in order.
 //  It is mostly used to set up middleware for your application.
@@ -97,7 +101,6 @@ const cache = apicache.middleware;
 
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
-
 
 
 //  Enabling CORS for specific origins only.
@@ -250,6 +253,7 @@ app.post("/postingTwo", (req, res) => {
 
 const path = require("path");
 const { request } = require("http");
+const { Session } = require("inspector");
 app.use("/static", express.static(path.join(__dirname, "Static file")));
 
 //                                          Method 2: Sending a single file on a route with the sendFile() function.
@@ -470,6 +474,7 @@ app.post("/user/generateToken", (req, res) => {
   const payload = {
     time: Date(),
     userId: 12,
+    user:'John Wick',
   };
 
   const ACCESS_TOKEN = jwt.sign(payload, jwtSecretKey, { expiresIn: "10s" });
