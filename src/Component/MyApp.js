@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "../App.css";
 import api from "../Apis/Api";
+import { CountStringLength } from "../Utils";
 function MyApp() {
   const [data, setData] = useState();
   const [image, setImage] = useState("");
@@ -8,6 +9,12 @@ function MyApp() {
   const [deleteMessage, setDeleteSuccess] = useState("");
   const [token, setToken] = useState({ accessToken: "", refreshToken: "" });
   const [itemInfo, setItemInfo] = useState([]);
+  
+
+  const lengthOfStrings = useMemo(() => {
+    return CountStringLength(data || []);
+  }, [data]);
+
 
   useEffect(() => {
     //   Calling get api
@@ -124,11 +131,13 @@ function MyApp() {
   return (
     <div className="App">
       <h1> {result && result}</h1>
+      <div>{deleteMessage && deleteMessage}</div>
       <h2>
         <button onClick={addItems}>Create Item</button>
+        <span> Total String Length : {lengthOfStrings}</span>
       </h2>
       {
-        <div>
+        <div className="flex-container">
           {data &&
             data.length > 0 &&
             data?.map((data) => {
@@ -191,7 +200,6 @@ function MyApp() {
           <img src={`data:;base64,${image}`} alt="Ref_Image" width="300px" height="250px" loading="eager" />
         </picture>
       </div>
-      <div>{deleteMessage && deleteMessage}</div>
     </div>
   );
 }
