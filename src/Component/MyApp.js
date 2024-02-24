@@ -147,7 +147,7 @@ function MyApp() {
                     <source srcSet={data.image} media="(min-width: 992px)" />
                     <source srcSet={data.image} media="(min-width: 768px)" />
                     <source srcSet={data.image} media="(min-width: 0px)" />
-                    <img src={data.image} alt="images" loading="eager" width="300px" height="200px" />
+                    <img src={data.image} alt="images" loading="lazy" width="300px" height="200px" />
                   </picture>
                   <h1>{data.name}</h1>
                   <div>
@@ -197,7 +197,7 @@ function MyApp() {
           <source srcSet={`data:;base64,${image}`} media="(min-width: 992px)" />
           <source srcSet={`data:;base64,${image}`} media="(min-width: 768px)" />
           <source srcSet={`data:;base64,${image}`} media="(min-width: 0px)" />
-          <img src={`data:;base64,${image}`} alt="Ref_Image" width="300px" height="250px" loading="eager" />
+          <img src={`data:;base64,${image}`} alt="Ref_Image" width="300px" height="250px" loading="lazy" />
         </picture>
       </div>
     </div>

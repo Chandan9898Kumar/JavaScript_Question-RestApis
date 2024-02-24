@@ -40,5 +40,46 @@
         "description": "Description of Product 6",
         "price": 999,
         "image": "https://media.geeksforgeeks.org/wp-content/uploads/20230728155224/images.jfif"
+    },{
+        "id": 7,
+        "name": "Product 7",
+        "description": "Description of Product 7",
+        "price": 9.9976,
+        "image": "https://media.geeksforgeeks.org/wp-content/uploads/20230728154500/download-(1).jfif"
+    },
+    {
+        "id": 8,
+        "name": "Product 8",
+        "description": "Description of Product 8",
+        "price": 1976.99,
+        "image": "https://media.geeksforgeeks.org/wp-content/uploads/20230728154740/download-(2).jfif"
+    },
+    {
+        "id": 9,
+        "name": "Product 9",
+        "description": "Description of Product 9",
+        "price": 2009097,
+        "image": "https://media.geeksforgeeks.org/wp-content/uploads/20230728154838/download-(3).jfif"
+    },
+    {
+        "id": 10,
+        "name": "Product 10",
+        "description": "Description of Product 10",
+        "price": 2876867867,
+        "image": "https://media.geeksforgeeks.org/wp-content/uploads/20230728154931/download.jfif"
+    },
+    {
+        "id": 11,
+        "name": "Product 11",
+        "description": "Description of Product 11",
+        "price": 37678680,
+        "image": "https://media.geeksforgeeks.org/wp-content/uploads/20230728155132/images-(1).jfif"
+    },
+    {
+        "id": 12,
+        "name": "Product 12",
+        "description": "Description of Product 12",
+        "price": 999,
+        "image": "https://media.geeksforgeeks.org/wp-content/uploads/20230728155224/images.jfif"
     }
 ]

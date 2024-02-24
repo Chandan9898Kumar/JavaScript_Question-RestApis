@@ -151,8 +151,8 @@ app.get("/api/products", cors(corsOPtions), (req, res) => {
   console.log(req.requestedTime, "requested time");
 
   res.status(200);
-  res.send(data); // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
-  // res.json(data)      // Send a JSON response.
+  // res.send(data); // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
+  res.json(data)      // Send a JSON response.
   res.end(); // End the response process
 
   //  Note :
