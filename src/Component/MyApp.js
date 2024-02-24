@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, lazy, Suspense, useCallback } from "react";
 import "../App.css";
 import api from "../Apis/Api";
 import { CountStringLength } from "../Utils";
+
+const ImageModal = lazy(() => import("./Images"));
 function MyApp() {
   const [data, setData] = useState();
   const [image, setImage] = useState("");
@@ -9,12 +11,30 @@ function MyApp() {
   const [deleteMessage, setDeleteSuccess] = useState("");
   const [token, setToken] = useState({ accessToken: "", refreshToken: "" });
   const [itemInfo, setItemInfo] = useState([]);
-  
+  const [input, setInput] = useState("");
 
   const lengthOfStrings = useMemo(() => {
     return CountStringLength(data || []);
   }, [data]);
 
+  const getProductDetails = () => {
+    api
+      .getallData()
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const PostingContent = async () => {
+    //  making post api call. here in body we are sending name:'GeekyAnt' so in backend we can access it through req.body.name
+    let response = await api.postingBody({ name: "GeekyAnt" });
+    let responseTwo = await api.postingBodyTwo({ name: "Sir" });
+
+    setResult(response.data + responseTwo.data);
+  };
 
   useEffect(() => {
     //   Calling get api
@@ -47,25 +67,6 @@ function MyApp() {
 
     CreateUserToken();
   }, []);
-
-  const getProductDetails = () => {
-    api
-      .getallData()
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const PostingContent = async () => {
-    //  making post api call. here in body we are sending name:'GeekyAnt' so in backend we can access it through req.body.name
-    let response = await api.postingBody({ name: "GeekyAnt" });
-    let responseTwo = await api.postingBodyTwo({ name: "Sir" });
-
-    setResult(response.data + responseTwo.data);
-  };
 
   const deleteItem = async (params) => {
     try {
@@ -116,17 +117,13 @@ function MyApp() {
     }
   };
 
-  const GetItem = async (params) => {
-    // const getSpecificItem = await api.getSpecificItem(params);
-    //                    OR
-    // const getSpecificItemData = await api.getSpecificItemByParams(params);
-    //                      OR
+  const GetItemDetails = useCallback(async (params) => {
     try {
       const getSpecificItemWithQuery = await api.getSpecificItemByQuery(params);
       setItemInfo(getSpecificItemWithQuery.data);
       setData([]);
     } catch (error) {}
-  };
+  }, []);
 
   return (
     <div className="App">
@@ -136,62 +133,9 @@ function MyApp() {
         <button onClick={addItems}>Create Item</button>
         <span> Total String Length : {lengthOfStrings}</span>
       </h2>
-      {
-        <div className="flex-container">
-          {data &&
-            data.length > 0 &&
-            data?.map((data) => {
-              return (
-                <div key={data.id} style={{ margin: "10px" }}>
-                  <picture>
-                    <source srcSet={data.image} media="(min-width: 992px)" />
-                    <source srcSet={data.image} media="(min-width: 768px)" />
-                    <source srcSet={data.image} media="(min-width: 0px)" />
-                    <img src={data.image} alt="images" loading="lazy" width="300px" height="200px" />
-                  </picture>
-                  <h1>{data.name}</h1>
-                  <div>
-                    <button onClick={() => deleteItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
-                      Delete Item
-                    </button>
-                    <button onClick={() => updateItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
-                      Update Item
-                    </button>
-                    <button onClick={() => GetItem(data)} style={{ marginLeft: "5px", marginRight: "5px" }}>
-                      Get Item Information
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-
-          {itemInfo &&
-            itemInfo.length > 0 &&
-            itemInfo?.map((data) => {
-              return (
-                <div key={data.id} style={{ margin: "10px" }}>
-                  <picture>
-                    <source srcSet={data.image} media="(min-width: 992px)" />
-                    <source srcSet={data.image} media="(min-width: 768px)" />
-                    <source srcSet={data.image} media="(min-width: 0px)" />
-                    <img src={data.image} alt="images" loading="eager" width="300px" height="200px" />
-                  </picture>
-                  <h1>{data.name}</h1>
-                  <p>{data.description}</p>
-                  <p>
-                    Rs. {"  "}
-                    {data.price}
-                  </p>
-                  <div>
-                    <button onClick={() => updateItem(data, "Get")} style={{ marginLeft: "5px", marginRight: "5px" }}>
-                      Get All Items
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-        </div>
-      }
+      <Suspense fallback={"Loading ..."}>
+        <ImageModal data={data} itemInfo={itemInfo} deleteItem={deleteItem} updateItem={updateItem} GetItemDetails={GetItemDetails} />
+      </Suspense>
       <div style={{ marginTop: "10px" }}>
         <picture>
           <source srcSet={`data:;base64,${image}`} media="(min-width: 992px)" />
@@ -200,6 +144,7 @@ function MyApp() {
           <img src={`data:;base64,${image}`} alt="Ref_Image" width="300px" height="250px" loading="lazy" />
         </picture>
       </div>
+      <input value={input} onChange={(e) => setInput(e.target.value)} />
     </div>
   );
 }
