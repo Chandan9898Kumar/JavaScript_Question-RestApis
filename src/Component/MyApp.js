@@ -18,12 +18,15 @@ function MyApp() {
 
     //    To get image from api
     const getImage = () => {
-      api.getImage().then((res) => {
-        const base64 = btoa(new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), ""));
-        setImage(base64);
-      }).catch((error)=>{
-        console.error(error)
-      });
+      api
+        .getImage()
+        .then((res) => {
+          const base64 = btoa(new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), ""));
+          setImage(base64);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     };
     getImage();
 

@@ -540,7 +540,7 @@ app.listen(PORT, (error) => {
 
 
 //                                                                       1. Stateless Authentication
-// The server does not store any data or state of the user between requests. It means each request from the client/ User to the server contains all the data needed to authenticate the user.
+// The server does not store any data or state of the user between requests. It means each request from the client/User to the server contains all the data needed to authenticate the user.
 
 // Some Stateless authentication strategies in ExpressJS are
 
@@ -683,7 +683,7 @@ app.get(
 //                                                                  2. Stateful Authentication
 
 /**In this authentication pattern, the Server stores the state or data of the user about the user session or authentication state. 
- * The server uses this information/ Data to authenticate the user. Stateful authentication uses cookies to identify the user with their request. 
+ * The server uses this information/Data to authenticate the user. Stateful authentication uses cookies to identify the user with their request. 
  * 
  * In Express.js Authentication strategies such as Passport.js and Middleware-based authentication can be both stateful or stateless depending on the use case 
  * and implementation chosen by developers.

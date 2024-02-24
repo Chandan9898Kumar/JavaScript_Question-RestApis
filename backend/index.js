@@ -74,6 +74,7 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 // helmet.frameguard which sets the X-Frame-Options header. This provides clickjacking protection.
 app.use(helmet()); // Helmet helps to protect your app from well-known web vulnerabilities.
 
+
 /**                                                       Compress
 Compression is a technique that is used mostly by servers to compress the assets before serving them over to the network. 
 This makes a whole lot of difference ass such as 70% of your React bundle size can be optimized using this method if your server already not doing them.
@@ -97,6 +98,8 @@ const cache = apicache.middleware;
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
 
+
+
 //  Enabling CORS for specific origins only.
 const corsOPtions = {
   origin: "*", // if you need to enable cors on all the sites and make the data available across then you can change the origin to a star which means that you can use cors enabled for all websites.
@@ -110,6 +113,9 @@ const corsOPtions = {
 };
 
 // REST API to get all products details at once With this api the frontend will only get the data .The frontend cannot modify or update the data Because we are only using the GET method here.
+
+
+
 
 /**
  *                                                             Step 4: Now we will set all the routes for our application.
@@ -130,7 +136,7 @@ Syntax: The basic syntax of these types of routes looks like this, the given fun
 
 //  I have cached data only for this route for 2 seconds. This app.use() middleware cache data only fir this "/api/products" route not for all.
 app.use("/api/products", cache("2 seconds"), (req, res, next) => {
-  req.requestedTime = new Date().toISOString();
+  req.requestedTime = new Date().toISOString(); // This requestedTime can be accessed in below api call by call next() which is used to transfer the control to next method.
   next(); //  passes on the request to the next middleware function in the stack by calling the next() function.
 });
 
@@ -139,7 +145,7 @@ app.use("/api/products", cache("2 seconds"), (req, res, next) => {
 //  We don't need put cors(corsOptions) here explicitly because,we have already used : app.use(cors()); which will enabled cors in all apis automatically and any website can access    these apis. But if you want this  api to be accessed by some specific website then you can put cors inside api like this :-
 
 app.get("/api/products", cors(corsOPtions), (req, res) => {
-  console.log(req.requestedTime, "req");
+  console.log(req.requestedTime, "requested time");
 
   res.status(200);
   res.send(data); // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
@@ -150,6 +156,9 @@ app.get("/api/products", cors(corsOPtions), (req, res) => {
   // 1.  Here req is request, when the client/user call api/make request to the server and pass data in  apis url then this req will be called and have those data in req.body.
   // 2.  Here res is response when the client/user call api/make request to the server after that server(backend) send data to client/user as a response.
 });
+
+
+
 
 /**
  * 1. With app.get() we are configuring our first route, it requires two arguments first one is the path and,
@@ -470,11 +479,11 @@ app.post("/user/generateToken", (req, res) => {
 
   // Assigning refresh token in http-only cookie. we can simply send this token from send() method instead of in cookie and store it in our local storage (frontend side).
   // setting a cookie can be done as such:-
-  res.cookie("jwt", REFRESH_TOKEN, {
-    httpOnly: true,
-    sameSite: "None",
+  res.cookie("jwt_cookie", REFRESH_TOKEN, {
+    httpOnly: false,
+    sameSite: "lax",
     secure: false,
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: 24 * 600 * 600 * 1000,
   });
   //                                                      OR
   //  we can also  store token in cookie and header of response :
@@ -552,6 +561,9 @@ app.listen(PORT, (error) => {
 //  Step to run the application: Now as we have created a server we can successfully start running it to see it’s working,
 //  write this command in your terminal to start the express server.  -:  node index.js OR nodemon index.js
 
+
+
+
 //                                              The word CORS stands for “Cross-Origin Resource Sharing”.
 // CORS is an acronym that stands for “Cross-Origin Resource Sharing.” Cross-Origin Resource Sharing (CORS) is a browser-implemented HTTP-header-based mechanism that allows a server or an API (Application Programming Interface)
 //  to indicate any origins (different in terms of protocol, hostname, or port) other than its origin from which the unknown origin gets permission to access and load resources.
@@ -564,6 +576,10 @@ app.listen(PORT, (error) => {
 // Basically  The browser will block our request because our front end( origins: http://localhost:3000 ) and back end (http://localhost:5000) are on different origins.
 // Every HTTP request comes with request headers and response headers that contain information about the request and response.   Check this network tap by clicking on any api.
 
+
+
+
+
 //                                              Why Would You Want to Implement CORS?
 // From a security standpoint, browsers assume that your server doesn't want to share resources with websites it doesn't know.
 // However, there are many situations where you explicitly want to enable CORS on your server.
@@ -571,6 +587,10 @@ app.listen(PORT, (error) => {
 // If you make a request to your app, you will notice a new header being returned:
 // Access-Control-Allow-Origin: *
 // The Access-Control-Allow-Origin header determines which origins are allowed to access server resources over CORS (the * wildcard allows access from any origin).
+
+
+
+
 
 //                                               Point to remember about express.json() and express.urlencoded()
 
@@ -589,6 +609,12 @@ a. express.json() is a method inbuilt in express to recognize the incoming Reque
 
 b. express.urlencoded() is a method inbuilt in express to recognize the incoming Request Object as strings or arrays. This method is called as a middleware in your application using the code: app.use(express.urlencoded()); 
  
+
+
+
+
+
+
 * 
                                                   Examples of these builtin ExpressJS middlewares are
 1. express.json() :  is a built express middleware that convert request body to JSON.
@@ -603,6 +629,8 @@ b. express.urlencoded() is a method inbuilt in express to recognize the incoming
 // It is easy for websites to remember the user’s information
 // It is easy to capture the user’s browsing history
 // It is also useful in storing the user’s sessions
+
+
 
 //                                              Express.js req.route Property
 
