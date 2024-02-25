@@ -10,7 +10,7 @@ const express = require("express");
 // Creating express app
 const app = express();
 
-const session = require('express-session')
+const session = require("express-session");
 
 const cookieParser = require("cookie-parser"); // It parses the incoming cookies from request to JSON value.
 
@@ -32,8 +32,6 @@ dotenv.config();
 const compression = require("compression"); // Gzip compressing can greatly decrease the size of the response body and hence increase the speed of a web app.
 
 const RateLimit = require("express-rate-limit");
-
-
 
 //  Note : Express apps have a use() function, This function adds a new middleware to the app.Essentially, whenever a request hits your backend, Express will execute the functions you passed to app.use() in order.
 //  It is mostly used to set up middleware for your application.
@@ -78,7 +76,6 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 // helmet.frameguard which sets the X-Frame-Options header. This provides clickjacking protection.
 app.use(helmet()); // Helmet helps to protect your app from well-known web vulnerabilities.
 
-
 /**                                                       Compress
 Compression is a technique that is used mostly by servers to compress the assets before serving them over to the network. 
 This makes a whole lot of difference ass such as 70% of your React bundle size can be optimized using this method if your server already not doing them.
@@ -102,7 +99,6 @@ const cache = apicache.middleware;
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
 
-
 //  Enabling CORS for specific origins only.
 const corsOPtions = {
   origin: "*", // if you need to enable cors on all the sites and make the data available across then you can change the origin to a star which means that you can use cors enabled for all websites.
@@ -116,9 +112,6 @@ const corsOPtions = {
 };
 
 // REST API to get all products details at once With this api the frontend will only get the data .The frontend cannot modify or update the data Because we are only using the GET method here.
-
-
-
 
 /**
  *                                                             Step 4: Now we will set all the routes for our application.
@@ -137,8 +130,8 @@ Syntax: The basic syntax of these types of routes looks like this, the given fun
  * 
  */
 
-//  I have cached data only for this route for 2 seconds. This app.use() middleware cache data only fir this "/api/products" route not for all.
-app.use("/api/products", cache("2 seconds"), (req, res, next) => {
+// I have cached data only for this route for 1 second.This app.use() middleware cache data only fir this "/api/products" route not for all.This will store data in cache only for 1 second.
+app.use("/api/products", cache("1 seconds"), (req, res, next) => {
   req.requestedTime = new Date().toISOString(); // This requestedTime can be accessed in below api call by call next() which is used to transfer the control to next method.
   next(); //  passes on the request to the next middleware function in the stack by calling the next() function.
 });
@@ -149,19 +142,15 @@ app.use("/api/products", cache("2 seconds"), (req, res, next) => {
 
 app.get("/api/products", cors(corsOPtions), (req, res) => {
   // console.log(req.requestedTime, "requested time");
-
   res.status(200);
   // res.send(data); // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
-  res.json(data)      // Send a JSON response.
+  res.json(data); // Send a JSON response.
   res.end(); // End the response process
 
   //  Note :
   // 1.  Here req is request, when the client/user call api/make request to the server and pass data in  apis url then this req will be called and have those data in req.body.
   // 2.  Here res is response when the client/user call api/make request to the server after that server(backend) send data to client/user as a response.
 });
-
-
-
 
 /**
  * 1. With app.get() we are configuring our first route, it requires two arguments first one is the path and,
@@ -271,14 +260,13 @@ app.use("/static", express.static(path.join(__dirname, "Static file")));
 // After then we are creating the absolute path by joining the path of current __dirname and the name of the file we want to send and then passing it to sendFile().
 // Then route sends the image.jpg file to the user as an HTTP response.
 
-
 function middleware(req, res, next) {
-  // Whenever we want to have a security check for the user like authorization and authentication and other checks then we can create a middleware like this, so when the user 
+  // Whenever we want to have a security check for the user like authorization and authentication and other checks then we can create a middleware like this, so when the user
   //  hit the particular api , the first request will come this middleware and from here with the help of next() method we can pass the control to the actual api function.
 
-  //  Here we are using this middleware function just for applying checks,whenever the user call this "/file" api so instead calling that api function, the request 
+  //  Here we are using this middleware function just for applying checks,whenever the user call this "/file" api so instead calling that api function, the request
   //  has to go through this middleware function first and here we can set any additional check like this(basically we can manipulate the request here).and we call the next() which passes the control to next function.
-  //  In middleware function we set req.isImage object along with users passed all the data while calling this api. and then in next function which is "/file" where in  request we access these data and pass appropriate data to user. 
+  //  In middleware function we set req.isImage object along with users passed all the data while calling this api. and then in next function which is "/file" where in  request we access these data and pass appropriate data to user.
   if (req.query.imageName) {
     req.isImage = true;
   } else {
@@ -319,7 +307,7 @@ app.get("/file", middleware, (req, res) => {
 // The app.METHOD() function is used to route an HTTP request, where METHOD is the HTTP method of the request, such as GET, PUT, POST, and so on, in lowercase.
 // Thus, the actual methods are app.get(), app.post(), app.patch(),app.delete() and so on.
 
-// =========================================================================================================================================================================
+// ====================================================================================================================================================================
 
 //                                                              Post api to create a new item
 
@@ -329,26 +317,31 @@ app.post("/create", (req, res) => {
   res.status(200).json({ status: "Successfully created item." });
 });
 
+// ======================================================================================================================================================================
+
 //                                                              Delete Api
 
 app.delete("/delete/:id", (request, response) => {
+  // const {id}= request.params
   const { id } = request.body;
   try {
-    const condition = data.some((item) => item.id == id);
+    const condition = data.some((item) => Number(item.id) === Number(id));
     if (condition) {
       data.forEach((item, index) => {
-        if (item.id == id) {
+        if (Number(item.id) === Number(id)) {
           data.splice(index, 1);
         }
       });
       response.status(200).json({ status: "successfully deleted item" });
     } else {
-      response.status(400).json({ status: "Something went wrong..." });
+      response.status(400).json({ status: "Requested id did not match..." });
     }
   } catch (error) {
     response.status(500).send("Internal Server Error....");
   }
 });
+
+// ===================================================================================================================================================================
 
 //                                                               Patch api to update item
 
@@ -356,16 +349,14 @@ app.patch("/update", (request, response) => {
   //  Here we are matching id of the product whose details we want to update.
 
   // const {id} = request.query      OR Below
-  const {
-    payload: { id },
-  } = request.body;
-  const findById = data.some((item) => item.id == id);
+  const { payload: { id }} = request.body;
+  const findById = data.some((item) => Number(item.id) === Number(id));
   const random = Math.floor(Math.random() * 20 + 1);
 
   if (request.rateLimit.remaining) {
     if (findById) {
       data.forEach((item, index) => {
-        if (item.id == id) {
+        if (Number(item.id) === Number(id)) {
           item.name = `Product ${random}`;
           item.description = `Description of Product ${random}`;
           item.price = random * 10;
@@ -438,7 +429,7 @@ app.get("/api/product", (request, response) => {
 //  Enable CORS(cross-origin resource sharing) for a Single Route.  CORS is basically a set of headers sent by the server to the browser.
 app.get("/api/products/item/:Id", cors(corsOPtions), (request, response) => {
   const { Id } = request.params;
-  const fetchedProduct = data.filter((item) => item.id == Id);
+  const fetchedProduct = data.filter((item) => Number(item.id) === Number(Id));
   if (fetchedProduct) {
     response.status(200).send(fetchedProduct);
   } else {
@@ -474,10 +465,10 @@ app.post("/user/generateToken", (req, res) => {
   const payload = {
     time: Date(),
     userId: 12,
-    user:'John Wick',
+    user: "John Wick",
   };
 
-  const ACCESS_TOKEN = jwt.sign(payload, jwtSecretKey, { expiresIn: "10s" });
+  const ACCESS_TOKEN = jwt.sign(payload, jwtSecretKey, { expiresIn: "15s" });
 
   // Creating refresh token not that expiry of refresh token is greater than the access token
   const REFRESH_TOKEN = jwt.sign(payload, refreshTokenKey, { expiresIn: "1h" });
@@ -496,6 +487,8 @@ app.post("/user/generateToken", (req, res) => {
 
   res.status(200).send({ ACCESS_TOKEN, REFRESH_TOKEN });
 });
+
+
 
 // Verification of JWT
 app.get("/user/validateToken", (req, res) => {
@@ -516,7 +509,7 @@ app.get("/user/validateToken", (req, res) => {
     }
   } catch (error) {
     // Access Denied
-    return res.status(401).send(error);
+    return res.status(401).send({ error: error });
   }
 });
 
@@ -566,9 +559,6 @@ app.listen(PORT, (error) => {
 //  Step to run the application: Now as we have created a server we can successfully start running it to see it’s working,
 //  write this command in your terminal to start the express server.  -:  node index.js OR nodemon index.js
 
-
-
-
 //                                              The word CORS stands for “Cross-Origin Resource Sharing”.
 // CORS is an acronym that stands for “Cross-Origin Resource Sharing.” Cross-Origin Resource Sharing (CORS) is a browser-implemented HTTP-header-based mechanism that allows a server or an API (Application Programming Interface)
 //  to indicate any origins (different in terms of protocol, hostname, or port) other than its origin from which the unknown origin gets permission to access and load resources.
@@ -581,10 +571,6 @@ app.listen(PORT, (error) => {
 // Basically  The browser will block our request because our front end( origins: http://localhost:3000 ) and back end (http://localhost:5000) are on different origins.
 // Every HTTP request comes with request headers and response headers that contain information about the request and response.   Check this network tap by clicking on any api.
 
-
-
-
-
 //                                              Why Would You Want to Implement CORS?
 // From a security standpoint, browsers assume that your server doesn't want to share resources with websites it doesn't know.
 // However, there are many situations where you explicitly want to enable CORS on your server.
@@ -592,10 +578,6 @@ app.listen(PORT, (error) => {
 // If you make a request to your app, you will notice a new header being returned:
 // Access-Control-Allow-Origin: *
 // The Access-Control-Allow-Origin header determines which origins are allowed to access server resources over CORS (the * wildcard allows access from any origin).
-
-
-
-
 
 //                                               Point to remember about express.json() and express.urlencoded()
 
@@ -634,8 +616,6 @@ b. express.urlencoded() is a method inbuilt in express to recognize the incoming
 // It is easy for websites to remember the user’s information
 // It is easy to capture the user’s browsing history
 // It is also useful in storing the user’s sessions
-
-
 
 //                                              Express.js req.route Property
 

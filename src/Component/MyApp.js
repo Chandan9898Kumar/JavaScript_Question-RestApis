@@ -17,14 +17,18 @@ function MyApp() {
   }, [data]);
 
   const getProductDetails = () => {
-    api
-      .getallData()
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      api.getallData()
+        .then((response) => {
+          console.log(response,'response');
+          setData(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const PostingContent = async () => {
@@ -74,15 +78,15 @@ function MyApp() {
         try {
           const deleteResult = await api.deleteItem(params);
           setMessages(deleteResult.data.status);
-          getProductDetails();
         } catch (error) {
-          console.error(error);
+          console.error({ error });
         } finally {
           setMessages("");
+          getProductDetails();
         }
       }
     } catch (error) {
-      alert("Your Token might have expired");
+      console.log("Your Token might have expired...");
     }
   }, []);
 
