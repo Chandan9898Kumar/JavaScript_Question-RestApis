@@ -18,9 +18,9 @@ function MyApp() {
 
   const getProductDetails = () => {
     try {
-      api.getallData()
+      api
+        .getallData()
         .then((response) => {
-          console.log(response,'response');
           setData(response.data);
         })
         .catch((error) => {
