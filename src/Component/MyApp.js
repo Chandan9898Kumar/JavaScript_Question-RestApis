@@ -128,6 +128,8 @@ function MyApp() {
 
   const GetItemDetails = useCallback(async (params) => {
     try {
+      // const getItems = await api.getSpecificItem(params)
+      // const getSpecificItemByParams = await api.getSpecificItemByParams(params)
       const getSpecificItemWithQuery = await api.getSpecificItemByQuery(params);
       setItemInfo(getSpecificItemWithQuery.data);
       setData([]);

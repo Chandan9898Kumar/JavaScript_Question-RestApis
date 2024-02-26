@@ -349,7 +349,9 @@ app.patch("/update", (request, response) => {
   //  Here we are matching id of the product whose details we want to update.
 
   // const {id} = request.query      OR Below
-  const { payload: { id }} = request.body;
+  const {
+    payload: { id },
+  } = request.body;
   const findById = data.some((item) => Number(item.id) === Number(id));
   const random = Math.floor(Math.random() * 20 + 1);
 
@@ -412,14 +414,20 @@ app.get("/api/product", (request, response) => {
 
   // console.log(request.secure);                    //  The req.secure property is a Boolean property that is true if a TLS connection is established else returns false.
 
-  if (Id && name === "") {
-    fetchedProduct = data.filter((item) => Number(item.id) === Number(Id));
-  } else if (name && Id === "") {
-    fetchedProduct = data.filter((item) => item.name === name);
-  } else if (name && Id) {
-    fetchedProduct = data.filter((item) => Number(item.id) === Number(Id) && item.name === name);
+  const parsedId = Number(Id);
+  const idOfUser = data.some((item) => Number(item.id) === parsedId);
+  const nameOfUser = data.some((item) => item.name === name);
+
+  if (isNaN(parsedId)) {
+    return response.status(400).send({ message: "Invalid Id" });
+  }
+  if (idOfUser && nameOfUser) {
+    fetchedProduct = data.filter((item) => parseInt(item.id) === parsedId && item.name === name);
+  }
+  if (idOfUser || nameOfUser) {
+    fetchedProduct = idOfUser ? data.filter((item) => Number(item.id) === parsedId) : data.filter((item) => item.name === name);
   } else {
-    return response.status(400).json({ statusbar: "Something went wrong." });
+    return response.status(400).json({ statusbar: "Something went wrong please check your details." });
   }
   return response.status(200).send(fetchedProduct);
 });
@@ -487,8 +495,6 @@ app.post("/user/generateToken", (req, res) => {
 
   res.status(200).send({ ACCESS_TOKEN, REFRESH_TOKEN });
 });
-
-
 
 // Verification of JWT
 app.get("/user/validateToken", (req, res) => {
