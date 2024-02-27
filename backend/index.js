@@ -10,6 +10,8 @@ const express = require("express");
 // Creating express app
 const app = express();
 
+const path = require("path");
+
 const session = require("express-session");
 
 const cookieParser = require("cookie-parser"); // It parses the incoming cookies from request to JSON value.
@@ -74,9 +76,23 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 // helmet.contentSecurityPolicy which sets the Content-Security-Policy header. This helps prevent cross-site scripting attacks among many other things.
 // helmet.hsts which sets the Strict-Transport-Security header. This helps enforce secure (HTTPS) connections to the server.
 // helmet.frameguard which sets the X-Frame-Options header. This provides clickjacking protection.
+
 app.use(helmet()); // Helmet helps to protect your app from well-known web vulnerabilities.
 
+//   Below code fix image error : Content Security Policy: "img-src 'self' data:" 
+app.use(
+  helmet.contentSecurityPolicy({
+    useDefaults: true,
+    directives: {
+      "img-src": ["'self'", "https: data:"],
+    },
+  }),
+);
+
+
+
 /**                                                       Compress
+ * 
 Compression is a technique that is used mostly by servers to compress the assets before serving them over to the network. 
 This makes a whole lot of difference ass such as 70% of your React bundle size can be optimized using this method if your server already not doing them.
 Widely accepted Algorithms are Gzip, Brotli, and Deflate. Where Gzip is accepted by all browsers nowadays.
@@ -85,6 +101,7 @@ This method is not related to React but it's standard practice
 
 // add compression middleware
 app.use(compression()); // Compress all routes
+
 
 const limiter = RateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
@@ -175,10 +192,10 @@ app.get("/api/products", cors(corsOPtions), (req, res) => {
 // Also in this example, we are not explicitly setting status, it is now concatenated with the statement of sending the response.
 // This is another way to send status along with a response.
 
-app.get("/hello", (req, res) => {
-  res.set("Content-Type", "text/html");
-  res.status(200).send("<h1>Hello  Learner!</h1>");
-});
+// app.get("/hello", (req, res) => {
+//   res.set("Content-Type", "text/html");
+//   res.status(200).send("<h1>Hello  Learner!</h1>");
+// });
 
 // ===============================================================================================================================================================================
 
@@ -222,9 +239,12 @@ app.post("/postingTwo", (req, res) => {
 // =======================================================================================================================================================================
 
 //                                                               Example 4:   Sending Files from Server
+
 //  Now we will see how to send files from the server.
 // Several times we need to transfer the resources from the server as per user request, there are majorly two methods to send files one is sending static files using middleware
 // and the other one is sending a single file on a route.
+
+
 
 //                                                               Method  1: Serving entire directory using middleware.
 
@@ -240,10 +260,18 @@ app.post("/postingTwo", (req, res) => {
 // The join() method takes two parameters and joins them as a path, in NodeJS we have a global attribute __dirname which contains the path of the directory in which the current file exists.
 // We are providing that joined path to middleware so that it can start serving the files inside that directory on the given path.
 
-const path = require("path");
-const { request } = require("http");
-const { Session } = require("inspector");
-app.use("/static", express.static(path.join(__dirname, "Static file")));
+// const { request } = require("http");
+// const { Session } = require("inspector");
+
+// app.use("/static", express.static(path.join(__dirname, "Static file")));
+
+
+app.use(express.static(path.join(__dirname, "build")));
+//  Here we have put build file from frontend and moved it backend, now if we want here app to be server side rendering then we can put build file in app.use() method.
+//  and then we can go to our http://localhost:5000 where our backend server is running(we host it on different location as well) . there you will see our frontend application running.
+
+
+
 
 //                                          Method 2: Sending a single file on a route with the sendFile() function.
 
@@ -314,7 +342,8 @@ app.get("/file", middleware, (req, res) => {
 app.post("/create", (req, res) => {
   const { payload } = req.body;
   data.push(payload);
-  res.status(200).json({ status: "Successfully created item." });
+  //  Whenever use post request always send 201 as status code, it means something has "created".
+  res.status(201).json({ status: "Successfully created item." });
 });
 
 // ======================================================================================================================================================================
