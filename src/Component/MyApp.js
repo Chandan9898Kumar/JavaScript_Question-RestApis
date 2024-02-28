@@ -117,6 +117,7 @@ function MyApp() {
       return;
     }
     try {
+      // const updatedItems = await api.updateItem(params);
       const updatedItems = await api.updateItemTwo(params);
       if (updatedItems.status === 200) {
         getProductDetails();

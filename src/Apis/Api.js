@@ -64,7 +64,7 @@ const deleteItem = (params) => {
 // -----------------------------------------------------------------------PATCH API---------------------------------------------------------------------------------------------
 
 const updateItem = (payload) => {
-  return axios.patch("http://localhost:5000/update", { payload }, { headers: { "Content-Type": "application/json" } });
+  return axios.patch(`http://localhost:5000/api/products/update/${payload.id}`, { payload }, { headers: { "Content-Type": "application/json" } });
 };
 
 // Note : Below update api method is good because it when see your network tab then in url it will which item is being updated with its ID or name whatever you want show you can pass.

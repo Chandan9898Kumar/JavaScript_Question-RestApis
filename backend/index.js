@@ -79,17 +79,15 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 
 app.use(helmet()); // Helmet helps to protect your app from well-known web vulnerabilities.
 
-//   Below code fix image error : Content Security Policy: "img-src 'self' data:" 
+//   Below code fix image error : Content Security Policy: "img-src 'self' data:"
 app.use(
   helmet.contentSecurityPolicy({
     useDefaults: true,
     directives: {
       "img-src": ["'self'", "https: data:"],
     },
-  }),
+  })
 );
-
-
 
 /**                                                       Compress
  * 
@@ -101,7 +99,6 @@ This method is not related to React but it's standard practice
 
 // add compression middleware
 app.use(compression()); // Compress all routes
-
 
 const limiter = RateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
@@ -244,8 +241,6 @@ app.post("/postingTwo", (req, res) => {
 // Several times we need to transfer the resources from the server as per user request, there are majorly two methods to send files one is sending static files using middleware
 // and the other one is sending a single file on a route.
 
-
-
 //                                                               Method  1: Serving entire directory using middleware.
 
 // Express provides us a middleware express.static(), it accepts two arguments first one is the absolute root path of the directory whose files we are going to serve.
@@ -265,13 +260,9 @@ app.post("/postingTwo", (req, res) => {
 
 // app.use("/static", express.static(path.join(__dirname, "Static file")));
 
-
 app.use(express.static(path.join(__dirname, "build")));
 //  Here we have put build file from frontend and moved it backend, now if we want here app to be server side rendering then we can put build file in app.use() method.
 //  and then we can go to our http://localhost:5000 where our backend server is running(we host it on different location as well) . there you will see our frontend application running.
-
-
-
 
 //                                          Method 2: Sending a single file on a route with the sendFile() function.
 
@@ -372,18 +363,48 @@ app.delete("/delete/:id", (request, response) => {
 
 // ===================================================================================================================================================================
 
-//                                                               Patch api to update item
+//                                                               Patch api to update item by two techniques:
+
+//                                                                        1. By using params
+
+app.patch("/api/products/update/:id", (request, response) => {
+  const { id } = request.params;
+  const { price } = request.body;
+  const parsedId = parseInt(id);
+  const findById = data.some((item) => Number(item.id) === parsedId);
+  const random = Math.floor(Math.random() * 20 + 1);
+
+  if (isNaN(parsedId)) {
+    return response.status(400).send({ message: "Invalid Id" });
+  }
+  if (findById) {
+    data.forEach((item, index) => {
+      if (Number(item.id) === Number(id)) {
+        item.name = `Product ${random}`;
+        item.description = `Description of Product ${random}`;
+        item.price = random + price;
+      }
+    });
+    response.status(200).json({ status: "item updated Successfully" });
+  } else {
+    response.status(404).json({ status: "Request did not find on server" });
+  }
+});
+
+//                                                                    2. By using query parameters. here we applied rate limiter.
 
 app.patch("/update", (request, response) => {
   //  Here we are matching id of the product whose details we want to update.
-
-  // const {id} = request.query      OR Below
-  const {
-    payload: { id },
-  } = request.body;
+  
+  // const { payload: { id } } = request.body;    // OR Below
+  const { id } = request.query;
   const findById = data.some((item) => Number(item.id) === Number(id));
   const random = Math.floor(Math.random() * 20 + 1);
+  const parsedId = parseInt(id);
 
+  if (isNaN(parsedId)) {
+    return response.status(400).send({ message: "Invalid Id" });
+  }
   if (request.rateLimit.remaining) {
     if (findById) {
       data.forEach((item, index) => {
@@ -412,7 +433,12 @@ app.patch("/update", (request, response) => {
 
 app.get("/api/products/item", (request, response) => {
   const { Id } = request.query;
-  const fetchedProduct = data.filter((item) => item.id == Id);
+  const fetchedProduct = data.filter((item) => parseInt(item.id) === parseInt(Id));
+  const parsedId = Number(Id);
+
+  if (isNaN(parsedId)) {
+    return response.status(400).send({ message: "Invalid Id" });
+  }
   if (fetchedProduct) {
     response.status(200).send(fetchedProduct);
   } else {
@@ -422,7 +448,7 @@ app.get("/api/products/item", (request, response) => {
 
 //                                            Below method is good for accessing data from request.query
 
-//                                        Express.js req.query Property
+//                                                      Express.js req.query Property
 
 // The req.query property is an object containing the property for each query string parameter in the route.
 
@@ -461,12 +487,19 @@ app.get("/api/product", (request, response) => {
   return response.status(200).send(fetchedProduct);
 });
 
-//  Method 2: by  defining data in route for specific item. Note: when we define anything in route then we can access it through params ( request.params ) not query( request.query ).
+//                                                                  Express.js req.params Property
 
+//  Method 2: by  defining data in route for specific item. Note: when we define anything in route then we can access it through params ( request.params ) not query( request.query ).
 //  Enable CORS(cross-origin resource sharing) for a Single Route.  CORS is basically a set of headers sent by the server to the browser.
+
 app.get("/api/products/item/:Id", cors(corsOPtions), (request, response) => {
   const { Id } = request.params;
   const fetchedProduct = data.filter((item) => Number(item.id) === Number(Id));
+  const parsedId = Number(Id);
+
+  if (isNaN(parsedId)) {
+    return response.status(400).send({ message: "Invalid Id" });
+  }
   if (fetchedProduct) {
     response.status(200).send(fetchedProduct);
   } else {
