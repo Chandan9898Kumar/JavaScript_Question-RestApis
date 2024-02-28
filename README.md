@@ -147,3 +147,29 @@ HTTP Methods: RESTful APIs use standard HTTP methods to perform CRUD(Create, Rea
 To make sure that when our REST API app responds with JSON that clients interpret it as such, we should set Content-Type in the response header to "application/json" after the request is made. Many server-side app frameworks set the response header automatically. Some HTTP clients look at the Content-Type response header and parse the data according to that format.
 
 ### Note : always try to generate your URL in lowercase. EX: /data
+
+
+
+### Important Note about                                        "--legacy-peer-deps" Error :   
+
+<!--
+The concept of peer dependencies can cause challenges when installing packages. Consider the following scenario:
+
+Package A requires Package B, and both have a common peer dependency, Package C. However, Package A requires Package C in version 1.x, while Package B requires Package C in version 2.x.
+
+When you try to install Package A and Package B together in your project, npm might encounter a conflict due to the different peer dependency versions required by each package. This can lead to installation failures, and it becomes challenging to resolve the conflicts manually.
+
+"npm config set legacy-peer-deps true"
+
+To alleviate the complications caused by conflicting peer dependencies, npm introduced the "legacy-peer-deps" configuration flag. When set to true, this flag instructs npm to revert to the older behavior of installing packages with peer dependencies.
+
+The "legacy-peer-deps" flag works as follows:
+
+If a package declares a peer dependency, npm will install the specified version without verifying if it satisfies the version range expected by the dependent package.
+
+The flag disables the strict version checking for peer dependencies, making it more permissive during the installation process. 
+ -->
+
+ `To set/fix this error make "legacy-peer-deps" flag to true, open your terminal and run the following commands:`
+1. npm config set legacy-peer-deps true
+2. npm instal
