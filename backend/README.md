@@ -89,47 +89,6 @@ An Express application can use the following types of middleware:
 
 
 
-###                                                         Cache
-
-`A cache is a temporary storage that provides quick access to frequently used data. And it’s usually stored in memory for low latency. But available memory is limited. So it’s important to update the cache the right way.`
-
-                                                            OR
-
-A cache is a storage location where data can be stored for quick and easy access. Caches are used in a variety of applications, including computers, web browsers, and web servers.
-When data is stored in a cache, it is stored in a temporary location so that it can be quickly accessed.
-Caching is important because it helps improve the speed and performance of a system.
-When data is cached, it can be quickly accessed, which reduces the amount of time that a system must wait for data to be retrieved from the main memory.
-
-
-
-
-
-### Note :                                                  Cache Control
-
-`Cache-control is an HTTP header used to specify browser caching policies in both client requests and server responses. Policies include how a resource is cached, where it’s cached and its maximum age before expiring (i.e., time to live).`
-
-1. `Cache-Control: Max-Age`
-The max-age request directive defines, in seconds, the amount of time it takes for a cached copy of a resource to expire. After expiring, a browser must refresh its version of the resource by sending another request to a server.
-
-For example, cache-control: max-age=120 means that the returned resource is valid for 120 seconds, after which the browser has to request a newer version.
-
-2. `Cache-Control: No-Cache`
-The no-cache directive means that a browser may cache a response, but must first submit a validation request to an origin server.
-
-3. `Cache-Control: No-Store`
-The no-store directive means browsers aren’t allowed to cache a response and must pull it from the server each time it’s requested. This setting is usually used for sensitive data, such as personal banking details.
-
-4. `Cache-Control: Public`
-The public response directive indicates that a resource can be cached by any cache.
-
-5. `Cache-Control: Private`
-The private response directive indicates that a resource is user specific—it can still be cached, but only on a client device. For example, a web page response marked as private can be cached by a desktop browser, but not a content delivery network (CDN).
-
-
-
-
-
-
 ### Why Express ‘app’ and ‘server’ files kept separately ?
 
 Express is a simple and minimalistic framework for web applications in Node.js. Express provides a rich collection of features for development of both web and mobile applications. In any web or mobile application, each module or layer should be only responsible for a single task and should not deal with other tasks. This allows the application to be broken into smaller building blocks, which helps in reducing code complexity and data to be abstracted from other layers.
@@ -356,3 +315,76 @@ OAuth is an open authorization framework that uses a type of token authenticatio
 ###                                                       What is API authorization?
 
 After you prove the user's identity, you can check which data that user is allowed to access. That process is authorization. Authorization ensures that the user is authorized to view or edit a specific set of data.
+
+
+
+
+
+
+###                                                     Caching
+`Caching is the ability to store copies of frequently accessed data in several places along the request-response path.`
+
+When a consumer requests a resource representation, the request goes through a cache or a series of caches (local cache, proxy cache, or reverse proxy) toward the service hosting the resource.
+
+If any of the caches along the request path has a fresh copy of the requested representation, it uses that copy to satisfy the request. If none of the caches can satisfy the request, the request travels to the service (or origin server as it is formally known).
+
+By using HTTP headers, an origin server indicates whether a response can be cached and, if so, by whom, and for how long.
+
+Caches along the response path can take a copy of a response, but only if the caching metadata allows them to do so.
+
+
+<!--                                                     OR                                                                                                            -->
+
+###                                                      Cache
+
+`A cache is a temporary storage that provides quick access to frequently used data. And it’s usually stored in memory for low latency. But available memory is limited. So it’s important to update the cache the right way.`
+
+                                                          OR
+
+A cache is a storage location where data can be stored for quick and easy access. Caches are used in a variety of applications, including computers, web browsers, and web servers.
+When data is stored in a cache, it is stored in a temporary location so that it can be quickly accessed.
+Caching is important because it helps improve the speed and performance of a system.
+When data is cached, it can be quickly accessed, which reduces the amount of time that a system must wait for data to be retrieved from the main memory.
+
+
+###                                                      Cache Data
+Caching stores copies of frequently accessed data. Caching response data can :
+
+1. Reduce bandwidth usage
+2. Reduce response latency
+3. Reduce load on servers
+4. Temporarily hide network failures
+
+`NOTE :` GET requests are automatically cached. PUT and DELETE are not.Caching can be controlled using cache control headers in a request.
+
+
+### Note :                                                Cache Control
+
+`Cache-control is an HTTP header used to specify browser caching policies in both client requests and server responses. Policies include how a resource is cached, where it’s cached and its maximum age before expiring (i.e., time to live).`
+
+1. `Cache-Control: Max-Age`
+The max-age request directive defines, in seconds, the amount of time it takes for a cached copy of a resource to expire. After expiring, a browser must refresh its version of the resource by sending another request to a server.
+
+For example, cache-control: max-age=120 means that the returned resource is valid for 120 seconds, after which the browser has to request a newer version.
+
+2. `Cache-Control: No-Cache`
+The no-cache directive means that a browser may cache a response, but must first submit a validation request to an origin server.
+
+3. `Cache-Control: No-Store`
+The no-store directive means browsers aren’t allowed to cache a response and must pull it from the server each time it’s requested. This setting is usually used for sensitive data, such as personal banking details.
+
+4. `Cache-Control: Public`
+The public response directive indicates that a resource can be cached by any cache.
+
+5. `Cache-Control: Private`
+The private response directive indicates that a resource is user specific—it can still be cached, but only on a client device. For example, a web page response marked as private can be cached by a desktop browser, but not a content delivery network (CDN).
+
+
+
+###                                                       Caching in REST APIs
+Being cacheable is one of the architectural constraints of REST.
+
+1. GET requests should be cachable by default – until a special condition arises. Usually, browsers treat all GET requests as cacheable.
+2. POST requests are not cacheable by default but can be made cacheable if either an Expires header or a Cache-Control header with a directive,to explicitly allows caching, is added      
+   to the response.
+3. Responses to PUT and DELETE requests are not cacheable at all.
