@@ -11,8 +11,33 @@ const express = require("express");
 const app = express();
 
 const path = require("path");
+// ======================================================== Session =================================================================================================
 
+//  Note : Session represents the duration of users on a website. One Main use case of session is user Authentication.
+//         Sessions are created on the server by generating an object with an session ID. When an HTTP request is sent to the server from the web browser/Client side the response
+//         can return with an instruction to set a cookie with the session ID,so that it can be saved in the browser.this allows the browser to send the cookie on subsequent request
+//         to the server and the server can parse the cookies from text to json and verify the session ID was sent from the client is correct or not and determine who the request
+//         was sent from. Whenever the browser sends the cookies on each request, the server can look-up which user pertains to the session. As the server maintains a mapping of
+//         each session ID  to the user.
 const session = require("express-session");
+
+app.use(
+  session({
+    secret: "my-secret", // a secret string used to sign the session ID cookie
+    resave: false, // don't save session if unmodified
+    saveUninitialized: false, // don't create session until something stored
+    cookie: {
+      maxAge: 60000 * 60, // This shows the living time of cookie, when this time gets over then cookie will expire.
+      // This help if we have user login system.when we want the user to logged in for max 1 hr.
+    },
+  }),
+);
+
+/**
+ * express-session is a middleware module in Express.js that allows you to create sessions in your web application.
+ * It stores session data on the server side, using a variety of different storage options, and allows you to track the activity of a user across requests.
+ */
+// =====================================================================================================================================================================
 
 const cookieParser = require("cookie-parser"); // It parses the incoming cookies from request to JSON value.
 
@@ -58,6 +83,8 @@ app.use(express.urlencoded({ extended: false })); // Parse x-www-form-urlencoded
 
 app.use(express.text()); // It parses the incoming request payloads into a string and is based on body-parser.make a POST request with header set to ‘content-type: text/plain’ and body {“title”:”Geeky”}.
 
+// ===================================================================================================================================================================
+
 //  Note :                      bodyParser (in newer version of express it is not needed) instead use  app.use(express.json());.
 
 //  Depending on Content-Type in your client request the server should have different, one of the below app.use():
@@ -71,7 +98,10 @@ app.use(express.text()); // It parses the incoming request payloads into a strin
 // Therefore, you need to make sure that when you're executing a POST request, that you're including the "Content-Type" header.
 // Otherwise, bodyParser may not know what to do with the body of your POST request.
 
+// ======================================================================================================================================================================
+
 //                                                            Helmet.
+
 // Helmet is a collection of several smaller middleware functions that set security-related HTTP response headers. Some examples include:
 // helmet.contentSecurityPolicy which sets the Content-Security-Policy header. This helps prevent cross-site scripting attacks among many other things.
 // helmet.hsts which sets the Strict-Transport-Security header. This helps enforce secure (HTTPS) connections to the server.
@@ -89,6 +119,8 @@ app.use(
   })
 );
 
+// =======================================================================================================================================================================
+
 /**                                                       Compress
  * 
 Compression is a technique that is used mostly by servers to compress the assets before serving them over to the network. 
@@ -99,6 +131,8 @@ This method is not related to React but it's standard practice
 
 // add compression middleware
 app.use(compression()); // Compress all routes
+
+// =========================================================================================================================================================================
 
 const limiter = RateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
@@ -395,7 +429,7 @@ app.patch("/api/products/update/:id", (request, response) => {
 
 app.patch("/update", (request, response) => {
   //  Here we are matching id of the product whose details we want to update.
-  
+
   // const { payload: { id } } = request.body;    // OR Below
   const { id } = request.query;
   const findById = data.some((item) => Number(item.id) === Number(id));
