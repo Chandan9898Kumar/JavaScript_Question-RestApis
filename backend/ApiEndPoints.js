@@ -1,43 +1,39 @@
-
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require("cors"); 
-const cookieParser = require('cookie-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const app = express();
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
-app.use(express.json({limit:'50mb'})); 
-app.use(cors());     
-app.use(cookieParser)
-
-
+app.use(express.json({ limit: "50mb" }));
+app.use(cors());
+app.use(cookieParser);
 
 //                                              "/articles" represents a REST API resource.
-app.get('/articles', (req, res) => {
+app.get("/articles", (req, res) => {
   const articles = [];
   // code to retrieve an article...
   res.json(articles);
 });
 
-app.post('/articles', (req, res) => {
+app.post("/articles", (req, res) => {
   // code to add a new article...
   res.json(req.body);
 });
 
-app.put('/articles/:id', (req, res) => {
+app.put("/articles/:id", (req, res) => {
   const { id } = req.params;
   // code to update an article...
   res.json(req.body);
 });
 
-app.delete('/articles/:id', (req, res) => {
+app.delete("/articles/:id", (req, res) => {
   const { id } = req.params;
   // code to delete an article...
   res.json({ deleted: id });
 });
-
 
 /**
  * In the code above, we defined the endpoints to manipulate articles. As we can see, the path names do not have any verbs in them. 
@@ -46,10 +42,6 @@ app.delete('/articles/:id', (req, res) => {
    The POST, PUT, and DELETE endpoints all take JSON as the request body, and they all return JSON as the response, including the GET endpoint.
 
  */
-
-
-
-
 
 /**
 router.get("/about", function (req, res) {
@@ -64,31 +56,23 @@ The router function above takes a single callback, but you can specify as many c
 Each function is part of the middleware chain, and will be called in the order it is added to the chain (unless a preceding function completes the request).
  */
 
-
-
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //                                                                          Use logical nesting on endpoints
 
-
-// When designing endpoints, it makes sense to group those that contain associated information. That is, if one object can contain another object, 
+// When designing endpoints, it makes sense to group those that contain associated information. That is, if one object can contain another object,
 // you should design the endpoint to reflect that. This is good practice regardless of whether your data is structured like this in your database.
 //  In fact, it may be advisable to avoid mirroring your database structure in your endpoints to avoid giving attackers unnecessary information.
 
-
-// For example, if we want an endpoint to get the comments for a news article, we should append the /comments path to the end of the /articles path. 
+// For example, if we want an endpoint to get the comments for a news article, we should append the /comments path to the end of the /articles path.
 // We can do that with the following code in Express:
 
-
-app.get('/articles/:articleId/comments', (req, res) => {
-    const { articleId } = req.params;
-    const comments = [];
-    // code to get comments by articleId
-    res.json({comments: comments,articleId:articleId});
-  });
-
-
-
+app.get("/articles/:articleId/comments", (req, res) => {
+  const { articleId } = req.params;
+  const comments = [];
+  // code to get comments by articleId
+  res.json({ comments: comments, articleId: articleId });
+});
 
 /**
 In the code above, we can use the GET method on the path '/articles/:articleId/comments'. We get comments on the article identified by articleId and 
@@ -107,15 +91,9 @@ But that's getting out of hand. Instead, return the URI for that particular user
 
  */
 
-
-
-
-
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //                                                              Handle errors gracefully and return standard error codes
-
 
 /**
                                                               Common error HTTP status codes include:
@@ -129,43 +107,28 @@ But that's getting out of hand. Instead, return the URI for that particular user
 503 Service Unavailable - This indicates that something unexpected happened on server side (It can be anything like server overload, some parts of the system failed, etc.).
  */
 
-
 // existing users
-const users = [
-    { email: 'abc@foo.com' }
-  ]
-  
-  
-  
-  app.post('/users', (req, res) => {
-    const { email } = req.body;
-    const userExists = users.find(u => u.email === email);
-    if (userExists) {
-      return res.status(400).json({ error: 'User already exists' })
-    }
-    res.json(req.body);
-  });
+const users = [{ email: "abc@foo.com" }];
 
-
-
-
+app.post("/users", (req, res) => {
+  const { email } = req.body;
+  const userExists = users.find((u) => u.email === email);
+  if (userExists) {
+    return res.status(400).json({ error: "User already exists" });
+  }
+  res.json(req.body);
+});
 
 /**                                           Note
- * 
- * Above if we try to submit the payload with the email value that already exists in users, we'll get a 400 response status code with a 'User already exists' message 
+ *
+ * Above if we try to submit the payload with the email value that already exists in users, we'll get a 400 response status code with a 'User already exists' message
  * to let users know that the user already exists. With that information, the user can correct the action by changing the email to something that doesn't exist.
- * 
+ *
  */
-
-
-
-
-
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-//                                                      Allow filtering, sorting, and pagination                                                                     
-
+//                                                      Allow filtering, sorting, and pagination
 
 /**
 The databases behind a REST API can get very large. Sometimes, there's so much data that it shouldn’t be returned all at once because it’s way too slow 
@@ -179,37 +142,31 @@ Here’s a small example where an API can accept a query string with various que
  * 
  */
 
-
 // employees data in a database
 const employees = [
-    { firstName: 'Jane', lastName: 'Smith', age: 20 },
-    { firstName: 'John', lastName: 'Smith', age: 30 },
-    { firstName: 'Mary', lastName: 'Green', age: 50 },
-  ]
-  
-  
-  app.get('/employees', (req, res) => {
-    const { firstName, lastName, age } = req.query;
-    let results = [...employees];
-    if (firstName) {
-      results = results.filter(r => r.firstName === firstName);
-    }
-  
-    if (lastName) {
-      results = results.filter(r => r.lastName === lastName);
-    }
-  
-    if (age) {
-      results = results.filter(r => +r.age === +age);
-    }
-    res.json(results);
-  });
+  { firstName: "Jane", lastName: "Smith", age: 20 },
+  { firstName: "John", lastName: "Smith", age: 30 },
+  { firstName: "Mary", lastName: "Green", age: 50 },
+];
 
+app.get("/employees", (req, res) => {
+  const { firstName, lastName, age } = req.query;
+  let results = [...employees];
+  if (firstName) {
+    results = results.filter((r) => r.firstName === firstName);
+  }
 
+  if (lastName) {
+    results = results.filter((r) => r.lastName === lastName);
+  }
+
+  if (age) {
+    results = results.filter((r) => +r.age === +age);
+  }
+  res.json(results);
+});
 
 //  Once we have done that, we return the results as the response. Therefore,when we make a GET request to the following path with the query string: /employees?lastName=Smith&age=30
-
-
 
 /**
 We can also specify the fields to sort by in the query string. For instance, we can get the parameter from a query string with the fields we want to sort the data for.
@@ -223,16 +180,9 @@ Where + means ascending and - means descending. So we sort by author’s name in
 
  */
 
-
-
-
-
-
-
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //                                                                      Cache data to improve performance
-
 
 // We can add caching to return data from the local memory cache instead of querying the database to get the data every time we want to retrieve some data that users request.
 //  The good thing about caching is that users can get data faster. However, the data that users get may be outdated.
@@ -241,13 +191,8 @@ Where + means ascending and - means descending. So we sort by author’s name in
 
 // For instance, Express has the apicache middleware to add caching to our app without much configuration. We can add a simple in-memory cache into our server like so:
 
-
-
-
-
-const apicache = require('apicache');
+const apicache = require("apicache");
 let cache = apicache.middleware;
-
 
 // Note :  we imported the apicache module and accessed its middleware. we can cache our API in two ways.
 
@@ -259,63 +204,51 @@ let cache = apicache.middleware;
 // unit: can be seconds, minutes, hours, or days
 // The time will determine how long we want to keep the response of a request in cache storage.
 
-
-
 // Method 1.  By Cache a single Route:
-
 
 // employees data in a database
 const employee = [
-  { firstName: 'Jane', lastName: 'Smith', age: 20 },
-  { firstName: 'John', lastName: 'Smith', age: 30 },
-  { firstName: 'Mary', lastName: 'Green', age: 50 },
-]
+  { firstName: "Jane", lastName: "Smith", age: 20 },
+  { firstName: "John", lastName: "Smith", age: 30 },
+  { firstName: "Mary", lastName: "Green", age: 50 },
+];
 
 //here we cached our employees route only.  It will cache the response on this route for 5 minutes.
 
-//  Here we have given 5 minutes time to cache responses (Basically it store this response in its memory for 5 minutes). 
+//  Here we have given 5 minutes time to cache responses (Basically it store this response in its memory for 5 minutes).
 // within this 5 minutes no matter how many times you call this api, it will give response data from its memory,it will not get the response from server.
 // even if you have update something and calling this api to get updated response,then also it will give old response which you set here here.
 //  but when the 5 mins time gets over(cache will remove the stored data from its memory) and after that if you call this get method then it will actually call this method
-//  and give you fresh data. and again it will save data in cache for next 5 minutes,and this process will keep on going. 
+//  and give you fresh data. and again it will save data in cache for next 5 minutes,and this process will keep on going.
 
-app.get('/employees',cache('5 minutes'),(req, res) => {
+app.get("/employees", cache("5 minutes"), (req, res) => {
   res.json(employee);
 });
 
-app.post('/post',(req, res) => {
-    res.json(employee);
-  });
-
+app.post("/post", (req, res) => {
+  res.json(employee);
+});
 
 // The code above just references the apicache middleware with apicache.middleware and then we have: app.use(cache('5 minutes'))
 // to apply the caching to the whole app. We cache the results for five minutes, for example. We can adjust this for our needs.
 // If you are using caching, you should also include Cache-Control information in your headers. This will help users effectively use your caching system.
 
-
-
-
-
-
 // Method 2.    By Cache all Routes:
 
-
 //  Here we cached all routes (get,post delete,patch) by using app.use()
-app.use(cache('5 minutes'));
+app.use(cache("5 minutes"));
 
-app.get('/employees',(req, res) => {
-  res.send('Hello World!')
-})
+app.get("/employees", (req, res) => {
+  res.send("Hello World!");
+});
 
-app.post('/post',(req, res) => {
-    res.json(employee);
-  });
-
+app.post("/post", (req, res) => {
+  res.json(employee);
+});
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //                                                          Cache new example
-
 
 // There are several ways to implement caching in an Express API. Here are some common techniques:
 
@@ -326,55 +259,39 @@ app.post('/post',(req, res) => {
 // 2. Redis caching: Redis is an in-memory data store that can be used to cache data in a scalable and high-performance way.
 //  You can use the “redis” package to implement Redis caching in your Express API.
 
-// 3. Browser caching: You can configure your API to set appropriate cache headers in the HTTP response, which allows the client’s browser to cache the response. 
+// 3. Browser caching: You can configure your API to set appropriate cache headers in the HTTP response, which allows the client’s browser to cache the response.
 // This technique is useful for responses that don’t change frequently and can be safely cached by the client.
 
+const caches = require("memory-cache");
 
+// Note :  Initially, you will see a long response time. If you send the GET request several times,
+// you will notice that data is retrieved much faster than the initial response time due to response caching. When we request a resource for the first time,
+// the data gets cached and on requesting it again, the cached data is returned instead of hitting the API endpoint, resulting in faster response times.
 
-const caches = require('memory-cache');
-
-
-
-
-// Note :  Initially, you will see a long response time. If you send the GET request several times, 
-// you will notice that data is retrieved much faster than the initial response time due to response caching. When we request a resource for the first time, 
-// the data gets cached and on requesting it again, the cached data is returned instead of hitting the API endpoint, resulting in faster response times. 
-
-app.get('/api/data', (req, res) => {
-
-  const data = caches.get('data');
+app.get("/api/data", (req, res) => {
+  const data = caches.get("data");
 
   if (data) {
-    console.log('Serving from cache');
+    console.log("Serving from cache");
     return res.json(data);
   } else {
-    console.log('Serving from API');
+    console.log("Serving from API");
     const newData = // fetch data from API
-    caches.put('data', newData, 60 * 1000); // cache for 1 minute
+      caches.put("data", newData, 60 * 1000); // cache for 1 minute
     return res.json(newData);
   }
 });
 
-
-
 /**
- * In this example, the API endpoint “/api/data” checks if the data is available in the cache. If it is, it serves the response from the cache, otherwise, 
- * it fetches the data from the API and caches it for 1 minute using the “memory-cache” package. 
+ * In this example, the API endpoint “/api/data” checks if the data is available in the cache. If it is, it serves the response from the cache, otherwise,
+ * it fetches the data from the API and caches it for 1 minute using the “memory-cache” package.
  * This technique can be used for any API endpoint that returns frequently accessed data that doesn’t change frequently.
- * 
+ *
  */
-
-
-
-
-
-
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
 //                                                             Versioning our APIs
-
 
 /**
 We should have different versions of API if we're making any changes to them that may break clients.
@@ -392,50 +309,37 @@ For example, we can do that with Express as follows:
  
  */
 
-
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-app.get('/v1/employees', (req, res) => {
+app.get("/v1/employees", (req, res) => {
   const employees = [];
   // code to get employees
   res.json(employees);
 });
 
-app.get('/v2/employees', (req, res) => {
+app.get("/v2/employees", (req, res) => {
   const employees = [];
   // different code to get employees
   res.json(employees);
 });
 
-
-
-
 //   We just add the version number to the start of the endpoint URL path to version them.
-
-
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //  How to add a 404 error page i.e not found using the express server. 404 is the status code which means not found in the server.
 
-
-
-  
-// Handling GET /hello request 
-app.get("/hello", (req, res, next) => { 
-  res.send("This is the hello response"); 
-}) 
+// Handling GET /hello request
+app.get("/hello", (req, res, next) => {
+  res.send("This is the hello response");
+});
 
 // Handling non matching request from the client , we can use and http methods here as well.
-app.use((req, res, next) => { 
-  res.status(404).send( "<h1>Page not found on the server</h1>") 
-}) 
-
-
-
+app.use((req, res, next) => {
+  res.status(404).send("<h1>Page not found on the server</h1>");
+});
 
 // ==========================================================================================================================================================================
-
 
 /**
  *                                                                                        Route parameters
@@ -456,10 +360,7 @@ app.get("/users/:userId/books/:bookId", (req, res) => {
 });
  */
 
-
 // ==============================================================================================================================================================================
-
-
 
 /**
  *                                                                   Add rate limiting to the API routes
@@ -504,30 +405,15 @@ Note: Third-party services like Cloudflare can also be used if you need more adv
 
  */
 
-
-
-
-
-
-
-
-
-
-
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 app.listen(PORT, (error) => {
-    if (!error) {
-      console.log(
-        "Server is Successfully Running,and App is listening on port " + PORT
-      );
-    } else {
-      console.log("Error occurred, server can't start", error);
-    }
-  });
-
-
+  if (!error) {
+    console.log("Server is Successfully Running,and App is listening on port " + PORT);
+  } else {
+    console.log("Error occurred, server can't start", error);
+  }
+});
 
 // ---------------------------------------------------------------Authentication-----------------------------------------------------------------------------
 
@@ -535,9 +421,7 @@ app.listen(PORT, (error) => {
 
 // Authentication is an important aspect of web development, which ensures that users accessing an application are who they claim to be.
 
-
 // There are two types of authentication patterns:
-
 
 //                                                                       1. Stateless Authentication
 // The server does not store any data or state of the user between requests. It means each request from the client/User to the server contains all the data needed to authenticate the user.
@@ -547,10 +431,6 @@ app.listen(PORT, (error) => {
 // a. Basic Authentication
 // b. Token-Based Authentication
 // c. OAuth Authentication (when implemented with stateless tokens)
-
-
-
-
 
 /** //                                                                  A. Basic Authentication
 // Basic Authentication is one of the simplest and most widely used auth strategy across the web.
@@ -589,9 +469,6 @@ app.listen(port, () => {
 
  */
 
-
-
-
 /**                                                             B. Token-Based Authentication:
  * 
 1. It is a more secure and scalable alternative to basic authentication.
@@ -626,11 +503,6 @@ jwt.verify(token, "secretKey", (err, decoded) => {
 
 
  */
-
-
-
-
-
 
 /**                                                                   C. OAuth Authentication
 1. OAuth (Open Authorization) is an industry-standard protocol for authentication.
@@ -677,8 +549,6 @@ app.get(
 
 
  */
-
-
 
 //                                                                  2. Stateful Authentication
 

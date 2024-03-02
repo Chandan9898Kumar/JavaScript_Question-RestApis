@@ -451,7 +451,6 @@ The options can also contain any of the following (for the full list, see cookie
 
  */
 
-
 // Note :
 // Browsers store cookies ,it's browser's default behaviors. When user send any type of request (get,patch,post,delete) to the server these cookies will go along with that request.
 //  This is done by browser itself.
