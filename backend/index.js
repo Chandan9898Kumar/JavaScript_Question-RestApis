@@ -19,15 +19,16 @@ const path = require("path");
 //         to the server and the server can parse the cookies from text to json and verify the session ID was sent from the client is correct or not and determine who the request
 //         was sent from. Whenever the browser sends the cookies on each request, the server can look-up which user pertains to the session. As the server maintains a mapping of
 //         each session ID  to the user.
+
 const session = require("express-session");
 
 app.use(
   session({
-    secret: "my-secret", // a secret string used to sign the session ID cookie
-    resave: false, // don't save session if unmodified
+    secret: "my-secret",      // a secret string used to sign the session ID cookie
+    resave: false,            // don't save session if unmodified
     saveUninitialized: false, // don't create session until something stored
     cookie: {
-      maxAge: 60000 * 60, // This shows the living time of cookie, when this time gets over then cookie will expire.
+      maxAge: 60000 * 60,     // This shows the living time of cookie, when this time gets over then cookie will expire.
       // This help if we have user login system.when we want the user to logged in for max 1 hr.
     },
   }),

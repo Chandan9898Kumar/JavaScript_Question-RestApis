@@ -398,6 +398,10 @@ Being cacheable is one of the architectural constraints of REST.
 `Overview`
 Express.js uses a cookie to store a session id (with an encryption signature) in the user's browser and then, on subsequent requests, uses the value of that cookie to retrieve session information stored on the server. This server side storage can be a memory store (default) or any other store which implements the required methods.
 
+                                                                        OR
+
+Express.js, a Node.js framework, enhances web applications with express-session for session management. This middleware overcomes the stateless nature of HTTP by enabling persistent user sessions, stored in server memory or a database. It transforms HTTP interactions into stateful experiences, allowing the server to recognize and track users across requests with unique session IDs, ensuring continuous user-state monitoring and enhanced security.
+
 
 `Details`
 Express.js/Connect creates a 24-character Base64 string using utils.uid(24) and stores it in req.sessionID. This string is then used as the value in a cookie.
@@ -416,3 +420,59 @@ The name for this cookie is :-  connect.sid
 
 `Server Side`
 If a handler occurs after the cookieParser and session middleware it will have access to the variable req.cookies. This contains a JSON object whose keys are the cookie keys and values are the cookie values. This will contain a key named connect.sid and its value will be the signed session identifier.
+
+###                                                Working
+
+`The Flow of Cookie-based Session Management : -`
+1. New login request is sent by the browser to the server.
+2. The server will then determine if any cookies have been sent by the browser.
+3. There isn't going to be a cookie value inside the server database for this request because it is a new one.
+4. As a result, the server will send a cookie to your browser and store its ID there.
+5. The browser will then create the cookie for the domain of that server.
+6. Your browser should deliver the cookie in the HTTP header with each request for that server's website.
+7. The ID given by the browser will then be checked by Server. Then, the server will use the session indicated by the cookie if that is the case.
+
+
+`Format :-`
+
+app.use(session({
+ secret: 'keyboardcat',
+ resave: false,
+ saveUninitialized: true,
+ cookie: { secure: true }
+}))
+
+
+`Parameters Description : `
+
+1. `Cookie.secure` : For automatic alignment with the connection's security level, the cookie.the secure option can optionally be set to the unique value "auto". If the site is accessible via both HTTP and HTTPS, use caution when utilizing this setting because after the cookie is placed on HTTPS, it is no longer visible over HTTP.
+
+Name: The term to set in the response for the session ID cookie. The value by default is connect.sid.
+
+2. `Resave`: Regardless of whether the express session was modified during the request, it is forced to be saved back to the session store. This may be required depending on your store, depending on the store you use. It can also lead to race conditions where the server receives two parallel requests from the client side. Even if the other request did not make any changes, any modifications made to the session in the first request might be overridden when it concludes. True is the default value, although using the default has been discouraged because it may change in the future.
+
+3. `Rolling`: Constrain all responses to set the express session identifier cookie. The expiration countdown is reset, and the expiration is set to the initial maxAge. False is the default setting.
+
+4. `saveUninitialized`: makes it necessary to save an uninitialized session to the store. When a session is created but not yet updated, it is uninitialized. False is a good option if you want to implement login sessions, utilize less server storage, or adhere to rules that demand consent before setting a cookie. False will also help in race-condition situations where a client sends out many requests concurrently without using a session. True is the default value, although using the default has been discouraged because it may change in the future.
+
+5. `Secret`: That is a necessary choice. The express session ID cookie is signed using this secret. This could be an array of many secrets or a string for a single secret. Only the first member of an array of secrets will be used to sign the session ID cookie; however, all elements will be taken into account for determining whether the signature in requests is valid.
+
+6. `store`: A new MemoryStore object by default serves as the session store instance.
+
+7. `unset`: Control the outcome of req.session being unset (through delete, setting to null, etc.). Keep is the default value.
+
+8. `cookie`: { maxAge: oneDay } : this determines when cookies expire. Following the specified period, the browser will remove the cookie. In the future, no requests will have the cookie associated with them. The following math was used to calculate the maxAge in this situation, which was set to one day.
+
+9. `cookie.path`: Specifies the Path Set-Cookie value. This is set to '/' by default, which is the domain's base path.
+
+10. `cookie.httpOnly`: The HttpOnly Set-Cookie attribute's conditional value is specified. The HttpOnly property is set when truthy; otherwise, it is not. The HttpOnly attribute is enabled by default. Be careful when setting this to true, as compliant clients will not allow client-side JavaScript to see the cookie in document.cookie.
+
+11. `cookie.domain`: Specifies the Domain Set-Cookie property value. By default, no domain is specified, and most clients will interpret the cookie to only pertain to the current domain.
+
+12. `cookie. expires`: The Date object is specified as the value for the Expires Set-Cookie property. By default, no expiration date is set, and most clients will regard this as a "non-persistent cookie" and delete it when a circumstance such as exiting a web browser application occurs.
+
+13. `cookie.sameSite`: Specifies whether the SameSite Set-Cookie property should be boolean or string. This is set to untrue by default.
+    true will set the SameSite attribute to Strict for strict same-site enforcement. false will not set the SameSite attribute.
+    `lax` :   will set the SameSite attribute to Lax for lax same-site enforcement.
+    `none` :  will set the SameSite attribute to None for an explicit cross-site cookie.
+    `strict`: will set the SameSite attribute to Strict for strict same-site enforcement.
