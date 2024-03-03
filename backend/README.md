@@ -392,6 +392,9 @@ Being cacheable is one of the architectural constraints of REST.
 
 
 
+
+
+
 ###                                           How do sessions work in Express.js with Node.js?
 
 
@@ -476,3 +479,64 @@ Name: The term to set in the response for the session ID cookie. The value by de
     `lax` :   will set the SameSite attribute to Lax for lax same-site enforcement.
     `none` :  will set the SameSite attribute to None for an explicit cross-site cookie.
     `strict`: will set the SameSite attribute to Strict for strict same-site enforcement.
+
+
+`When Should I Use Cookies?`
+As the HTTP protocol is stateless, cookies let us monitor the status of the application using small files kept on the user's machine.
+
+
+`When Should I Use Sessions?`
+To more securely keep sensitive data on the server, out of the reach of malevolent users, such as the user id. Values are transferred across pages using express session.
+
+
+`The Major Difference Between Cookies and Session : `
+
+                      `Cookie`                                                                                      `Session`
+
+1. Cookies are client-side files stored locally on a computer that contain user data.	             |    User data stored in the server side is called sessions.
+2. Cookies expire when the user-defined lifespan expires.	                                         |    The session ends when the user closes the browser or logs out of the software.
+3. It has a limited capacity for information storage.	                                             |    It has a practically infinite capacity for data storage.
+4. We don't need to run a function to start cookies because they are stored locally on the machine.|	  The session start() function must be used to start the session.
+5. Cookies are not secured.	                                                                       |    When compared to cookies, sessions are more secure.
+6. Cookies save information to a text file.	                                                       |    Session saves data in encrypted form.
+
+
+
+
+###                                                                   Session Store Implementation
+Every express session store needs to implement certain methods and be an EventEmitter. The mandatory suggested and optional techniques are listed in the paragraphs that follow.
+This module will always call the required methods on the store.
+If applicable, this module will call for recommended methods for the store.
+
+Optional methods are those that this module does not use at all but that aid in the user presentation of consistent stores.
+
+`store.all(callback) : optional`
+All express sessions in the store can be obtained as an array using this optional function. The callback should be used to refer to as callback(error, sessions).
+
+`store.destroy(sid, callback) : required`
+With a session ID, this necessary function is used to remove/destroy a session from the storage (sid). Once the session is terminated, the callback should be invoked as a callback(error).
+
+`store.clear(callback) : optional`
+All express sessions in the store can be deleted using this optional technique. Once the store has been cleaned, the callback should be invoked as callback(error).
+
+`store.length(callback) : optional`
+The number of all sessions in the shop can be obtained using this callback. The callback should be invoked as callback(error, len).
+
+`store.get(sid, callback) : required`
+When a session ID is provided, this necessary method is used to retrieve a session from the store (sid). The callback should be invoked as a callback(error, session).
+
+`store.set(sid, session, callback) : required`
+With an express session ID (sid) and session (session) object, this necessary function is used to upsert a session into the store. Once the session has been set up in the store, the callback should be invoked as callback(error).
+
+
+
+###                                                                   Conclusion
+
+1. HTTP is a stateless protocol, the client and server forget about one another after each request and response cycle.
+2. The stateless HTTP protocol is used by a website to transport data from a client to a server.
+3. Sessions enable the HTTP protocol to go from being stateless to stateful.
+4. A session can be thought of as the period between logging in and logging out.
+5. As the HTTP protocol is stateless, cookies let us monitor the status of the application using small files kept on the user's machine.
+6. Cookies stored by the browser can hold a maximum of 4 KB.
+7. This npm install command is used for express-session installation : $ npm install express-session
+8. Every express session store needs to implement certain methods and be an EventEmitter.
