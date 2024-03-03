@@ -15,6 +15,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 // authenticate and authorize the API calls to the backend. we don;t need to go to api and add the header:authorization there.
 
 axios.defaults.baseURL = "/";
+axios.defaults.withCredentials = true;
 
 // Add a request interceptor
 axios.interceptors.request.use(
@@ -105,3 +106,18 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+
+
+
+/**                                                     NOTE :  CORS 
+ * 
+ * PUT  :-        axios.defaults.withCredentials = true;
+ * With these settings, your app will be able to exchange cookies with the back-end server.
+
+One gotcha for me getting CORS working was to make sure the front-end host is properly added to the back-end servers header "Access-Control-Allow-Origin". 
+This includes the port number if it's specified in your URL when accessing the front-end.
+
+In terms of cookie exchange, the "Access-Control-Allow-Credentials" and "Access-Control-Allow-Methods" headers must be set correctly as shown above. 
+Using a wildcard on "Access-Control-Allow-Methods" will not work.
+ */

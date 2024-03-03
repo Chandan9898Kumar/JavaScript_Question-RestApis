@@ -24,14 +24,14 @@ const session = require("express-session");
 
 app.use(
   session({
-    secret: "my-secret",      // a secret string used to sign the session ID cookie
-    resave: false,            // don't save session if unmodified
+    secret: "my-secret", // a secret string used to sign the session ID cookie
+    resave: false, // don't save session if unmodified
     saveUninitialized: false, // don't create session until something stored
     cookie: {
-      maxAge: 60000 * 60,     // This shows the living time of cookie, when this time gets over then cookie will expire.
+      maxAge: 60000 * 60, // This shows the living time of cookie, when this time gets over then cookie will expire.
       // This help if we have user login system.when we want the user to logged in for max 1 hr.
     },
-  }),
+  })
 );
 
 /**
@@ -70,11 +70,33 @@ app.use(express.json()); // The express.json() middleware is used to parses the 
 // Cookie-parser middleware is used to parse the cookies that are attached to the request made by the client to the server.Here we are using cookie-parser not cookie-session
 app.use(cookieParser());
 
-//  To enable CORS. do app.use(cors()); Now all requests received by the server will have cors enabled in them.
-app.use(cors()); // Calling use(cors()) will enable the express server to respond to preflight requests.A preflight request is basically an OPTION request sent to the server before the actual request is sent, in order to ask which origin and which request options the server accepts.
+// ======================================================================= CORS =========================================================================================
+
+//  To enable CORS. do app.use(cors()); Now all requests received by the server will have cors enabled in them.(All Get,put,patch,delete apis will have this cors set-up)
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Origin http://localhost:3000 is given because it is where our front-end application is running.so now backend can make connection with frontend
+    credentials: true, //access-control-allow-credentials:true
+    optionSuccessStatus: 200,
+  })
+);
+// Calling use(cors()) will enable the express server to respond to preflight requests.
+// A preflight request is basically an OPTION request sent to the server before the actual request is sent, in order to ask which origin and which request options the server accepts.
 
 //  Cors can be enabled for multiple methods and not just the GET method. You can also enable it for methods like PATCH, POST, DELETE.etc. using the below code.
 //  app.use(cors({methods: ['PATCH', 'DELETE','POST','GET']}));
+
+//   OR We can Write this as well to set-up cors. The following Below setup allows the front-end to accept the cookies which were created on the nodejs server.
+
+// app.use(function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "https://frontendserverdomain.com:3000"); // update to match the domain you will make the request from
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   res.header("Access-Control-Allow-Credentials", true); // allows cookie to be sent
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, HEAD, DELETE"); // you must specify the methods used with credentials. "*" will not work.
+//   next();
+// });
+
+// =========================================================================================================================================================================
 
 // Express.js express.raw() Function : The express.raw() function is a built-in middleware function in Express. It parses incoming request payloads into a Buffer and is based on body-parser.
 app.use(express.raw()); // Make a POST request with header set to ‘content-type’ – ‘application/octet-stream’
@@ -148,17 +170,37 @@ const cache = apicache.middleware;
 const data = require("./products.json");
 const PORT = 5000; // Set the port for our local application, 3000 is the default but you can choose any according to the availability of ports.
 
-//  Enabling CORS for specific origins only.
+// =========================================================================================================================================================
+
+//                     Enabling CORS for specific origins only.If we want this cors option to set only for let says for GET,PUT,Patch,Delete then we can use like this.
 const corsOPtions = {
-  origin: "*", // if you need to enable cors on all the sites and make the data available across then you can change the origin to a star which means that you can use cors enabled for all websites.
-  // which means now you can got to any website and if you want to access "http://localhost:5000/api/products" api  at line 64.then it will not throw an error.
+
   credentials: true,
+
+  // origin: "*", 
+  // if you need to enable cors on all the sites and make the data available across then you can change the origin to a star which means that you can use cors enabled for all websites.
+  // which means now you can got to any website and if you want to access "http://localhost:5000/api/products" api  at line 64.then it will not throw an error.
+
   //                                                              OR
-  //  origin: ["https://www.wikipedia.org", "https://www.google.com"]
+
+  origin: ["http://localhost:3000"],
+
+  //  origin: ["https://www.wikipedia.org", "https://www.google.com","http://localhost:3000"]
+
   //  Use the following code adding the origin as the website.now if we go wikipedia page or google page
   //  there inside console tab and try to access this api (http://localhost:5000/api/products) using fetch method then you will will see entire data without any cors error.
   //  But other than these two website you can't access this api data, It will throw CORS error.
+
+  //                                                    NOTE : When this error comes :
+  // Access to XMLHttpRequest at 'http://localhost:5000/api/products' from origin 'http://localhost:3000' has been blocked by CORS policy:
+  // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
+  //  The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+
+  //  Solution : Remove "*"  From Origin instead put actual URL 
+
 };
+
+// =============================================================================================================================================================
 
 // REST API to get all products details at once With this api the frontend will only get the data .The frontend cannot modify or update the data Because we are only using the GET method here.
 
@@ -191,7 +233,6 @@ app.use("/api/products", cache("1 seconds"), (req, res, next) => {
 
 app.get("/api/products", cors(corsOPtions), (req, res) => {
   // console.log(req.requestedTime, "requested time");
-  console.log(req,'req')
   res.status(200);
   // res.send(data); // Send a response of various types.  Note :  res.send() automatically call res.end() So you don't have to call or mention it after res.send()
   res.json(data); // Send a JSON response.
@@ -574,7 +615,7 @@ app.post("/user/generateToken", (req, res) => {
     user: "John Wick",
   };
 
-  const ACCESS_TOKEN = jwt.sign(payload, jwtSecretKey, { expiresIn: "15s" });
+  const ACCESS_TOKEN = jwt.sign(payload, jwtSecretKey, { expiresIn: "10s" });
 
   // Creating refresh token not that expiry of refresh token is greater than the access token
   const REFRESH_TOKEN = jwt.sign(payload, refreshTokenKey, { expiresIn: "1h" });

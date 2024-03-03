@@ -73,6 +73,9 @@ module.exports = {
     compress: true,
     hot: true,
     host: "localhost",
+    proxy: {
+      "/api": "http://localhost:5000", // Backend server host on this url
+    },
   },
 
   module: {
@@ -93,7 +96,7 @@ module.exports = {
             cacheDirectory: true,
             cacheCompression: false,
             presets: ["@babel/preset-env"],
-            plugins: ["@babel/plugin-proposal-class-properties","babel-plugin-styled-components"],
+            plugins: ["@babel/plugin-proposal-class-properties", "babel-plugin-styled-components"],
           },
         },
       },
@@ -289,7 +292,6 @@ module.exports = {
     }),
 
     new webpack.HotModuleReplacementPlugin(),
-
   ],
 
   optimization: {
@@ -331,7 +333,5 @@ module.exports = {
 // },
 
 // npm uninstall core-js, delete your node_modules. Then run npm install and npm install core-js
-
-
 
 // cross-env :   Run scripts that set and use environment variables across platforms.
