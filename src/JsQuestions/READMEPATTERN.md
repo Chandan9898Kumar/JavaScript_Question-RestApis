@@ -50,11 +50,6 @@ Design patterns are reusable solutions to common problems in software design, of
 ## Origins and Evolution of Design Patterns 🪄
 Imagine building houses. Sometimes, you use similar designs for windows or doors because they work well. The same idea applies to computer programs. Design patterns help us solve common problems in a smart and reusable way.
 
-### Architectural Genesis 🎩
-[Christopher Alexander](https://en.wikipedia.org/wiki/Christopher_Alexander), an architect, initially introduced the concept of design patterns in the 1970s through his work "A Pattern Language," where he explored the identification and application of patterns to solve recurring design dilemmas in architecture.
-
-### Transition to Software Development ✨
-The adoption and adaptation of this concept for software engineering occurred when a group of computer scientists, often known as the "Gang of Four" (GoF), brought forth the idea. In their influential book "Design Patterns: Elements of Reusable Object-Oriented Software" (1994), Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides introduced 23 design patterns for object-oriented programming, marking a pivotal moment in the popularization of design patterns within software development.
 
 ## Why Do We Use Design Patterns? 🎁
 Several compelling reasons drive the utilization of design patterns:
@@ -76,7 +71,6 @@ It's super important to use design patterns wisely. Imagine you have a cool tool
 # Creational Design Patterns 🏗
 Creational design patterns 🎨 revolve around the intricacies of object creation. They introduce a level of abstraction to the instantiation process, ensuring the system remains agnostic to the specifics of how its objects come into existence, are composed, and represented. These design patterns offer a mechanism for object creation that conceals the intricacies of the creation logic, steering away from direct object instantiation using the new operator. By doing so, they grant greater flexibility in determining the objects necessary for a given use case. Notable examples of creational design patterns encompass Singleton, Factory Method, Abstract Factory, Builder, and Prototype. 🚀
 
-![Creational Design Patterns](./images/creational-design-patterns.png)
 <br/>
 <hr/>
 
@@ -86,7 +80,6 @@ Creational design patterns 🎨 revolve around the intricacies of object creatio
 In simple words: 
 > "Singleton - ensures that only one object of a particular class is ever created."
 
-![Singleton Design Pattern](./images/singleton-design-pattern.png)
 
 ### Steps of Implementation
 Implementing the Singleton pattern in object-oriented programming typically involves the following steps:
@@ -163,7 +156,7 @@ Prototype is a creational design pattern that lets you copy existing objects wit
 In simple words:
 > Create a new object based on an existing object through **cloning**.
 
-![Prototype Design Pattern](./images/prototype-design-pattern.png)
+
 
 ### Implementation: 
 Let's see a simple implementation of the Prototype pattern in TS through an example in game development.
@@ -224,7 +217,7 @@ Builder is a creational design pattern facilitating the step-by-step constructio
 In simple words:
 > Builder helps in creating different versions of an object without cluttering the constructor.
 
-![Builder Design Pattern](./images/builder-pattern.png)
+
 
 ### Implementation Example in TypeScript:
 ```ts
