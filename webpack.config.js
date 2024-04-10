@@ -335,3 +335,34 @@ module.exports = {
 // npm uninstall core-js, delete your node_modules. Then run npm install and npm install core-js
 
 // cross-env :   Run scripts that set and use environment variables across platforms.
+
+/**
+ * What is Long term caching?
+Long-term caching is the process of telling the browser to cache a file for a long time, like 3 months or even 1 year. This is an important setting to ensure that returning users won’t need to download the same JS/CSS files over and over again.
+
+What is Content hashing?
+Generate a hash based on the content of the file. This will ensure that, unless we change our base components, the user won’t need to re-download it.
+
+How content hash improve performance ?
+The browser won’t download when there is no change in the hash, so below are some example where you can do content hash.
+
+1.npm modules
+2.asset files that won’t change
+3.Core components
+4.common component
+5.common modules
+we can do a code split for the above scenarios, so that react will create different bundles and webpack will create the content hash.
+
+
+
+
+Example :
+
+ output: {
+     filename: '[name].[contenthash].js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
+    },
+
+
+ */
