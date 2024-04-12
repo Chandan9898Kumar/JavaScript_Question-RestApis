@@ -322,7 +322,6 @@ The Factory Method Pattern is a creational design pattern that provides an inter
 In Simple Terms:
 > It enables the delegation of object instantiation to child classes, offering a way to create objects without specifying their exact classes.
 
-![Factory Method Pattern](./images/factory-method-pattern.png)
 
 ### Implementation:
 Consider a car manufacturing program with different car types (Sedan, Hatchback): 
@@ -368,6 +367,128 @@ const hatchback = carFactory.createCar("Hatchback", "Corolla", 2019);
 hatchback.displayCarInfo(); // // This is a Sedan. Model: Corolla, Production Year: 2019
 ```
 
+
+`Example 2.`
+
+class Car {
+    constructor(options) {
+        this.wheels = options.wheels || 4;
+        this.doors = options.doors || 4;
+        this.color = options.color || "silver"; 
+    }
+}
+
+class Truck {
+    constructor(options) {
+        this.wheels = options.wheels || 6;
+        this.doors = options.doors || 2;
+        this.color = options.color || "red"; 
+    }
+}
+
+class Bus {
+    constructor(options) {
+        this.wheels = options.wheels || 4;
+        this.doors = options.doors || 4;
+        this.color = options.color || "white"; 
+    }
+}
+
+class Motorcycle {
+    constructor(options) {
+        this.wheels = options.wheels || 2;
+        this.doors = options.doors || 0;
+        this.color = options.color || "Black"; 
+    }
+}
+
+
+class Factory {
+
+    create = (options, vehicleType) => {
+
+        if(!vehicleType) {
+            return "unable to make vehicle. Please specify a vehicle type and tryagain!"
+        }
+
+        let vehicle;
+        
+        if (vehicleType === "car") {
+            vehicle = new Car(options);
+        } else if (vehicleType === "truck") {
+            vehicle = new Truck(options);
+        } else if (vehicleType === "bus") {
+            vehicle = new Bus(options);
+        } else if (vehicleType === "motorcycle") {
+            vehicle = new Motocycle(options);
+        }
+
+  
+        vehicle.vehicleType = vehicleType;
+
+        vehicle.startEngine = ()=> console.log(`Reving ${vehicleType} engine`);
+
+        vehicle.driveVehicle = ()=> console.log(`Driving ${vehicleType}...`);
+
+        vehicle.stopEngine = ()=> console.log(`Stop ${vehicleType} engine`);
+
+        return vehicle;
+    }
+ 
+};
+
+const vehicleFactory = new Factory();
+
+const bus = vehicleFactory.create({
+    wheels: 4,
+    doors: 4,
+    color: "yellow",
+}, "bus");
+
+console.log(bus)
+console.log(bus.startEngine())
+console.log(bus.driveVehicle())
+
+// prints:
+// Bus {
+//  wheels: 4,
+//  doors: 4,
+//  color: 'yellow',
+//  vehicleType: 'bus',
+//  startEngine: [Function],
+//  driveVehicle: [Function],
+//  stopEngine: [Function]
+//}
+
+// Reving bus engine
+// Driving bus...
+
+const bike = vehicleFactory.create({
+    wheels: 2,
+ doors: 0,
+ color: "red",
+}, "motorcycle")
+
+console.log(bike)
+console.log(bike.startEngine())
+console.log(bike.stopEngine())
+// prints
+// Motorcycle {
+//  wheels: 2,
+//  doors: 0,
+//  color: 'red',
+//  vehicleType: 'bike',
+//  startEngine: [Function],
+//  driveVehicle: [Function],
+//  stopEngine: [Function]
+//}
+
+// Reving motorcycle engine
+// Stop motorcycle engine
+
+
+
+
 ### When To Use Factory Pattern ? ✅
 - **Uncertain Object Types:** If your software is meant to create different objects at runtime.
 - **Similar Classes:** When dealing with numerous classes sharing a common superclass.
@@ -390,7 +511,6 @@ The Abstract Factory pattern is a creational design pattern that furnishes an in
 In Simple Terms:
 > A factory of factories.
 
-![Abstract Factory Pattern](./images/abstract-factory-pattern.png)
 
 ### Classical Implementation:
 ```ts
@@ -530,7 +650,7 @@ The Adapter Design Pattern is a software design pattern that allows the interfac
 In simple words:
 > Adapter allows objects with incompatible interfaces to collaborate.
 
-![Adapter](./images/adapter-pattern.png)
+
 
 ### Classical Implementation:
 ```ts
@@ -597,7 +717,7 @@ The Bridge pattern is a structural design pattern that lets you split a large cl
 In simple words:
 > It's like a bridge between abstraction and implementation, enabling independent changes for flexibility.
 
-![Bridge](./images/bridge-design-pattern.png)
+
 
 ### Let's implement:
 1. Implementor interface and concrete implementors:
@@ -689,7 +809,6 @@ The Composite pattern is a structural design pattern that lets you compose objec
 In simple words:
 > It lets clients treat the individual objects in a uniform manner.
 
-![Composite Pattern](./images/composite-pattern.png)
 
 ## Implementation in TS:
 ```ts
@@ -810,7 +929,7 @@ The Decorator design pattern is a structural design pattern that allows you to d
 In simple words:
 > Dynamically enhances object behavior.
 
-![Decorator Pattern](./images/decorator-pattern.png)
+
 
 ## Implementation in TS:
 ```ts
@@ -889,7 +1008,7 @@ console.log("Description: " + coffeeWithMilk.description()); // Description: Sim
 In simple words:
 > It provides a simplified interface to a complex subsystem.
 
-![Facade Pattern](./images/facade-pattern.png)
+
 
 ## Implementation in TS:
 ```ts
