@@ -346,6 +346,42 @@ dog1.fly();
 We have access to the bark method, as we extended the Dog class. The value of **proto** on the prototype of SuperDog points to the Dog.prototype object!
 It gets clear why it’s called a prototype chain: when we try to access a property that’s not directly available on the object, JavaScript recursively walks down all the objects that **proto** points to, until it finds the property!
 
+### Object.create
+
+The Object.create method lets us create a new object, to which we can explicitly pass the value of its prototype.
+
+```ts
+const dog = {
+  bark() {
+    return `Woof!`;
+  },
+};
+
+const pet1 = Object.create(dog);
+```
+
+Although pet1 itself doesn’t have any properties, it does have access to properties on its prototype chain! Since we passed the dog object as pet1’s prototype, we can access the bark property.
+
+```ts
+const dog = {
+  bark() {
+    console.log(`Woof!`);
+  },
+};
+
+const pet1 = Object.create(dog);
+
+pet1.bark(); // Woof!
+
+console.log("Direct properties on pet1: ", Object.keys(pet1));
+
+console.log("Properties on pet1's prototype: ", Object.keys(pet1.__proto__));
+```
+
+Perfect! Object.create is a simple way to let objects directly inherit properties from other objects, by specifying the newly created object’s prototype. The new object can access the new properties by walking down the prototype chain.
+
+The prototype pattern allows us to easily let objects access and inherit properties from other objects. Since the prototype chain allows us to access properties that aren’t directly defined on the object itself, we can avoid duplication of methods and properties, thus reducing the amount of memory used.
+
 ### NOTE :
 
 Memory efficient: `The prototype chain allows us to access properties that aren't directly defined on the object itself, we can avoid duplication of methods and properties, thus reducing the amount of memory used.`
