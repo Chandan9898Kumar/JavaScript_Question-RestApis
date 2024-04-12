@@ -220,21 +220,23 @@ Example.
 
 `Say we wanted to create many dogs with a createDog factory function.`
 
+```ts
 const createDog = (name, age) => ({
-name,
-age,
-bark() {
-console.log(`${name} is barking!`);
-},
-wagTail() {
-console.log(`${name} is wagging their tail!`);
-},
+  name,
+  age,
+  bark() {
+    console.log(`${name} is barking!`);
+  },
+  wagTail() {
+    console.log(`${name} is wagging their tail!`);
+  },
 });
 
 const dog1 = createDog("Max", 4);
 const dog2 = createDog("Sam", 2);
 const dog3 = createDog("Joy", 6);
 const dog4 = createDog("Spot", 8);
+```
 
 `This way, we can easily create many dog objects with the same properties.`
 
@@ -242,26 +244,30 @@ const dog4 = createDog("Spot", 8);
 
 We can use the Prototype Pattern to share these methods among many dog objects. Best Practice :
 
+```ts
 class Dog {
-constructor(name, age) {
-this.name = name;
-this.age = age;
-}
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
 
-bark() {
-console.log(`${this.name} is barking!`);
-}
-wagTail() {
-console.log(`${this.name} is wagging their tail!`);
-}
+  bark() {
+    console.log(`${this.name} is barking!`);
+  }
+  wagTail() {
+    console.log(`${this.name} is wagging their tail!`);
+  }
 }
 
 const dog1 = new Dog("Max", 4);
 const dog2 = new Dog("Sam", 2);
 const dog3 = new Dog("Joy", 6);
 const dog4 = new Dog("Spot", 8);
+```
 
+### NOTE :
 
+Memory efficient: `The prototype chain allows us to access properties that aren't directly defined on the object itself, we can avoid duplication of methods and properties, thus reducing the amount of memory used.`
 
 ### When to Use the Prototype Pattern ? ✅
 
@@ -445,120 +451,97 @@ hatchback.displayCarInfo(); // // This is a Sedan. Model: Corolla, Production Ye
 
 `Example 2.`
 
+```ts
 class Car {
-constructor(options) {
-this.wheels = options.wheels || 4;
-this.doors = options.doors || 4;
-this.color = options.color || "silver";
-}
+  constructor(options) {
+    this.wheels = options.wheels || 4;
+    this.doors = options.doors || 4;
+    this.color = options.color || "silver";
+  }
 }
 
 class Truck {
-constructor(options) {
-this.wheels = options.wheels || 6;
-this.doors = options.doors || 2;
-this.color = options.color || "red";
-}
+  constructor(options) {
+    this.wheels = options.wheels || 6;
+    this.doors = options.doors || 2;
+    this.color = options.color || "red";
+  }
 }
 
 class Bus {
-constructor(options) {
-this.wheels = options.wheels || 4;
-this.doors = options.doors || 4;
-this.color = options.color || "white";
-}
+  constructor(options) {
+    this.wheels = options.wheels || 4;
+    this.doors = options.doors || 4;
+    this.color = options.color || "white";
+  }
 }
 
 class Motorcycle {
-constructor(options) {
-this.wheels = options.wheels || 2;
-this.doors = options.doors || 0;
-this.color = options.color || "Black";
-}
+  constructor(options) {
+    this.wheels = options.wheels || 2;
+    this.doors = options.doors || 0;
+    this.color = options.color || "Black";
+  }
 }
 
 class Factory {
-
-    create = (options, vehicleType) => {
-
-        if(!vehicleType) {
-            return "unable to make vehicle. Please specify a vehicle type and tryagain!"
-        }
-
-        let vehicle;
-
-        if (vehicleType === "car") {
-            vehicle = new Car(options);
-        } else if (vehicleType === "truck") {
-            vehicle = new Truck(options);
-        } else if (vehicleType === "bus") {
-            vehicle = new Bus(options);
-        } else if (vehicleType === "motorcycle") {
-            vehicle = new Motocycle(options);
-        }
-
-
-        vehicle.vehicleType = vehicleType;
-
-        vehicle.startEngine = ()=> console.log(`Reving ${vehicleType} engine`);
-
-        vehicle.driveVehicle = ()=> console.log(`Driving ${vehicleType}...`);
-
-        vehicle.stopEngine = ()=> console.log(`Stop ${vehicleType} engine`);
-
-        return vehicle;
+  create = (options, vehicleType) => {
+    if (!vehicleType) {
+      return "unable to make vehicle. Please specify a vehicle type and tryagain!";
     }
 
-};
+    let vehicle;
+
+    if (vehicleType === "car") {
+      vehicle = new Car(options);
+    } else if (vehicleType === "truck") {
+      vehicle = new Truck(options);
+    } else if (vehicleType === "bus") {
+      vehicle = new Bus(options);
+    } else if (vehicleType === "motorcycle") {
+      vehicle = new Motocycle(options);
+    }
+
+    vehicle.vehicleType = vehicleType;
+
+    vehicle.startEngine = () => console.log(`Reving ${vehicleType} engine`);
+
+    vehicle.driveVehicle = () => console.log(`Driving ${vehicleType}...`);
+
+    vehicle.stopEngine = () => console.log(`Stop ${vehicleType} engine`);
+
+    return vehicle;
+  };
+}
 
 const vehicleFactory = new Factory();
 
-const bus = vehicleFactory.create({
-wheels: 4,
-doors: 4,
-color: "yellow",
-}, "bus");
+const bus = vehicleFactory.create(
+  {
+    wheels: 4,
+    doors: 4,
+    color: "yellow",
+  },
+  "bus"
+);
 
-console.log(bus)
-console.log(bus.startEngine())
-console.log(bus.driveVehicle())
+console.log(bus);
+console.log(bus.startEngine());
+console.log(bus.driveVehicle());
 
-// prints:
-// Bus {
-// wheels: 4,
-// doors: 4,
-// color: 'yellow',
-// vehicleType: 'bus',
-// startEngine: [Function],
-// driveVehicle: [Function],
-// stopEngine: [Function]
-//}
+const bike = vehicleFactory.create(
+  {
+    wheels: 2,
+    doors: 0,
+    color: "red",
+  },
+  "motorcycle"
+);
 
-// Reving bus engine
-// Driving bus...
-
-const bike = vehicleFactory.create({
-wheels: 2,
-doors: 0,
-color: "red",
-}, "motorcycle")
-
-console.log(bike)
-console.log(bike.startEngine())
-console.log(bike.stopEngine())
-// prints
-// Motorcycle {
-// wheels: 2,
-// doors: 0,
-// color: 'red',
-// vehicleType: 'bike',
-// startEngine: [Function],
-// driveVehicle: [Function],
-// stopEngine: [Function]
-//}
-
-// Reving motorcycle engine
-// Stop motorcycle engine
+console.log(bike);
+console.log(bike.startEngine());
+console.log(bike.stopEngine());
+```
 
 ### When To Use Factory Pattern ? ✅
 
