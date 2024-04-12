@@ -169,6 +169,8 @@ Despite its advantages, the Singleton pattern has drawbacks:
 
 Prototype is a creational design pattern that lets you copy existing objects without making your code dependent on their classes. It allows you to create a copy of an existing object and modify it to your needs, instead of going through the trouble of creating an object from scratch and setting it up.
 
+The prototype pattern is a useful way to share properties among many objects of the same type. The prototype is an object that’s native to JavaScript, and can be accessed by objects through the prototype chain.
+
 In simple words:
 
 > Create a new object based on an existing object through **cloning**.
@@ -264,6 +266,85 @@ const dog2 = new Dog("Sam", 2);
 const dog3 = new Dog("Joy", 6);
 const dog4 = new Dog("Spot", 8);
 ```
+
+`Notice here how the constructor contains a name property, and the class itself contains a bark property. When using ES6 classes, all properties that are defined on the class itself, bark in this case, are automatically added to the prototype.`
+
+We can see the prototype directly through accessing the prototype property on a constructor, or through the **proto** property on any instance.
+
+```ts
+console.log(Dog.prototype);
+
+console.log(dog1.__proto__);
+
+// The value of __proto__ on any instance of the constructor, is a direct reference to the constructor’s prototype! Whenever we try to access a property on an object that doesn’t exist on the object directly, JavaScript will go down the prototype chain to see if the property is available within the prototype chain.
+```
+
+The prototype pattern is very powerful when working with objects that should have access to the same properties. Instead of creating a duplicate of the property each time, we can simply add the property to the prototype, since all instances have access to the prototype object.
+
+Since all instances have access to the prototype, it’s easy to add properties to the prototype even after creating the instances.
+
+Say that our dogs shouldn’t only be able to bark, but they should also be able to play! We can make this possible by adding a play property to the prototype.
+
+### Implementation
+
+```ts
+class Dog {
+  constructor(name) {
+    this.name = name;
+  }
+
+  bark() {
+    return `Woof!`;
+  }
+}
+
+const dog1 = new Dog("Daisy");
+
+const dog2 = new Dog("Max");
+
+const dog3 = new Dog("Spot");
+
+Dog.prototype.play = () => console.log("Playing now!");
+
+dog1.play();
+```
+
+The term prototype chain indicates that there could be more than one step. Indeed! So far, we’ve only seen how we can access properties that are directly available on the first object that **proto** has a reference to. However, prototypes themselves also have a **proto** object!
+
+Let’s create another type of dog, a super dog! This dog should inherit everything from a normal Dog, but it should also be able to fly. We can create a super dog by extending the Dog class and adding a fly method.
+
+`Example`
+
+```ts
+class Dog {
+  constructor(name) {
+    this.name = name;
+  }
+
+  bark() {
+    console.log("Woof!");
+  }
+}
+
+class SuperDog extends Dog {
+  constructor(name) {
+    super(name);
+  }
+
+  fly() {
+    console.log(`Flying!`);
+  }
+}
+
+const dog1 = new SuperDog("Daisy");
+
+dog1.bark();
+
+dog1.fly();
+```
+
+We have access to the bark method, as we extended the Dog class. The value of **proto** on the prototype of SuperDog points to the Dog.prototype object!
+It gets clear why it’s called a prototype chain: when we try to access a property that’s not directly available on the object, JavaScript recursively walks down all the objects that **proto** points to, until it finds the property!
 
 ### NOTE :
 
@@ -2101,8 +2182,6 @@ In Simple Words:
 
 > Defines the structure of an algorithm in a superclass but allows subclasses to customize specific steps of the algorithm without changing its overall structure.
 
-
-
 ### Implementation in TS:
 
 ```ts
@@ -2287,8 +2366,6 @@ square.accept(areaCalculatorVisitor); // Area of Square: 16
 # SOLID Principles ⚖
 
 SOLID is an acronym that represents a set of five design principles for writing maintainable and scalable software.and are considered foundational concepts in object-oriented programming and design. The SOLID principles aim to create robust, flexible, and easily maintainable software by promoting clean and efficient code organization.
-
-
 
 ## Why Do We Use SOLID? 🎁
 
