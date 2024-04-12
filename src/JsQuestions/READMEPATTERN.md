@@ -2101,7 +2101,7 @@ In Simple Words:
 
 > Defines the structure of an algorithm in a superclass but allows subclasses to customize specific steps of the algorithm without changing its overall structure.
 
-![Template Method Pattern](./images/template-method-pattern.png)
+
 
 ### Implementation in TS:
 
@@ -2286,9 +2286,9 @@ square.accept(areaCalculatorVisitor); // Area of Square: 16
 
 # SOLID Principles ⚖
 
-SOLID is an acronym that represents a set of five design principles for writing maintainable and scalable software. These principles were introduced by [Robert C. Martin](https://en.wikipedia.org/wiki/Robert_C._Martin) and are considered foundational concepts in object-oriented programming and design. The SOLID principles aim to create robust, flexible, and easily maintainable software by promoting clean and efficient code organization.
+SOLID is an acronym that represents a set of five design principles for writing maintainable and scalable software.and are considered foundational concepts in object-oriented programming and design. The SOLID principles aim to create robust, flexible, and easily maintainable software by promoting clean and efficient code organization.
 
-![SOLID Principles](./images/solid-design-principles.png)
+
 
 ## Why Do We Use SOLID? 🎁
 
