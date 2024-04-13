@@ -138,6 +138,86 @@ console.log(db1 === db2); // true
 In this example, the `Database` class represents a database connection. The getInstance method ensures that there is only one instance of the Database class, and the query method allows you to perform queries on the database.
 The usage demonstrates that `db1` and `db2` are the same instance, showcasing the Singleton pattern behavior.
 
+### Example 2.
+
+The singleton pattern is a creational JavaScript design patterns that restricts the instantiation of a class to a single object. It creates a new instance of the class if one doesn’t exist and if existing already, it simply returns a reference to it. It is also known as the Strict Pattern.
+
+A singleton pattern solves two problems at the same time, violating the Single Responsibility Principle.
+
+1. Guarantees that there is only a single instance of a class.
+2. Provide a global access point to this instance.
+
+- A practical example would be a single database object shared by different parts of the program. There is no need to create a new instance of a database when one is already existing.
+
+- One drawback of the pattern is the difficulty associated with testing. There are hidden dependencies objects, which are difficult to single out to test.
+
+```ts
+//Singleton class
+
+let instance;
+let globalState = {
+  color: "",
+};
+
+class StateUtility {
+  constructor() {
+    if (instance) {
+      throw new Error("New instance cannot be created!!");
+    }
+    instance = this;
+  }
+  getPropertyByName(propertyName) {
+    return globalState[propertyName];
+  }
+  setPropertyValue(propertyName, propertyValue) {
+    globalState[propertyName] = propertyValue;
+  }
+}
+let stateUtilityInstance = Object.freeze(new StateUtility());
+export default stateUtilityInstance;
+
+// We make sure that we don’t expose the globalState. We expose them using the class methods of StateUtility. In this way, we protect the global state from being altered directly.
+// Finally, we create the instance of the class as follows: let stateUtilityInstance = Object.freeze(new StateUtility());.
+// We have used Object.freeze so that no other class/component/module is able to modify the exposed stateUtilityInstance.
+
+`OR`;
+
+//Singleton
+var Singleton = (function () {
+  var instance;
+
+  function createDBInstance() {
+    var object = new Object("I am the DataBase instance");
+    return object;
+  }
+
+  return {
+    getDBInstance: function () {
+      if (!instance) {
+        instance = createDBInstance();
+      }
+      return instance;
+    },
+  };
+})();
+
+function run() {
+  var instance1 = Singleton.getDBInstance();
+  var instance2 = Singleton.getDBInstance();
+
+  console.log("Same instance? " + (instance1 === instance2));
+}
+
+run(); // OUTPUT = "Same instance? true"
+```
+
+### Points To Remember
+
+- Singleton design pattern exposes a single instance that can be used by multiple components
+- Singleton Pattern can be considered the basics of global state management libraries such `Redux or React Context`.
+- It is a pattern that restricts the class to create only one instance.
+- They can be accessed globally and acts as a single access point for accessing the global state.
+
 ### When To Use Singleton Pattern ? ✅
 
 Consider using Singleton when:
