@@ -32,7 +32,6 @@ export const Loading = () => {
     npm start
 2. In backend
     nodemon index.js   oR node index.js
- * 
  */
 
 //  Nodemon is a popular tool for the development of node.js-based applications. It simply restarts the node application whenever it notices changes in the file in your project’s working directory.
