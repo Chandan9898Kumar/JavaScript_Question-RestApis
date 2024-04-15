@@ -4,6 +4,7 @@ import "../src/DarkLightTheme/styles.scss";
 
 const MyApp = lazy(() => import("./Component/MyApp"));
 const DarkModeToggle = lazy(() => import("./DarkLightTheme/DarkModeToggle"));
+
 function App() {
   return (
     <Suspense fallback={<Loading />}>
