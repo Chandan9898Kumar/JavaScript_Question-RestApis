@@ -22,7 +22,7 @@ function App() {
 export default App;
 
 export const Loading = () => {
-  return <div style={{ color: "red", fontFamily: "sans-serif", fontSize: "20px" }}>Loading ...</div>;
+  return <div style={{ color: "red", fontFamily: "sans-serif", fontSize: "20px" }}>Loading...</div>;
 };
 
 /**
