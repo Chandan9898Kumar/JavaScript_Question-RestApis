@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import PropTypes from "prop-types";
 import "../App.css";
 const ImageModal = ({ data, itemInfo, deleteItem, updateItem, GetItemDetails }) => {
+  
   return (
     <React.Fragment>
       <div className="flex-container">
