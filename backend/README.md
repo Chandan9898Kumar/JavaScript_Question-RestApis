@@ -494,10 +494,15 @@ To more securely keep sensitive data on the server, out of the reach of malevole
                       `Cookie`                                                                                      `Session`
 
 1. Cookies are client-side files stored locally on a computer that contain user data.	             |    User data stored in the server side is called sessions.
+
 2. Cookies expire when the user-defined lifespan expires.	                                         |    The session ends when the user closes the browser or logs out of the software.
+
 3. It has a limited capacity for information storage.	                                             |    It has a practically infinite capacity for data storage.
+
 4. We don't need to run a function to start cookies because they are stored locally on the machine.|	  The session start() function must be used to start the session.
+
 5. Cookies are not secured.	                                                                       |    When compared to cookies, sessions are more secure.
+
 6. Cookies save information to a text file.	                                                       |    Session saves data in encrypted form.
 
 
