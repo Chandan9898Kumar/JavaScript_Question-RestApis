@@ -110,5 +110,4 @@ const api = {
   getUserToken,
   refreshToken,
 };
-
 export default api;
