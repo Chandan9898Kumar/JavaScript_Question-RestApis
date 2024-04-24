@@ -5,6 +5,7 @@ const ImageModal = ({ data, itemInfo, deleteItem, updateItem, GetItemDetails }) 
   
   return (
     <React.Fragment>
+
       <div className="flex-container">
         {data &&
           data.length > 0 &&
@@ -61,6 +62,7 @@ const ImageModal = ({ data, itemInfo, deleteItem, updateItem, GetItemDetails }) 
             );
           })}
       </div>
+      
     </React.Fragment>
   );
 };
