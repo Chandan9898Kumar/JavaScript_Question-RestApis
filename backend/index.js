@@ -18,7 +18,8 @@ const path = require("path");
 //         can return with an instruction to set a cookie with the session ID,so that it can be saved in the browser.this allows the browser to send the cookie on subsequent request
 //         to the server and the server can parse the cookies from text to json and verify the session ID was sent from the client is correct or not and determine who the request
 //         was sent from. Whenever the browser sends the cookies on each request, the server can look-up which user pertains to the session. As the server maintains a mapping of
-//         each session ID  to the user.
+//         each session ID  to the user. Each session has their own data and each session maps to its own user. 
+
 
 const session = require("express-session");
 
