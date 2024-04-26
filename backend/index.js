@@ -18,8 +18,7 @@ const path = require("path");
 //         can return with an instruction to set a cookie with the session ID,so that it can be saved in the browser.this allows the browser to send the cookie on subsequent request
 //         to the server and the server can parse the cookies from text to json and verify the session ID was sent from the client is correct or not and determine who the request
 //         was sent from. Whenever the browser sends the cookies on each request, the server can look-up which user pertains to the session. As the server maintains a mapping of
-//         each session ID  to the user. Each session has their own data and each session maps to its own user. 
-
+//         each session ID  to the user. Each session has their own data and each session maps to its own user.
 
 const session = require("express-session");
 
@@ -175,10 +174,9 @@ const PORT = 5000; // Set the port for our local application, 3000 is the defaul
 
 //                     Enabling CORS for specific origins only.If we want this cors option to set only for let says for GET,PUT,Patch,Delete then we can use like this.
 const corsOPtions = {
-
   credentials: true,
 
-  // origin: "*", 
+  // origin: "*",
   // if you need to enable cors on all the sites and make the data available across then you can change the origin to a star which means that you can use cors enabled for all websites.
   // which means now you can got to any website and if you want to access "http://localhost:5000/api/products" api  at line 64.then it will not throw an error.
 
@@ -197,8 +195,7 @@ const corsOPtions = {
   // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
   //  The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
 
-  //  Solution : Remove "*"  From Origin instead put actual URL 
-
+  //  Solution : Remove "*"  From Origin instead put actual URL
 };
 
 // =============================================================================================================================================================
@@ -369,7 +366,9 @@ function middleware(req, res, next) {
   } else {
     req.isImage = false;
   }
-  next();
+  return next();
+  // Note : if we don't give return here then whatever we write below this next() will be called when the this middleware function gets called.So we don't want this behavior
+  console.log("Hi this will be called");
 }
 
 //  Example 1.
