@@ -399,11 +399,11 @@ Being cacheable is one of the architectural constraints of REST.
 
 
 `Overview`
-Express.js uses a cookie to store a session id (with an encryption signature) in the user's browser and then, on subsequent requests, uses the value of that cookie to retrieve session information stored on the server. This server side storage can be a memory store (default) or any other store which implements the required methods.
+Express.js uses a cookie to store a session id (with an encryption signature) in the user's browser and then, on subsequent requests, uses the value of that cookie to retrieve session information stored on the server.`This server side storage can be a memory store (default) or any other store which implements the required methods`.
 
                                                                         OR
 
-Express.js, a Node.js framework, enhances web applications with express-session for session management. This middleware overcomes the stateless nature of HTTP by enabling persistent user sessions, stored in server memory or a database. It transforms HTTP interactions into stateful experiences, allowing the server to recognize and track users across requests with unique session IDs, ensuring continuous user-state monitoring and enhanced security.
+Express.js, a Node.js framework, enhances web applications with express-session for session management. This middleware overcomes the stateless nature of HTTP by enabling persistent user sessions, `stored in server memory or a database`. It transforms HTTP interactions into stateful experiences, allowing the server to recognize and track users across requests with unique session IDs, ensuring continuous user-state monitoring and enhanced security.
 
 
 `Details`
@@ -493,17 +493,17 @@ To more securely keep sensitive data on the server, out of the reach of malevole
 
                       `Cookie`                                                                                      `Session`
 
-1. Cookies are client-side files stored locally on a computer that contain user data.	             |    User data stored in the server side is called sessions.
+1. Cookies are client-side files stored locally on a computer that contain user data.	             |  User data stored in the server side is called sessions.
 
-2. Cookies expire when the user-defined lifespan expires.	                                         |    The session ends when the user closes the browser or logs out of the software.
+2. Cookies expire when the user-defined lifespan expires.	                                         |  The session ends when the user closes the browser or logs out of the software.
 
-3. It has a limited capacity for information storage.	                                             |    It has a practically infinite capacity for data storage.
+3. It has a limited capacity for information storage.	                                             |  It has a practically infinite capacity for data storage.
 
-4. We don't need to run a function to start cookies because they are stored locally on the machine.|	  The session start() function must be used to start the session.
+4. We don't need to run a function to start cookies because they are stored locally on the machine.|	The session start() function must be used to start the session.
 
-5. Cookies are not secured.	                                                                       |    When compared to cookies, sessions are more secure.
+5. Cookies are not secured.                                                                        |  Sessions are more secure. Data stored on server
 
-6. Cookies save information to a text file.	                                                       |    Session saves data in encrypted form.
+6. Cookies save information to a text file.	                                                       |  Session saves data in encrypted form.
 
 
 
@@ -545,3 +545,10 @@ With an express session ID (sid) and session (session) object, this necessary fu
 6. Cookies stored by the browser can hold a maximum of 4 KB.
 7. This npm install command is used for express-session installation : $ npm install express-session
 8. Every express session store needs to implement certain methods and be an EventEmitter.
+
+
+NOTE : 
+
+1. Session uses cookie to store an id.
+2. Session data stored on the server but unique `I'D` is stored on the client/browser in the cookie 
+   and this `I'D` is then used by server to get relevant information about the user.
