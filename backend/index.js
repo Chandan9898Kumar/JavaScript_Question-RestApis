@@ -620,9 +620,15 @@ app.post("/user/generateToken", (req, res) => {
   // Creating refresh token note that expiry of refresh token is greater than the access token
   const REFRESH_TOKEN = jwt.sign(payload, refreshTokenKey, { expiresIn: "1h" });
 
-  // Assigning refresh token in http-only cookie. we can simply send this token from send() method instead of in cookie and store it in our local storage (frontend side).
+  // Assigning refresh,access token in http-only cookie. we can simply send this token from send() method instead of in cookie and store it in our local storage (frontend side).
   // setting a cookie can be done as such:-
-  res.cookie("jwt_cookie", REFRESH_TOKEN, {
+  res.cookie("jwt_refresh_token_cookie", REFRESH_TOKEN, {
+    httpOnly: false,
+    sameSite: "lax",
+    secure: false,
+    maxAge: 24 * 600 * 600 * 1000,
+  });
+  res.cookie("jwt_access_token_cookie", ACCESS_TOKEN, {
     httpOnly: false,
     sameSite: "lax",
     secure: false,
