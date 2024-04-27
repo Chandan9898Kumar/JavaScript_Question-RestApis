@@ -29,23 +29,23 @@ To understand how REST APIs work, it is critical to understand resources. A reso
 
 The method is the type of request you send to the server. The four main resource methods that are associated with REST APIs are:
 
-GET: This method allows for the server to find the data you requested and sends it back to you.
-PUT: If you perform the ‘PUT’ request, then the server will update an entry in the database.
-POST: This method permits the server to create a new entry in the database.
-DELETE: This method allows the server to delete an entry in the database.
+1. GET: This method allows for the server to find the data you requested and sends it back to you.
+2. PUT: If you perform the ‘PUT’ request, then the server will update an entry in the database.
+3. POST: This method permits the server to create a new entry in the database.
+4. DELETE: This method allows the server to delete an entry in the database.
 
 
 
 In HTTP there are five methods that are commonly used in a REST-based Architecture i.e., POST, GET, PUT, PATCH, and DELETE. These correspond to create, read, update, and delete (or CRUD) operations respectively. There are other methods which are less frequently used like OPTIONS and HEAD.  
 
-GET: The HTTP GET method is used to read (or retrieve) a representation of a resource. In the safe path, GET returns a representation in XML or JSON and an HTTP response code of 200 (OK). In an error case, it most often returns a 404 (NOT FOUND) or 400 (BAD REQUEST). 
+1. GET: The HTTP GET method is used to read (or retrieve) a representation of a resource. In the safe path, GET returns a representation in XML or JSON and an HTTP response code of 200 (OK). In an error case, it most often returns a 404 (NOT FOUND) or 400 (BAD REQUEST). 
  
-POST: The POST verb is most often utilized to create new resources. In particular, it’s used to create subordinate resources. That is, subordinate to some other (e.g. parent) resource. On successful creation, return HTTP status 201, returning a Location header with a link to the newly-created resource with the 201 HTTP status. 
+2. POST: The POST verb is most often utilized to create new resources. In particular, it’s used to create subordinate resources. That is, subordinate to some other (e.g. parent) resource. On successful creation, return HTTP status 201, returning a Location header with a link to the newly-created resource with the 201 HTTP status. 
 ( Request for Posting/Creating/Inserting Data )
 
-PUT: It is used for updating the capabilities(Used to update the entire fields("Object")). However, PUT can also be used to create a resource in the case where the resource ID is chosen by the client instead of by the server. In other words, if the PUT is to a URI that contains the value of a non-existent resource ID. On successful update, return 200 (or 204 if not returning any content in the body) from a PUT. If using PUT for create, return HTTP status 201 on successful creation. PUT is not safe operation but it’s idempotent. 
+3. PUT: It is used for updating the capabilities(Used to update the entire fields("Object")). However, PUT can also be used to create a resource in the case where the resource ID is chosen by the client instead of by the server. In other words, if the PUT is to a URI that contains the value of a non-existent resource ID. On successful update, return 200 (or 204 if not returning any content in the body) from a PUT. If using PUT for create, return HTTP status 201 on successful creation. PUT is not safe operation but it’s idempotent. 
 
-PATCH: It is used to modify capabilities(Used to update only certain fields). The PATCH request only needs to contain the changes to the resource, not the complete resource. This resembles PUT, but the body contains a set of instructions describing how a resource currently residing on the server should be modified to produce a new version. This means that the PATCH body should not just be a modified part of the resource, but in some kind of patch language like JSON Patch or XML Patch. PATCH is neither safe nor idempotent. ( Request for Updating Data )
+4. PATCH: It is used to modify capabilities(Used to update only certain fields). The PATCH request only needs to contain the changes to the resource, not the complete resource. This resembles PUT, but the body contains a set of instructions describing how a resource currently residing on the server should be modified to produce a new version. This means that the PATCH body should not just be a modified part of the resource, but in some kind of patch language like JSON Patch or XML Patch. PATCH is neither safe nor idempotent. ( Request for Updating Data )
 
 DELETE: It is used to delete a resource identified by a URI. On successful deletion, return HTTP status 200 (OK) along with a response body. 
 
@@ -55,13 +55,13 @@ DELETE: It is used to delete a resource identified by a URI. On successful delet
 ### What are REST APIs used for?
 One of the key advantages of REST is that they provide a lot of flexibility, which enables you to do more with this particular API. Listed below are examples of what REST APIs are useful for:
 
-Cloud applications
+`Cloud applications`
 REST APIs are useful in cloud applications because their calls are stateless. If something fails, stateless components can smoothly redeploy and scale to accommodate load changes. Document sharing, storage, finance and accounting, customer relationship management (CRM), inventory control, and gathering information are some of the jobs performed with cloud-based applications.
 
-Cloud services
+`Cloud services`
 REST is also helpful in cloud services because you’d need to control how the URL is decoded to bind to a service through an API. That being said, cloud computing and microservices will undoubtedly make RESTful API design the rule of the future.
 
-Web use 
+`Web use `
 Since REST is not tied to client-side technology, these APIs can be accessible from a client-side web project, an iOS app, an IoT device, or a Windows Phone. You are able to build the infrastructure for your organization without worrying about being stuck to a particular client-side stack.
 
 
@@ -115,13 +115,13 @@ REST APIs should accept JSON for request payload and also send responses to JSON
 ### API Status Codes
 Status codes are returned with every request that is made to a web server. Status codes indicate information about what happened with a request. Here are some codes that are relevant to GET requests:
 
-200: Everything went okay, and the result has been returned (if any).
-301: The server is redirecting you to a different endpoint. This can happen when a company switches domain names, or an endpoint name is changed.
-400: The server thinks you made a bad request. This can happen when you don’t send along the right data, among other things.
-401: The server thinks you’re not authenticated. Many APIs require login credentials, so this happens when you don’t send the right credentials to access an API.
-403: The resource you’re trying to access is forbidden: you don’t have the right permission to see it.
-404: The resource you tried to access wasn’t found on the server.
-503: The server is not ready to handle the request.
+1. 200: Everything went okay, and the result has been returned (if any).
+2. 301: The server is redirecting you to a different endpoint. This can happen when a company switches domain names, or an endpoint name is changed.
+3. 400: The server thinks you made a bad request. This can happen when you don’t send along the right data, among other things.
+4. 401: The server thinks you’re not authenticated. Many APIs require login credentials, so this happens when you don’t send the right credentials to access an API.
+5. 403: The resource you’re trying to access is forbidden: you don’t have the right permission to see it.
+6. 404: The resource you tried to access wasn’t found on the server.
+7. 503: The server is not ready to handle the request.
 
 
 
