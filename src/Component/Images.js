@@ -1,11 +1,32 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
 import "../App.css";
+
+const url = "http://localhost:5000/htmlFile";
+const fileName = "htmlFileDownload";
 const ImageModal = ({ data, itemInfo, deleteItem, updateItem, GetItemDetails }) => {
-  
+  const handleDownload = () => {
+    fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName || "downloaded-file";
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Error fetching the file:", error);
+      });
+  };
+
   return (
     <React.Fragment>
-
       <div className="flex-container">
         {data &&
           data.length > 0 &&
@@ -61,8 +82,10 @@ const ImageModal = ({ data, itemInfo, deleteItem, updateItem, GetItemDetails }) 
               </div>
             );
           })}
+        <button type="primary" onClick={handleDownload}>
+          Download Sample JSON
+        </button>
       </div>
-      
     </React.Fragment>
   );
 };

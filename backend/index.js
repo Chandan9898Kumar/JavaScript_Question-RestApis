@@ -403,6 +403,12 @@ app.get("/file", middleware, (req, res) => {
 // The app.METHOD() function is used to route an HTTP request, where METHOD is the HTTP method of the request, such as GET, PUT, POST, and so on, in lowercase.
 // Thus, the actual methods are app.get(), app.post(), app.patch(),app.delete() and so on.
 
+
+//    Here we are sending Complete HTML file from server at : http://localhost:5000/htmlFile
+app.get('/htmlFile', async(req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'home.html'));
+});
+
 // ====================================================================================================================================================================
 
 //                                                              Post api to create a new item
