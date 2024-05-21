@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import "../App.css";
 
 const url = "http://localhost:5000/htmlFile";
-const fileName = "htmlFileDownload";
+const fileName = "htmlFileDownload.pdf";
 const ImageModal = ({ data, itemInfo, deleteItem, updateItem, GetItemDetails }) => {
   const handleDownload = () => {
     fetch(url)

@@ -11,6 +11,10 @@ const express = require("express");
 const app = express();
 
 const path = require("path");
+
+const fs = require("fs");
+const pdf = require("html-pdf");
+
 // ======================================================== Session =================================================================================================
 
 //  Note : Session represents the duration of users on a website. One Main use case of session is user Authentication.
@@ -403,12 +407,35 @@ app.get("/file", middleware, (req, res) => {
 // The app.METHOD() function is used to route an HTTP request, where METHOD is the HTTP method of the request, such as GET, PUT, POST, and so on, in lowercase.
 // Thus, the actual methods are app.get(), app.post(), app.patch(),app.delete() and so on.
 
+//  Here we are creating a pdf file of our home.html page(it will create pdf of our home.html page UI) and after creating it into pdf then we are
+//  sending Complete pdf file from server at : http://localhost:5000/htmlFile to frontend to download the pdf.
+app.get("/htmlFile", async (req, res) => {
+  const html = fs.readFileSync("./public/home.html", "utf8");
+  const options = { format: "Letter" };
 
-//    Here we are sending Complete HTML file from server at : http://localhost:5000/htmlFile
-app.get('/htmlFile', async(req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'home.html'));
+  pdf.create(html, options).toFile("./public/businesscard.pdf", function (err, res) {
+    if (err) {
+      return console.log(err, "error");
+    }
+    console.log(res, "response");
+  });
+  res.sendFile(path.join(__dirname, "public", "businesscard.pdf"));
 });
 
+/**    Below code is used to remove file.
+ * fs.unlink("./public/businesscard.pdf", function (err) {
+  if (err && err.code == "ENOENT") {
+    // file doens't exist
+    console.info("File doesn't exist, won't remove it.");
+  } else if (err) {
+    // other errors, e.g. maybe we don't have enough permission
+    console.error("Error occurred while trying to remove file");
+  } else {
+    console.info(`removed`);
+  }
+});
+ * 
+ */
 // ====================================================================================================================================================================
 
 //                                                              Post api to create a new item
