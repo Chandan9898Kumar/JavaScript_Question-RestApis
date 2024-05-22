@@ -409,6 +409,7 @@ app.get("/file", middleware, (req, res) => {
 
 //  Here we are creating a pdf file of our home.html page(it will create pdf of our home.html page UI) and after creating it into pdf then we are
 //  sending Complete pdf file from server at : http://localhost:5000/htmlFile to frontend to download the pdf.
+
 app.get("/htmlFile", async (req, res) => {
   const html = fs.readFileSync("./public/home.html", "utf8");
   const options = { format: "Letter" };
